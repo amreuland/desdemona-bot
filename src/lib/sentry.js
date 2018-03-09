@@ -1,10 +1,10 @@
 'use strict'
 
-const gitRevSync = require('git-rev-sync')
+// const gitRevSync = require('git-rev-sync')
 const R = require('ramda')
 const raven = require('raven')
 
-const gitRevisionId = gitRevSync.long()
+// const gitRevisionId = gitRevSync.long()
 
 class Sentry extends raven.Client {
   constructor (bot, config) {
@@ -31,7 +31,7 @@ class Sentry extends raven.Client {
 
       let defOptions = {
         environment: env,
-        release: gitRevisionId,
+        release: config.version,
         transport: new raven.transports.HTTPSTransport({rejectUnauthorized: false})
       }
 

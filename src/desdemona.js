@@ -31,48 +31,52 @@ const logger = new (winston.Logger)({
   ]
 })
 
-const bot = new Client({
+const desdemona = new Client({
   token: config.bot.token,
   modules: resolve('modules'),
   messageLimit: 0,
   maxShards: processShards * parseInt(process.env['PROCESS_COUNT'], 10),
   firstShardID,
-  lastShardID
+  lastShardID,
+  autoreconnect: true
 })
 
-bot
+desdemona
   .unregister('logger', 'console')
   .register('logger', 'winston', logger)
 
-const raven = new Sentry(bot, config)
+const raven = new Sentry(desdemona, config)
 
-bot.on('commander:registered', ({ trigger, group, aliases } = {}) =>
-  bot.logger.debug(`Command '${trigger}' in group '${group}' registered with ${aliases} aliases`)
+desdemona.on('commander:registered', ({ trigger, group, aliases } = {}) =>
+  desdemona.logger.debug(`Command '${trigger}' in group '${group}' registered with ${aliases} aliases`)
 )
 
-bot
-  // .unregister('middleware', true)
+desdemona
+  .unregister('middleware', true)
   .register('middleware', resolve('middleware'))
   .register('commands', resolve('commands'), { groupedCommands: true })
 
-bot.on('ready', () => {
-  const guilds = bot.guilds.size
-  const users = bot.users.size
-  const channels = Object.keys(bot.channelGuildMap).length
+desdemona.on('ready', () => {
+  const guilds = desdemona.guilds.size
+  const users = desdemona.users.size
+  const channels = Object.keys(desdemona.channelGuildMap).length
 
-  bot.logger.info(`${chalk.red.bold(bot.user.username)} - ${
-    firstShardID === lastShardID
-      ? `Shard ${firstShardID} is ready!`
-      : `Shards ${firstShardID} to ${lastShardID} are ready!`
-  }`)
-  bot.logger.info(
+  desdemona.logger.info(
     `G: ${chalk.green.bold(guilds)} | ` +
     `C: ${chalk.green.bold(channels)} | ` +
     `U: ${chalk.green.bold(users)}`
   )
-  bot.logger.info(`Prefix: ${chalk.cyan.bold(bot.prefix)}`)
+  desdemona.logger.info(`Prefix: ${chalk.cyan.bold(desdemona.prefix)}`)
 })
 
-bot.on('error', err => raven.captureException(err))
+desdemona.on('shardReady', (id) =>
+  desdemona.logger.info(`${chalk.red.bold(desdemona.user.username)} - ${`Shard ${id} is ready!`}`)
+)
 
-bot.run()
+desdemona.on('shardDisconnect', (id) => desdemona.logger.info(chalk.red.bold(`Shard "${id}" has disconnected`)))
+
+desdemona.on('shardResume', (id) => desdemona.logger.info(chalk.green.bold(`Shard "${id}" has resumed`)))
+
+desdemona.on('error', err => raven.captureException(err))
+
+desdemona.run()
