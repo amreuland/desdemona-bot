@@ -1,6 +1,8 @@
 'use strict'
 
 module.exports = {
+  version: '0.0.1',
+
   bot: {
     token: 'NDIxMzE3NjI2MzUwNzk2ODIw.DYLhrw.Y0eG5JtFgAtp1bWz3qRZXERCc9o'
   },
