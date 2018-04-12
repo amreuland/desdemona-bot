@@ -5,10 +5,13 @@ const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
 const util = require('util')
+const desline = require('./lib/desline')
+
+const { MongoClient } = require('mongodb')
 
 const Sentry = require('./lib/sentry')
 
-const gcalAPI = require('./api/gcal')
+const GCalAPI = require('./api/gcal')
 
 const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join('..', 'config', str)
@@ -76,7 +79,7 @@ desdemona.on('shardReady', (id) =>
   desdemona.logger.info(`${chalk.red.bold(desdemona.user.username)} - ${`Shard ${id} is ready!`}`)
 )
 
-const GoogleCalendarAPI = new gcalAPI(googleClientId, googleClientSecret, googleClientRedirects[0])
+const GoogleCalendarAPI = new GCalAPI(googleClientId, googleClientSecret, googleClientRedirects)
 
 desdemona.gcal = GoogleCalendarAPI
 
@@ -86,4 +89,10 @@ desdemona.on('shardResume', (id) => desdemona.logger.info(chalk.green.bold(`Shar
 
 desdemona.on('error', err => raven.captureException(err))
 
-desdemona.run()
+desline(config.waterline)
+  .then(({waterline, ontology}) => {
+    desdemona.waterline = waterline
+    desdemona.ontology = ontology
+    desdemona.models = ontology.collections
+    desdemona.run()
+  })
