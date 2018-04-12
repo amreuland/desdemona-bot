@@ -8,10 +8,13 @@ const util = require('util')
 
 const Sentry = require('./lib/sentry')
 
+const gcalAPI = require('./api/gcal')
+
 const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join('..', 'config', str)
 
 const config = require(resolveConfig('config'))
+const {client_secret: googleClientSecret, client_id: googleClientId, redirect_uris: googleClientRedirects} = require(resolveConfig('client_secret')).installed
 
 const { Client } = require('sylphy')
 
@@ -72,6 +75,10 @@ desdemona.on('ready', () => {
 desdemona.on('shardReady', (id) =>
   desdemona.logger.info(`${chalk.red.bold(desdemona.user.username)} - ${`Shard ${id} is ready!`}`)
 )
+
+const GoogleCalendarAPI = new gcalAPI(googleClientId, googleClientSecret, googleClientRedirects[0])
+
+desdemona.gcal = GoogleCalendarAPI
 
 desdemona.on('shardDisconnect', (id) => desdemona.logger.info(chalk.red.bold(`Shard "${id}" has disconnected`)))
 
