@@ -5,13 +5,14 @@ const OAuth2Client = google.auth.OAuth2
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 class GoogleCalendarAPI {
-  constructor (clientId, clientSecret) {
-    this.clientId = clientId,
+  constructor (clientId, clientSecret, redirectUris) {
+    this.clientId = clientId
     this.clientSecret = clientSecret
+    this.redirectUris = redirectUris
   }
 
   getAuthClient (token) {
-    let client = new OAuth2Client(this.clientId, this.clientSecret)
+    let client = new OAuth2Client(this.clientId, this.clientSecret, this.redirectUris[0])
     if (token) {
       client.setCredentials(token)
     }
