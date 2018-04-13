@@ -5,13 +5,14 @@ class Guild {
     this.guildId = guildId
     this.client = client
     this._authToken = null
+    this._dbObject = null
   }
 
-  get authToken () {
-    if (!this._authToken) {
-      console.log(this.getDBObject())
-    }
-  }
+  // get authToken () {
+  //   if (!this._authToken) {
+  //     console.log(this.getDBObject())
+  //   }
+  // }
 
   set authToken (token) {
     this._authToken = token
@@ -20,19 +21,25 @@ class Guild {
 
   async updateDBObject (data) {
     let obj = this.getDBObject()
-    return this.client.models.update({_id: obj._id}, data)
+    return this.client.models.Guild.update({_id: obj._id}, data)
   }
 
   async getDBObject () {
-    let obj = await this.client.models.guild.findOrCreate({
-      guildId: this.guildId
-    }, {
-      guildId: this.guildId
+    if (this._dbObject) {
+      return this._dbObject
+    }
+
+    let self = this
+    return await this.client.models.Guild.findOne({
+      guildId: self.guildId
+    }).then(obj => {
+      if (!obj) {
+        self._dbObject = new this.client.models.Guild({guildId: self.guildId})
+        return self._dbObject.save().then(() => {
+          return self._dbObject
+        })
+      }
     })
-
-    console.log(obj)
-
-    return obj
   }
 
   _ensureAuthClient () {

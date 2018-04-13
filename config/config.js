@@ -1,7 +1,5 @@
 'use strict'
 
-const sailsMongoAdapter = require('sails-mongo')
-
 module.exports = {
   version: '0.0.1',
 
@@ -9,17 +7,8 @@ module.exports = {
     token: 'NDIxMzE3NjI2MzUwNzk2ODIw.DYLhrw.Y0eG5JtFgAtp1bWz3qRZXERCc9o'
   },
 
-  waterline: {
-    adapters: {
-      'sails-mongo': sailsMongoAdapter
-    },
-
-    datastores: {
-      default: {
-        adapter: 'sails-mongo',
-        url: 'mongodb://localhost/desdemona_bot'
-      }
-    }
+  mongo: {
+    uri: 'mongodb://ws-service/desdemona_bot'
   },
 
   sentry: {
