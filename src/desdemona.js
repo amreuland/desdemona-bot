@@ -5,9 +5,7 @@ const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
 const util = require('util')
-const desline = require('./lib/desline')
-
-const { MongoClient } = require('mongodb')
+const mongoose = require('./lib/mongoose')
 
 const Sentry = require('./lib/sentry')
 
@@ -89,10 +87,9 @@ desdemona.on('shardResume', (id) => desdemona.logger.info(chalk.green.bold(`Shar
 
 desdemona.on('error', err => raven.captureException(err))
 
-desline(config.waterline)
-  .then(({waterline, ontology}) => {
-    desdemona.waterline = waterline
-    desdemona.ontology = ontology
-    desdemona.models = ontology.collections
+mongoose(config.mongo)
+  .then(db => {
+    desdemona.mongoose = db
+    desdemona.models = db.models
     desdemona.run()
   })

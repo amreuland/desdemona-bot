@@ -1,29 +1,13 @@
 'use strict'
 
 module.exports = {
-  identity: 'guild',
+  name: 'Guild',
 
-  datastore: 'default',
+  schema: {
+    guildId: String,
 
-  primaryKey: 'id',
+    authToken: String,
 
-  attributes: {
-    id: {
-      type: 'integer',
-      autoIncrement: true,
-      primaryKey: true
-    },
-
-    guildId: {
-      type: 'string'
-    },
-
-    authToken: {
-      type: 'string'
-    },
-
-    calendarId: {
-      type: 'string'
-    }
+    calendarId: String,
   }
 }
