@@ -7,6 +7,8 @@ const moment = require('moment')
 const util = require('util')
 const mongoose = require('./lib/mongoose')
 
+const GuildManager = require('./lib/guildManager')
+
 const Sentry = require('./lib/sentry')
 
 const GCalAPI = require('./api/gcal')
@@ -76,6 +78,10 @@ desdemona.on('ready', () => {
 desdemona.on('shardReady', (id) =>
   desdemona.logger.info(`${chalk.red.bold(desdemona.user.username)} - ${`Shard ${id} is ready!`}`)
 )
+
+const guildManager = new GuildManager(desdemona)
+
+desdemona.guildManager = guildManager
 
 const GoogleCalendarAPI = new GCalAPI(googleClientId, googleClientSecret, googleClientRedirects)
 

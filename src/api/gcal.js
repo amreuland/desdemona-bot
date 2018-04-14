@@ -14,10 +14,10 @@ class GoogleCalendarAPI {
   getAuthClient (token) {
     let client = new OAuth2Client(this.clientId, this.clientSecret, this.redirectUris[0])
     if (token) {
-      client.setCredentials(token)
+      client.credentials = token
     }
 
-    return Promise.resolve(client)
+    return client
   }
 
   getAuthUrl (client) {
