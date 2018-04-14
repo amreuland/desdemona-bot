@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const fs = require('fs')
 const path = require('path')
 
-const normalizedPath = path.join(__dirname, '..', 'models')
+const normalizedPath = path.join(__dirname, '..', 'schemas')
 
 module.exports = async function desline (config) {
 
