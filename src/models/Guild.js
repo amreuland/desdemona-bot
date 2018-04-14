@@ -6,7 +6,7 @@ module.exports = {
   schema: {
     guildId: String,
 
-    authToken: String,
+    authToken: Object,
 
     calendarId: String,
   }

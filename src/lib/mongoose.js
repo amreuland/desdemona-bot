@@ -15,7 +15,7 @@ module.exports = async function desline (config) {
   })
 
   return new Promise((resolve, reject) => {
-    mongoose.connection.on('open', () => {
+    mongoose.connection.once('open', () => {
       resolve(mongoose)
     })
     mongoose.connect(config.uri)
