@@ -18,6 +18,8 @@ class SelectCalendar extends Command {
   }
 
   async handle ({ msg, client }, responder) {
+    responder.typing()
+
     let guildId = msg.channel.guild.id
 
     let guild = await client.guildManager.get(guildId)
@@ -27,6 +29,8 @@ class SelectCalendar extends Command {
     let selection = await responder.selection(R.map(R.prop('name'), list), {
       title: 'Select Calendar'
     })
+
+    responder.typing()
 
     let item = R.find(R.propEq('name', selection[0]))(list)
 

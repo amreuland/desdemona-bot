@@ -10,9 +10,14 @@ class Guild {
     this.client = client
     this.authClient = null
     this.calendarClient = null
+    this._dbObj = null
   }
 
   async getDBObject () {
+    if (this._dbObj) {
+      return this._dbObj
+    }
+
     let obj = await this.client.models.Guild.findOne({
       guildId: this.guildId
     })
@@ -22,11 +27,55 @@ class Guild {
       await obj.save()
     }
 
+    this._dbObj = obj
+
     return obj
   }
 
   async getUpcomingEvents () {
+    let calendarClient = await this.getCalendarClient()
+    let obj = await this.getDBObject()
 
+    let calendarId = obj.calendarId
+
+    let events = await new Promise((resolve, reject) => {
+      calendarClient.events.list({
+        calendarId,
+        timeMin: (new Date()).toISOString(),
+        singleEvents: true,
+        orderBy: 'startTime'
+      }, (err, {items: data}) => {
+        if (err) {
+          return reject(err)
+        }
+
+        return resolve(data)
+      })
+    })
+
+    return events
+  }
+
+  async getEventDetails (eventId) {
+    let calendarClient = await this.getCalendarClient()
+    let obj = await this.getDBObject()
+
+    let calendarId = obj.calendarId
+
+    let event = await new Promise((resolve, reject) => {
+      calendarClient.events.get({
+        calendarId,
+        eventId
+      }, (err, data) => {
+        if (err) {
+          return reject(err)
+        }
+
+        return resolve(data)
+      })
+    })
+
+    return event
   }
 
   async _ensureAuthClient () {
@@ -48,6 +97,12 @@ class Guild {
   }
 
   async getCalendarClient () {
+    if (!await this.hasAuthToken()) {
+      return new Error('No auth token')
+    }
+
+    await this._ensureAuthClient()
+
     if (!this.calendarClient) {
       this.calendarClient = google.calendar({version: 'v3', auth: this.authClient})
     }

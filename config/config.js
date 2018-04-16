@@ -8,7 +8,7 @@ module.exports = {
   },
 
   mongo: {
-    uri: 'mongodb://ws-service/desdemona_bot'
+    uri: 'mongodb://localhost/desdemona_bot'
   },
 
   sentry: {
