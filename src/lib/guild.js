@@ -1,10 +1,15 @@
 'use strict'
 
+const google = require('googleapis')
+
+const R = require('ramda')
+
 class Guild {
   constructor (guildId, client) {
     this.guildId = guildId
     this.client = client
     this.authClient = null
+    this.calendarClient = null
   }
 
   async getDBObject () {
@@ -37,7 +42,48 @@ class Guild {
   }
 
   async setCalendar (id) {
+    let obj = await this.getDBObject()
+    obj.calendarId = id
+    return obj.save()
+  }
 
+  async getCalendarClient () {
+    if (!this.calendarClient) {
+      this.calendarClient = google.calendar({version: 'v3', auth: this.authClient})
+    }
+
+    return this.calendarClient
+  }
+
+  async getCalendarsForAuth () {
+    if (!await this.hasAuthToken()) {
+      return []
+    }
+
+    await this._ensureAuthClient()
+
+    let calendarClient = await this.getCalendarClient()
+
+    let calendars = await new Promise((resolve, reject) => {
+      calendarClient.calendarList.list({
+        maxResults: 10
+      }, (err, {items: data}) => {
+        if (err) {
+          return reject(err)
+        }
+
+        return resolve(data)
+      })
+    })
+
+    let calendarList = R.map(item => {
+      return {
+        id: item.id,
+        name: item.summary
+      }
+    }, calendars)
+
+    return calendarList
   }
 
   async authGoogle (code) {
@@ -55,6 +101,7 @@ class Guild {
       obj.authToken = token
       await obj.save()
       this.authClient.credentials = token
+      this.calendarClient = null
       return token
     } else {
       let authUrl = this.authClient.generateAuthUrl({
