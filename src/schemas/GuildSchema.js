@@ -6,7 +6,13 @@ module.exports = {
   schema: {
     guildId: {
       type: String,
-      unique: true
+      unique: true,
+      index: true
+    },
+
+    settings: {
+      type: Object,
+      default: {}
     },
 
     authToken: Object,

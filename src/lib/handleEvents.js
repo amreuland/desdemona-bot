@@ -2,7 +2,6 @@
 
 const R = require('ramda')
 const moment = require('moment')
-const Promise = require('bluebird')
 
 const descFunc = R.compose(R.join('\n'), R.difference)
 const paramsFunc1 = R.filter(
@@ -33,90 +32,96 @@ async function handleEvents () {
 
   let guildIds = R.keys(this.guildShardMap)
 
-  let guildCalendarMapping = {}
-
-  let items = await this.models.Guild.find({
-    guildId: {
-      $in: guildIds
-    }
-  })
-
-  let itemsFiltered = R.filter(R.hasIn('calendarId'), items)
-
-  R.forEach(item => {
-    guildCalendarMapping[item.guildId] = item.calendarId
-  }, itemsFiltered)
-
-  let nowPlusFive = moment().add(5, 'minutes').toISOString()
-
   return Promise.each(guildIds, guildId => {
     return self.guildManager.get(guildId)
+      .tap(guild => guild.populateDBObj())
       .then(guild => {
+        if (!guild.db.calendarId || !guild.db.authToken) {
+          return false
+        }
+        if (guild.db.settings.enableNotifications === false) {
+          return false
+        }
+
+        let timeAdd = guild.db.settings.timeBefore || 5
+
         return guild.getUpcomingEvents({
-          maxResults: 5,
-          timeMax: nowPlusFive
-        }).then(events => ({guild, events}))
-      }).then(({guild, events}) => {
-        let eventIds = R.map(R.prop('id'), events)
-        let erisGuild = guild.getErisObject()
+          maxResults: 10,
+          timeMax: moment().add(timeAdd, 'minutes').toISOString()
+        }).then(events => {
+          let eventIds = R.map(R.prop('id'), events)
 
-        Promise.each(self.models.Event.find({
-          guildId: guild.getGuildId(),
-          eventId: {
-            $in: eventIds
-          }
-        }).then(foundEvents => {
-          return R.differenceWith((x, y) => {
-            return x.id === y.eventId
-          }, events, foundEvents)
-        }), event => {
-          let lines = event.description.split('\n')
-
-          let params = paramsFunc1(lines)
-
-          let desc = descFunc(lines, params)
-
-          params = paramsFunc2(params)
-
-          let foundChannel = R.find(channel => {
-            return (!!channel.name) &&
-            channel.name.toLowerCase() === params['channel'] &&
-            channel.type === 0
-          }, erisGuild.channels)
-
-          let message = ''
-
-          if (params['role']) {
-            let foundRole = R.find(role => {
-              return role.name.toLowerCase() === params['role'] &&
-              role.mentionable === true
-            }, erisGuild.roles)
-
-            if (foundRole) {
-              message = foundRole.mention
+          Promise.each(self.models.Event.find({
+            guild: guild.db._id,
+            eventId: {
+              $in: eventIds
             }
-          }
+          }).then(foundEvents => {
+            return R.differenceWith((x, y) => {
+              return x.id === y.eventId
+            }, events, foundEvents)
+          }), event => {
+            let lines = event.description.split('\n')
 
-          let dbEvent = new self.models.Event({
-            guildId: guild.getGuildId(),
-            eventId: event.id,
-            sentAt: new Date()
-          })
+            let params = paramsFunc1(lines)
 
-          dbEvent.save()
+            let description = descFunc(lines, params)
 
-          self.createMessage(foundChannel.id, {
-            content: message,
-            embed: {
-              title: ':calendar_spiral: Event Reminder!',
-              color: 0xdf3939,
-              description: desc,
-              url: event.htmlLink,
-              timestamp: moment(event.start.dateTime).toDate(),
-              provider: {
-                name: event.organizer.displayName
+            params = paramsFunc2(params)
+
+            let foundChannel = R.find(channel => {
+              return (!!channel.name) &&
+              channel.name.toLowerCase() === params.channel &&
+              channel.type === 0
+            }, guild.erisObject.channels)
+
+            if (!foundChannel) {
+              return false
+            }
+
+            let message = ''
+
+            if (params.role) {
+              let foundRole = R.find(role => {
+                return role.name.toLowerCase() === params.role &&
+                role.mentionable === true
+              }, guild.erisObject.roles)
+
+              if (foundRole) {
+                message = foundRole.mention
               }
             }
+
+            let dbEvent = new self.models.Event({
+              guild: guild.db._id,
+              eventId: event.id,
+              sentAt: new Date(),
+              endsAt: moment(event.end.dateTime).toDate()
+            })
+
+            dbEvent.save()
+
+            let url = params.url || event.htmlLink
+
+            let title = `:calendar_spiral: Event Reminder - ${
+              params.title || event.summary
+            }`
+
+            let color = params.color || 0xdf3939
+
+            self.createMessage(foundChannel.id, {
+              content: message,
+              embed: {
+                title,
+                url,
+                color,
+                description,
+                timestamp: moment(event.start.dateTime).toDate(),
+                provider: {
+                  name: event.organizer.displayName
+                }
+              }
+            })
           })
         })
       })

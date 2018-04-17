@@ -21,7 +21,7 @@ class CalendarEvents extends Command {
   }
 
   async handle ({ msg, client }, responder) {
-    responder.typing()
+    await responder.typing()
 
     let guildId = msg.channel.guild.id
 

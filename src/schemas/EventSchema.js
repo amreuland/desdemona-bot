@@ -1,17 +1,19 @@
 'use strict'
 
+const mongoose = require('mongoose')
+
 module.exports = {
   name: 'Event',
 
   schema: {
-    eventId: {
-      type: String
+    eventId: String,
+
+    guild: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Guild'
     },
 
-    guildId: {
-      type: String
-    },
-
-    sentAt: Date
+    sentAt: Date,
+    endsAt: Date
   }
 }

@@ -10,14 +10,14 @@ class GuildManager {
     this.guilds = {}
   }
 
-  async get (guildId) {
+  get (guildId) {
     if (!this.guilds[guildId]) {
       let guild = new Guild(guildId, this.client)
       this.guilds[guildId] = guild
-      return guild
+      return Promise.resolve(guild)
     }
 
-    return this.guilds[guildId]
+    return Promise.resolve(this.guilds[guildId])
   }
 
   getSubset (guilds) {

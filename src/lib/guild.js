@@ -6,39 +6,41 @@ const R = require('ramda')
 
 class Guild {
   constructor (guildId, client) {
-    this.guildId = guildId
+    this.id = guildId
     this.client = client
     this.authClient = null
     this.calendarClient = null
-    this._dbObj = null
+    this.db = null
   }
 
-  getGuildId () { return this.guildId }
+  get erisObject () {
+    return this.client.guilds.get(this.id)
+  }
 
-  async getDBObject () {
-    if (this._dbObj) {
-      return this._dbObj
+  getGuildId () { return this.id }
+
+  getDBObject () { return this.db }
+
+  async populateDBObj () {
+    if (this.db) {
+      return
     }
 
     let obj = await this.client.models.Guild.findOne({
-      guildId: this.guildId
+      guildId: this.id
     })
 
     if (!obj) {
-      obj = new this.client.models.Guild({guildId: this.guildId})
+      obj = new this.client.models.Guild({guildId: this.id})
       await obj.save()
     }
 
-    this._dbObj = obj
+    this.db = obj
 
-    return obj
+    // return obj
   }
 
-  getErisObject () {
-    return this.client.guilds.get(this.guildId)
-  }
-
-  async getUpcomingEvents (options = {maxResults: 10, timeMax: null}) {
+  async getUpcomingEvents (options = {maxResults: 20, timeMax: null}) {
     let calendarClient = await this.getCalendarClient()
     let obj = await this.getDBObject()
 

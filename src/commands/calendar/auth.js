@@ -21,7 +21,7 @@ class AuthCalendar extends Command {
   }
 
   async handle ({ msg, client }, responder) {
-    responder.typing()
+    await responder.typing()
 
     let guildId = msg.channel.guild.id
 
@@ -37,7 +37,7 @@ class AuthCalendar extends Command {
       }
     }
 
-    responder.typing()
+    await responder.typing()
 
     let authUrl = await guild.authGoogle()
 
@@ -48,7 +48,7 @@ class AuthCalendar extends Command {
       }
     ])
 
-    responder.typing()
+    await responder.typing()
 
     await guild.authGoogle(authCode)
 

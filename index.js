@@ -1,11 +1,10 @@
 'use strict'
 
+global.Promise = require('bluebird')
 const chalk = require('chalk')
 const path = require('path')
 const moment = require('moment')
 const { Crystal } = require('sylphy')
-
-const config = require('./config/config')
 
 require('longjohn')
 require('dotenv-safe').config({
