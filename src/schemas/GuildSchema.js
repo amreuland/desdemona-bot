@@ -4,10 +4,13 @@ module.exports = {
   name: 'Guild',
 
   schema: {
-    guildId: String,
+    guildId: {
+      type: String,
+      unique: true
+    },
 
     authToken: Object,
 
-    calendarId: String,
+    calendarId: String
   }
 }

@@ -1,5 +1,7 @@
 'use strict'
 
+const R = require('ramda')
+
 const Guild = require('./guild')
 
 class GuildManager {
@@ -16,6 +18,14 @@ class GuildManager {
     }
 
     return this.guilds[guildId]
+  }
+
+  getSubset (guilds) {
+    return R.map(this.get.bind(this), guilds)
+  }
+
+  getAllGuilds () {
+    return R.values(this.guilds)
   }
 }
 

@@ -10,6 +10,11 @@ class CalendarEvents extends Command {
       description: 'Get Calendar Events',
       options: {
         guildOnly: true,
+        requirements: {
+          permissions: {
+            administrator: true
+          }
+        },
         hidden: false
       }
     })
