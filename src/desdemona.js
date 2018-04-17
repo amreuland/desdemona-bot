@@ -1,5 +1,7 @@
 'use strict'
 
+global.Promise = require('bluebird')
+
 const chalk = require('chalk')
 const path = require('path')
 const winston = require('winston')
@@ -96,7 +98,7 @@ desdemona.on('shardResume', (id) => desdemona.logger.info(chalk.green.bold(`Shar
 desdemona.on('error', err => raven.captureException(err))
 
 desdemona.once('ready', () => {
-  setInterval(handleEvents.bind(desdemona), 3000)
+  setInterval(handleEvents.bind(desdemona), 5000)
 })
 
 mongoose(config.mongo)

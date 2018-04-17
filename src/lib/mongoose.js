@@ -8,7 +8,6 @@ const path = require('path')
 const normalizedPath = path.join(__dirname, '..', 'schemas')
 
 module.exports = async function desline (config) {
-
   fs.readdirSync(normalizedPath).forEach(function (file) {
     let {schema, name} = require(path.join(normalizedPath, file))
     mongoose.model(name, new mongoose.Schema(schema))
