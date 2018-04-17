@@ -6,7 +6,7 @@ const moment = require('moment')
 const descFunc = R.compose(R.join('\n'), R.difference)
 const paramsFunc1 = R.filter(
   R.compose(
-    R.test(/^\$[a-z]+: [A-Za-z0-9]+$/),
+    R.test(/^\$[a-z]+: ?[A-Za-z0-9]+$/),
     R.trim
   )
 )
@@ -107,15 +107,15 @@ async function handleEvents () {
               params.title || event.summary
             }`
 
-            let color = params.color || 0xdf3939
+            // let color = params.color || 0xdf3939
 
-            self.createMessage(foundChannel.id, {
+            await self.createMessage(foundChannel.id, {
               content: message,
               embed: {
                 title,
                 url,
-                color,
                 description,
+                color: 0xdf3939,
                 timestamp: moment(event.start.dateTime).toDate(),
                 provider: {
                   name: event.organizer.displayName
