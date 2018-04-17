@@ -1,7 +1,7 @@
 'use strict'
 
 const google = require('googleapis')
-
+const moment = require('moment')
 const R = require('ramda')
 
 class Guild {
@@ -12,6 +12,8 @@ class Guild {
     this.calendarClient = null
     this._dbObj = null
   }
+
+  getGuildId () { return this.guildId }
 
   async getDBObject () {
     if (this._dbObj) {
@@ -32,7 +34,11 @@ class Guild {
     return obj
   }
 
-  async getUpcomingEvents () {
+  getErisObject () {
+    return this.client.guilds.get(this.guildId)
+  }
+
+  async getUpcomingEvents (options = {maxResults: 10, timeMax: null}) {
     let calendarClient = await this.getCalendarClient()
     let obj = await this.getDBObject()
 
@@ -41,9 +47,11 @@ class Guild {
     let events = await new Promise((resolve, reject) => {
       calendarClient.events.list({
         calendarId,
-        timeMin: (new Date()).toISOString(),
+        timeMin: moment().toISOString(),
         singleEvents: true,
-        orderBy: 'startTime'
+        orderBy: 'startTime',
+        maxResults: options.maxResults,
+        timeMax: options.timeMax
       }, (err, {items: data}) => {
         if (err) {
           return reject(err)

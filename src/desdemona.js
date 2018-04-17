@@ -7,6 +7,8 @@ const moment = require('moment')
 const util = require('util')
 const mongoose = require('./lib/mongoose')
 
+const handleEvents = require('./lib/handleEvents')
+
 const GuildManager = require('./lib/guildManager')
 
 const Sentry = require('./lib/sentry')
@@ -92,6 +94,10 @@ desdemona.on('shardDisconnect', (id) => desdemona.logger.info(chalk.red.bold(`Sh
 desdemona.on('shardResume', (id) => desdemona.logger.info(chalk.green.bold(`Shard "${id}" has resumed`)))
 
 desdemona.on('error', err => raven.captureException(err))
+
+desdemona.once('ready', () => {
+  setInterval(handleEvents.bind(desdemona), 3000)
+})
 
 mongoose(config.mongo)
   .then(db => {
