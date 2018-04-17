@@ -99,7 +99,6 @@ async function handleEvents () {
               endsAt: moment(event.end.dateTime).toDate()
             })
 
-            dbEvent.save()
 
             let url = params.url || event.htmlLink
 
@@ -109,7 +108,7 @@ async function handleEvents () {
 
             // let color = params.color || 0xdf3939
 
-            await self.createMessage(foundChannel.id, {
+            self.createMessage(foundChannel.id, {
               content: message,
               embed: {
                 title,
@@ -121,7 +120,7 @@ async function handleEvents () {
                   name: event.organizer.displayName
                 }
               }
-            })
+            }).then(() => dbEvent.save())
           })
         })
       })
