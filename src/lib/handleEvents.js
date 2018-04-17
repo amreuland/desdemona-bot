@@ -6,7 +6,7 @@ const moment = require('moment')
 const descFunc = R.compose(R.join('\n'), R.difference)
 const paramsFunc1 = R.filter(
   R.compose(
-    R.test(/^\$[a-z]+: ?[A-Za-z0-9 \:\/]+$/),
+    R.test(/^\$[a-z]+: ?[A-Za-z0-9 \:\/\.]+$/),
     R.trim
   )
 )
