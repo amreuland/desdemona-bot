@@ -3,16 +3,18 @@
 module.exports = {
   version: '0.0.1',
 
+  env: 'development',
+
   bot: {
-    token: 'NDIxMzE3NjI2MzUwNzk2ODIw.DYLhrw.Y0eG5JtFgAtp1bWz3qRZXERCc9o'
+    token: 'NDM2MTUzMjk3MjA4OTk5OTM2.DbjW7g.Ynkpdbdl9pOT7Vy6HcmEhyfC2JU'
   },
 
   mongo: {
-    uri: 'mongodb://localhost/desdemona_bot'
+    uri: 'mongodb://localhost/desdemona_bot_test'
   },
 
   sentry: {
-    dsn: 'https://8c73bab577fc4b5eae2b9cdb61946024:efb6d4d47f6d453eb640cab22c7a880c@sentry.asrl.io/5',
+    dsn: 'https://0047da8c7269416a821a89e004e1713a:f6e7bcde498e45c5a757b1629c14548b@sentry.asrl.io/5',
     options: {
       captureUnhandledRejections: true,
       autoBreadcrumbs: {
