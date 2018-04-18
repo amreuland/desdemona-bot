@@ -6,7 +6,7 @@ const moment = require('moment')
 const descFunc = R.compose(R.join('\n'), R.difference)
 const paramsFunc1 = R.filter(
   R.compose(
-    R.test(/^\$[a-z]+: ?[A-Za-z0-9 \:\/\.]+$/),
+    R.test(/^\$[a-z]+: ?[A-Za-z0-9 :/.]+$/),
     R.trim
   )
 )
@@ -27,7 +27,7 @@ const paramsFunc2 = R.compose(
   R.map(R.split(': '))
 )
 
-async function handleEvents () {
+function handleEvents () {
   let self = this
 
   let guildIds = R.keys(this.guildShardMap)
@@ -98,7 +98,6 @@ async function handleEvents () {
               sentAt: new Date(),
               endsAt: moment(event.end.dateTime).toDate()
             })
-
 
             let url = params.url || event.htmlLink
 
