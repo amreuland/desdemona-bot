@@ -6,7 +6,7 @@ const moment = require('moment')
 const descFunc = R.compose(R.join('\n'), R.difference)
 const paramsFunc1 = R.filter(
   R.compose(
-    R.test(/^\$[a-z]+: ?[A-Za-z0-9 :/.]+$/),
+    R.test(/^\$[a-z]+::[A-Za-z0-9 :/.]+$/),
     R.trim
   )
 )
@@ -24,7 +24,7 @@ const paramsFunc2 = R.compose(
     ]
   ),
   R.transpose,
-  R.map(R.split(': '))
+  R.map(R.split('::'))
 )
 
 function handleEvents () {
@@ -101,7 +101,7 @@ function handleEvents () {
 
             let url = params.url || event.htmlLink
 
-            let title = `:calendar_spiral: Event Reminder - ${
+            let title = `:calendar_spiral: ${
               params.title || event.summary
             }`
 
@@ -113,10 +113,14 @@ function handleEvents () {
                 title,
                 url,
                 description,
+                footer: {
+                  text: 'Event'
+                },
                 color: 0xdf3939,
                 timestamp: moment(event.start.dateTime).toDate(),
                 provider: {
-                  name: event.organizer.displayName
+                  name: 'Calendar Bot',
+                  url: 'https://github.com/noriah/desdemona-bot'
                 }
               }
             }).then(() => dbEvent.save())
