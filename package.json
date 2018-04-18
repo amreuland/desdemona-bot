@@ -14,7 +14,7 @@
   "keywords": [
     "discord",
     "bot",
-    "game",
+    "calendar",
     "coordinate"
   ],
   "author": "noriah",
@@ -36,7 +36,6 @@
     "moment": "^2.19.3",
     "mongodb": "^3.0.6",
     "mongoose": "^5.0.14",
-    "mongorito": "^3.0.4",
     "npm": "^5.8.0",
     "ramda": "^0.25.0",
     "raven": "^2.4.2",
