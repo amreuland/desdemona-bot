@@ -6,15 +6,36 @@ module.exports = {
   process: container => {
     const { msg, client, commands } = container
 
-    for (const prefix of commands.prefixes.keys()) {
-      if (!msg.content.startsWith(prefix)) continue
-      const rawArgs = msg.content.substring(prefix.length).split(' ')
-      container.trigger = rawArgs[0].toLowerCase()
-      container.isCommand = commands.has(container.trigger)
-      container.rawArgs = rawArgs.slice(1).filter(v => v)
-      return Promise.resolve(container)
+    let foundPrefix = null
+    let actOnMsg = false
+
+    const mentionPrefix = msg.content.match(new RegExp(`^<@!*${client.user.id}>`))
+
+    if (msg.content.startsWith(mentionPrefix)) {
+      foundPrefix = mentionPrefix + ' '
+      actOnMsg = true
     }
 
-    return Promise.resolve()
+    if (!actOnMsg) {
+      for (const prefix of commands.prefixes.keys()) {
+        if (!msg.content.startsWith(prefix)) {
+          continue
+        }
+
+        foundPrefix = prefix
+        actOnMsg = true
+        break
+      }
+    }
+
+    if (!actOnMsg) {
+      return Promise.resolve()
+    }
+
+    const rawArgs = msg.content.substring(foundPrefix.length).trim().split(' ')
+    container.trigger = rawArgs[0].toLowerCase()
+    container.isCommand = commands.has(container.trigger)
+    container.rawArgs = rawArgs.slice(1).filter(v => v)
+    return Promise.resolve(container)
   }
 }
