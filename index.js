@@ -12,7 +12,7 @@ require('dotenv-safe').config({
   allowEmptyValues: true
 })
 
-const cluster = new Crystal(path.join('src', 'desdemona.js'), parseInt(process.env.PROCESS_COUNT, 10))
+const cluster = new Crystal(path.join('src', 'navi.js'), parseInt(process.env.PROCESS_COUNT, 10))
 const timestamp = () => `[${chalk.grey(moment().format('HH:mm:ss'))}]`
 
 cluster.on('clusterCreate', id =>

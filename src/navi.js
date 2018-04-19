@@ -38,7 +38,7 @@ const logger = new (winston.Logger)({
   ]
 })
 
-const desdemona = new Client({
+const navi = new Client({
   token: config.bot.token,
   modules: resolve('modules'),
   messageLimit: 0,
@@ -48,59 +48,59 @@ const desdemona = new Client({
   autoreconnect: true
 })
 
-desdemona
+navi
   .unregister('logger', 'console')
   .register('logger', 'winston', logger)
 
-const raven = new Sentry(desdemona, config)
+const raven = new Sentry(navi, config)
 
-desdemona.on('commander:registered', ({ trigger, group, aliases } = {}) =>
-  desdemona.logger.debug(`Command '${trigger}' in group '${group}' registered with ${aliases} aliases`)
+navi.on('commander:registered', ({ trigger, group, aliases } = {}) =>
+  navi.logger.debug(`Command '${trigger}' in group '${group}' registered with ${aliases} aliases`)
 )
 
-desdemona
+navi
   .unregister('middleware', true)
   .register('middleware', resolve('middleware'))
   .register('commands', resolve('commands'), { groupedCommands: true })
 
-desdemona.on('ready', () => {
-  const guilds = desdemona.guilds.size
-  const users = desdemona.users.size
-  const channels = Object.keys(desdemona.channelGuildMap).length
+navi.on('ready', () => {
+  const guilds = navi.guilds.size
+  const users = navi.users.size
+  const channels = Object.keys(navi.channelGuildMap).length
 
-  desdemona.logger.info(
+  navi.logger.info(
     `G: ${chalk.green.bold(guilds)} | ` +
     `C: ${chalk.green.bold(channels)} | ` +
     `U: ${chalk.green.bold(users)}`
   )
-  desdemona.logger.info(`Prefix: ${chalk.cyan.bold(desdemona.prefix)}`)
+  navi.logger.info(`Prefix: ${chalk.cyan.bold(navi.prefix)}`)
 })
 
-desdemona.on('shardReady', (id) =>
-  desdemona.logger.info(`${chalk.red.bold(desdemona.user.username)} - ${`Shard ${id} is ready!`}`)
+navi.on('shardReady', (id) =>
+  navi.logger.info(`${chalk.red.bold(navi.user.username)} - ${`Shard ${id} is ready!`}`)
 )
 
-const guildManager = new GuildManager(desdemona)
+const guildManager = new GuildManager(navi)
 
-desdemona.guildManager = guildManager
+navi.guildManager = guildManager
 
 const GoogleCalendarAPI = new GCalAPI(googleClientId, googleClientSecret, googleClientRedirects)
 
-desdemona.gcal = GoogleCalendarAPI
+navi.gcal = GoogleCalendarAPI
 
-desdemona.on('shardDisconnect', (id) => desdemona.logger.info(chalk.red.bold(`Shard "${id}" has disconnected`)))
+navi.on('shardDisconnect', (id) => navi.logger.info(chalk.red.bold(`Shard "${id}" has disconnected`)))
 
-desdemona.on('shardResume', (id) => desdemona.logger.info(chalk.green.bold(`Shard "${id}" has resumed`)))
+navi.on('shardResume', (id) => navi.logger.info(chalk.green.bold(`Shard "${id}" has resumed`)))
 
-desdemona.on('error', err => raven.captureException(err))
+navi.on('error', err => raven.captureException(err))
 
-desdemona.once('ready', () => {
-  setInterval(handleEvents.bind(desdemona), (config.calendar.pollingRate || 20) * 1000)
+navi.once('ready', () => {
+  setInterval(handleEvents.bind(navi), (config.calendar.pollingRate || 20) * 1000)
 })
 
 Mongoose(config.mongo)
   .then(db => {
-    desdemona.mongoose = db
-    desdemona.models = db.models
-    desdemona.run()
+    navi.mongoose = db
+    navi.models = db.models
+    navi.run()
   })
