@@ -8,17 +8,12 @@ const raven = require('raven')
 
 class Sentry extends raven.Client {
   constructor (bot, config) {
-    // this.bot = bot
-    // this.config = bot.config
-
     let dsn = process.env.SENTRY_DSN || config.sentry.dsn || ''
 
     let hasClient = true
-    // let isEnabled = true
 
     if (dsn === '') {
       bot.logger.warn('No Sentry DSN provided. Error logging will be terrible.')
-      // isEnabled = false
       hasClient = false
     }
 

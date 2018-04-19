@@ -6,7 +6,6 @@ const chalk = require('chalk')
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
-const util = require('util')
 
 const { Mongoose, Sentry, GuildManager } = require('./lib')
 
@@ -18,7 +17,12 @@ const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join('..', 'config', str)
 
 const config = require(resolveConfig('config'))
-const {client_secret: googleClientSecret, client_id: googleClientId, redirect_uris: googleClientRedirects} = require(resolveConfig('client_secret')).installed
+
+const {
+  client_secret: googleClientSecret,
+  client_id: googleClientId,
+  redirect_uris: googleClientRedirects
+} = require(resolveConfig('client_secret')).installed
 
 const { Client } = require('sylphy')
 
@@ -54,31 +58,12 @@ navi
 
 const raven = new Sentry(navi, config)
 
-navi.on('commander:registered', ({ trigger, group, aliases } = {}) =>
-  navi.logger.debug(`Command '${trigger}' in group '${group}' registered with ${aliases} aliases`)
-)
+navi.raven = raven
 
 navi
   .unregister('middleware', true)
   .register('middleware', resolve('middleware'))
   .register('commands', resolve('commands'), { groupedCommands: true })
-
-navi.on('ready', () => {
-  const guilds = navi.guilds.size
-  const users = navi.users.size
-  const channels = Object.keys(navi.channelGuildMap).length
-
-  navi.logger.info(
-    `G: ${chalk.green.bold(guilds)} | ` +
-    `C: ${chalk.green.bold(channels)} | ` +
-    `U: ${chalk.green.bold(users)}`
-  )
-  navi.logger.info(`Prefix: ${chalk.cyan.bold(navi.prefix)}`)
-})
-
-navi.on('shardReady', (id) =>
-  navi.logger.info(`${chalk.red.bold(navi.user.username)} - ${`Shard ${id} is ready!`}`)
-)
 
 const guildManager = new GuildManager(navi)
 
@@ -88,19 +73,12 @@ const GoogleCalendarAPI = new GCalAPI(googleClientId, googleClientSecret, google
 
 navi.gcal = GoogleCalendarAPI
 
-navi.on('shardDisconnect', (id) => navi.logger.info(chalk.red.bold(`Shard "${id}" has disconnected`)))
-
-navi.on('shardResume', (id) => navi.logger.info(chalk.green.bold(`Shard "${id}" has resumed`)))
-
-navi.on('error', err => raven.captureException(err))
-
 navi.once('ready', () => {
   setInterval(handleEvents.bind(navi), (config.calendar.pollingRate || 20) * 1000)
 })
 
-Mongoose(config.mongo)
-  .then(db => {
-    navi.mongoose = db
-    navi.models = db.models
-    navi.run()
-  })
+Mongoose(config.mongo).then(db => {
+  navi.mongoose = db
+  navi.models = db.models
+  navi.run()
+})
