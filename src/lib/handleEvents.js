@@ -3,38 +3,16 @@
 const R = require('ramda')
 const moment = require('moment')
 
-const descFunc = R.compose(R.join('\n'), R.difference)
-const paramsFunc1 = R.filter(
-  R.compose(
-    R.test(/^\$[a-z]+::[A-Za-z0-9 :/.]+$/),
-    R.trim
-  )
-)
-const paramsFunc2 = R.compose(
-  R.converge(
-    R.zipObj, [
-      R.compose(
-        R.map(R.replace(/\$/, '')),
-        R.prop(0)
-      ),
-      R.compose(
-        R.map(R.toLower),
-        R.prop(1)
-      )
-    ]
-  ),
-  R.transpose,
-  R.map(R.split('::'))
-)
+const { calendarUtil } = require('../util')
 
 function handleEvents () {
   let self = this
 
-  let guildIds = R.keys(this.guildShardMap)
+  let guildIds = R.keys(self.guildShardMap)
 
   return Promise.each(guildIds, guildId => {
     return self.guildManager.get(guildId)
-      .tap(guild => guild.populateDBObj())
+      // .tap(guild => guild.populateDBObj())
       .then(guild => {
         if (!guild.db.calendarId || !guild.db.authToken) {
           return false
@@ -61,13 +39,11 @@ function handleEvents () {
               return x.id === y.eventId
             }, events, foundEvents)
           }), event => {
-            let lines = event.description.split('\n')
+            let params = calendarUtil.getParameters(event)
 
-            let params = paramsFunc1(lines)
-
-            let description = descFunc(lines, params)
-
-            params = paramsFunc2(params)
+            if (!params) {
+              return false
+            }
 
             let foundChannel = R.find(channel => {
               return (!!channel.name) &&
@@ -94,35 +70,17 @@ function handleEvents () {
 
             let dbEvent = new self.models.Event({
               guild: guild.db._id,
-              eventId: event.id,
+              eventId: params.eventId,
+              channelId: foundChannel.id,
               sentAt: new Date(),
-              endsAt: moment(event.end.dateTime).toDate()
+              endsAt: params.endDateTime
             })
 
-            let url = params.url || event.htmlLink
-
-            let title = `:calendar_spiral: ${
-              params.title || event.summary
-            }`
-
-            // let color = params.color || 0xdf3939
+            let embed = calendarUtil.createEmbed(params)
 
             self.createMessage(foundChannel.id, {
               content: message,
-              embed: {
-                title,
-                url,
-                description,
-                footer: {
-                  text: 'Event'
-                },
-                color: 0xdf3939,
-                timestamp: moment(event.start.dateTime).toDate(),
-                provider: {
-                  name: 'Calendar Bot',
-                  url: 'https://github.com/amreuland/desdemona-bot'
-                }
-              }
+              embed
             }).then(() => dbEvent.save())
           })
         })

@@ -7,13 +7,10 @@ const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
 const util = require('util')
-const mongoose = require('./lib/mongoose')
+
+const { Mongoose, Sentry, GuildManager } = require('./lib')
 
 const handleEvents = require('./lib/handleEvents')
-
-const GuildManager = require('./lib/guildManager')
-
-const Sentry = require('./lib/sentry')
 
 const GCalAPI = require('./api/gcal')
 
@@ -101,7 +98,7 @@ desdemona.once('ready', () => {
   setInterval(handleEvents.bind(desdemona), 5000)
 })
 
-mongoose(config.mongo)
+Mongoose(config.mongo)
   .then(db => {
     desdemona.mongoose = db
     desdemona.models = db.models
