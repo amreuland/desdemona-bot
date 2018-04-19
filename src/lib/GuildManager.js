@@ -2,7 +2,7 @@
 
 const R = require('ramda')
 
-const Guild = require('./guild')
+const Guild = require('./Guild')
 
 class GuildManager {
   constructor (client) {
@@ -14,7 +14,7 @@ class GuildManager {
     if (!this.guilds[guildId]) {
       let guild = new Guild(guildId, this.client)
       this.guilds[guildId] = guild
-      return Promise.resolve(guild)
+      return guild.populateDBObj().then(() => guild)
     }
 
     return Promise.resolve(this.guilds[guildId])

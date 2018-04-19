@@ -13,6 +13,8 @@ module.exports = {
       ref: 'Guild'
     },
 
+    channelId: String,
+
     sentAt: Date,
     endsAt: Date
   }
