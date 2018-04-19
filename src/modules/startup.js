@@ -10,7 +10,9 @@ class StartupModule extends Module {
       name: 'navi:startup',
       events: {
         ready: 'onReady',
-        error: 'onError'
+        error: 'onError',
+        warn: 'onWarn'
+        // debug: 'onDebug'
       }
     })
   }
@@ -28,8 +30,21 @@ class StartupModule extends Module {
     this.logger.info(`Prefix: ${chalk.cyan.bold(this._client.prefix)}`)
   }
 
-  onError (err) {
+  onError (err, id = -1) {
+    this.logger.error(`Shard ${id} - `, err)
     this._client.raven.captureException(err)
+  }
+
+  onWarn (msg, id = -1) {
+    this.logger.warn(`Shard ${id} - ${msg}`)
+    this._client.raven.captureMessage(msg, {
+      level: 'warning',
+      extra: { shardId: id }
+    })
+  }
+
+  onDebug (msg, id = -1) {
+    this.logger.debug(`Shard ${id} - ${msg}`)
   }
 }
 

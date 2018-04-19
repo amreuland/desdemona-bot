@@ -8,6 +8,7 @@ const raven = require('raven')
 
 class Sentry extends raven.Client {
   constructor (bot, config) {
+    raven.disableConsoleAlerts()
     let dsn = process.env.SENTRY_DSN || config.sentry.dsn || ''
 
     let hasClient = true
@@ -42,6 +43,15 @@ class Sentry extends raven.Client {
     } else {
       super(null)
     }
+
+    this.on('logged', () => {
+      this.bot.logger.debug('Event logged to sentry')
+    })
+
+    this.on('error', err => {
+      this.bot.logger.warn('Failed to log event to sentry')
+      this.bot.logger.warn(err)
+    })
 
     this.hasClient = hasClient
     this.isEnabled = hasClient
