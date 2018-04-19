@@ -1,7 +1,7 @@
 {
-  "name": "desdemona-bot",
+  "name": "navi-bot",
   "version": "1.0.0",
-  "description": "Desdemona is a discord bot to coordinate",
+  "description": "Navi is a discord bot to annoy",
   "main": "./index.js",
   "scripts": {
     "start": "node ./index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/noriah/desdemona-bot.git"
+    "url": "git+https://github.com/noriah/navi-bot.git"
   },
   "keywords": [
     "discord",
@@ -20,9 +20,9 @@
   "author": "noriah",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/noriah/desdemona-bot/issues"
+    "url": "https://github.com/noriah/navi-bot/issues"
   },
-  "homepage": "https://github.com/noriah/desdemona-bot#readme",
+  "homepage": "https://github.com/noriah/navi-bot#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
     "bufferutil": "^3.0.3",

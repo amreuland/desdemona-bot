@@ -1,8 +1,8 @@
-desdemona-bot is licensed under the MIT License. The
+navi-bot is licensed under the MIT License. The
 
 > Copyright (c) 2018 noriah vix@noriah.dev
 >
-> https://github.com/noriah/desdemona-bot/contributors
+> https://github.com/noriah/navi-bot/contributors
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the

@@ -56,7 +56,6 @@ function getParameters (event) {
 }
 
 function createEmbed (params) {
-
   let title = `:calendar_spiral: ${params.title}`
 
   return {
