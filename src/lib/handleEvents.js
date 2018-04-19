@@ -55,7 +55,7 @@ function handleEvents () {
               return false
             }
 
-            let message = ''
+            let message = '**Hey, Listen!**'
 
             if (params.role) {
               let foundRole = R.find(role => {
@@ -64,7 +64,7 @@ function handleEvents () {
               }, guild.erisObject.roles)
 
               if (foundRole) {
-                message = foundRole.mention
+                message = message + ' ' + foundRole.mention
               }
             }
 
