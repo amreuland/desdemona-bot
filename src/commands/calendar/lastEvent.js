@@ -12,7 +12,8 @@ class LastCalendarEvent extends Command {
       description: 'Get the most recent event in this channel',
       options: {
         guildOnly: true,
-        hidden: false
+        hidden: false,
+        cooldown: 15000
       }
     })
   }

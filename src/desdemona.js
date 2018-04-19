@@ -95,7 +95,7 @@ desdemona.on('shardResume', (id) => desdemona.logger.info(chalk.green.bold(`Shar
 desdemona.on('error', err => raven.captureException(err))
 
 desdemona.once('ready', () => {
-  setInterval(handleEvents.bind(desdemona), 5000)
+  setInterval(handleEvents.bind(desdemona), (config.calendar.pollingRate || 20) * 1000)
 })
 
 Mongoose(config.mongo)
