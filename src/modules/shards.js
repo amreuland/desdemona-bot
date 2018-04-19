@@ -24,8 +24,11 @@ class ShardsModule extends Module {
     this.logger.info(chalk.green.bold(`Shard ${id} has resumed`))
   }
 
-  onShardDisconnect (id) {
+  onShardDisconnect (err, id) {
     this.logger.info(chalk.red.bold(`Shard ${id} has disconnected`))
+    if (err) {
+      this.logger.info(chalk.red.bold(err))
+    }
   }
 }
 
