@@ -54,12 +54,12 @@ class Guild {
         orderBy: 'startTime',
         maxResults: options.maxResults,
         timeMax: options.timeMax
-      }, (err, {items: data}) => {
+      }, (err, data) => {
         if (err) {
           return reject(err)
         }
 
-        return resolve(data)
+        return resolve(data.items)
       })
     })
 
@@ -132,12 +132,12 @@ class Guild {
     let calendars = await new Promise((resolve, reject) => {
       calendarClient.calendarList.list({
         maxResults: 10
-      }, (err, {items: data}) => {
+      }, (err, data) => {
         if (err) {
           return reject(err)
         }
 
-        return resolve(data)
+        return resolve(data.items)
       })
     })
 
