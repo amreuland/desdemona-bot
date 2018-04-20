@@ -1,5 +1,8 @@
 'use strict'
 
-module.exports = {
-  calendarUtil: require('./calendar')
-}
+module.exports = Object.assign(
+  require('./errors'),
+  {
+    calendarUtil: require('./calendar')
+  }
+)

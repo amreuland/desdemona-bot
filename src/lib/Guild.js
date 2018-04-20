@@ -4,6 +4,8 @@ const google = require('googleapis')
 const moment = require('moment')
 const R = require('ramda')
 
+const { MissingTokenError } = require('../util')
+
 class Guild {
   constructor (guildId, client) {
     this.id = guildId
@@ -84,7 +86,7 @@ class Guild {
 
   getCalendarClient () {
     if (!this.hasAuthToken()) {
-      return Promise.reject(new Error('No auth token'))
+      return Promise.reject(new MissingTokenError('No auth token'))
     }
 
     this._ensureAuthClient()
@@ -98,7 +100,7 @@ class Guild {
 
   getCalendarsForAuth () {
     if (!this.hasAuthToken()) {
-      return Promise.resolve([])
+      return Promise.reject(new MissingTokenError('No auth token'))
     }
 
     this._ensureAuthClient()
@@ -117,30 +119,31 @@ class Guild {
     })
   }
 
-  async authGoogle (code) {
+  authGoogle (code) {
     this._ensureAuthClient()
 
     if (code) {
       let self = this
-      let token = await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         self.authClient.getToken(code, (err, token) => {
-          if (err) { return reject(err) }
-          return resolve(token)
+          if (err) {
+            return reject(err)
+          }
+          self.db.authToken = token
+          return self.db.save().then(() => {
+            self.authClient.credentials = token
+            self.calendarClient = null
+            return token
+          })
         })
       })
-
-      this.db.authToken = token
-      await this.db.save()
-      this.authClient.credentials = token
-      this.calendarClient = null
-      return token
-    } else {
-      let authUrl = this.authClient.generateAuthUrl({
-        access_type: 'offline',
-        scope: ['https://www.googleapis.com/auth/calendar.readonly']
-      })
-      return authUrl
     }
+
+    let authUrl = this.authClient.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['https://www.googleapis.com/auth/calendar.readonly']
+    })
+    return Promise.resolve(authUrl)
   }
 }
 
