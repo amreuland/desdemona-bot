@@ -40,9 +40,7 @@ class Guild {
     // return obj
   }
 
-  async getUpcomingEvents (options = {}) {
-    let calendarClient = await this.getCalendarClient()
-
+  getUpcomingEvents (options = {}) {
     let cfg = {
       calendarId: this.db.calendarId,
       timeMin: moment().toISOString(),
@@ -52,100 +50,76 @@ class Guild {
 
     cfg = R.merge(options, cfg)
 
-    let events = await new Promise((resolve, reject) => {
-      calendarClient.events.list(cfg, (err, data) => {
-        if (err) {
-          return reject(err)
-        }
-
-        return resolve(data.items)
+    return this.getCalendarClient().then(calendarClient => {
+      return Promise.promisify(calendarClient.events.list)(cfg).then(data => {
+        return data.items
       })
     })
-
-    return events
   }
 
-  async getEventDetails (eventId) {
-    let calendarClient = await this.getCalendarClient()
-
-    let event = await new Promise((resolve, reject) => {
-      calendarClient.events.get({
+  getEventDetails (eventId) {
+    // var self = this
+    return this.getCalendarClient().then(calendarClient => {
+      return Promise.promisify(calendarClient.events.get)({
         calendarId: this.db.calendarId,
         eventId
-      }, (err, data) => {
-        if (err) {
-          return reject(err)
-        }
-
-        return resolve(data)
       })
     })
-
-    return event
   }
 
-  async _ensureAuthClient () {
+  _ensureAuthClient () {
     if (!this.authClient) {
       this.authClient = this.client.gcal.getAuthClient(this.db.authToken)
     }
   }
 
-  async hasAuthToken () {
+  hasAuthToken () {
     return (!!this.db.authToken)
   }
 
-  async setCalendar (id) {
+  setCalendar (id) {
     this.db.calendarId = id
     return this.db.save()
   }
 
-  async getCalendarClient () {
-    if (!await this.hasAuthToken()) {
-      return new Error('No auth token')
+  getCalendarClient () {
+    if (!this.hasAuthToken()) {
+      return Promise.reject(new Error('No auth token'))
     }
 
-    await this._ensureAuthClient()
+    this._ensureAuthClient()
 
     if (!this.calendarClient) {
       this.calendarClient = google.calendar({version: 'v3', auth: this.authClient})
     }
 
-    return this.calendarClient
+    return Promise.resolve(this.calendarClient)
   }
 
-  async getCalendarsForAuth () {
-    if (!await this.hasAuthToken()) {
-      return []
+  getCalendarsForAuth () {
+    if (!this.hasAuthToken()) {
+      return Promise.resolve([])
     }
 
-    await this._ensureAuthClient()
+    this._ensureAuthClient()
 
-    let calendarClient = await this.getCalendarClient()
-
-    let calendars = await new Promise((resolve, reject) => {
-      calendarClient.calendarList.list({
+    return this.getCalendarClient().then(calendarClient => {
+      return Promise.promisify(calendarClient.calendarList.list)({
         maxResults: 10
-      }, (err, data) => {
-        if (err) {
-          return reject(err)
-        }
-
-        return resolve(data.items)
+      }).then(data => {
+        return R.map(item => {
+          return {
+            id: item.id,
+            name: item.summary
+          }
+        }, data.items)
       })
     })
-
-    let calendarList = R.map(item => {
-      return {
-        id: item.id,
-        name: item.summary
-      }
-    }, calendars)
-
-    return calendarList
   }
 
   async authGoogle (code) {
-    await this._ensureAuthClient()
+    this._ensureAuthClient()
+
     if (code) {
       let self = this
       let token = await new Promise((resolve, reject) => {

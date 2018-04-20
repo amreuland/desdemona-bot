@@ -11,7 +11,7 @@ class NextCalendarEvent extends Command {
     super(...args, {
       name: 'nextevent',
       group: 'calendar',
-      description: 'Get the most recent event in this channel',
+      description: 'Get the closest upcoming event in this channel',
       cooldown: 15,
       options: {
         guildOnly: true,
@@ -21,12 +21,12 @@ class NextCalendarEvent extends Command {
   }
 
   async handle ({ msg, client }, responder) {
-    await responder.typing()
-
     let guildId = msg.channel.guild.id
     let channelName = msg.channel.name.toLowerCase()
 
     let guild = await client.guildManager.get(guildId)
+
+    await responder.typing()
 
     let upcomingEvents = await guild.getUpcomingEvents()
 
@@ -43,7 +43,7 @@ class NextCalendarEvent extends Command {
       }
 
       return true
-    })(upcomingEvents)
+    }, upcomingEvents)
 
     if (!nextEvent) {
       return responder.error('there are no upcoming events for this channel!')
