@@ -11,7 +11,7 @@ class ShardsModule extends Module {
       events: {
         shardReady: 'onShardReady',
         shardResume: 'onShardResume',
-        shardDisconnect: 'onShardReady'
+        shardDisconnect: 'onShardDisconnect'
       }
     })
   }

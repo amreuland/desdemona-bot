@@ -40,21 +40,20 @@ class Guild {
     // return obj
   }
 
-  async getUpcomingEvents (options = {maxResults: 20, timeMax: null}) {
+  async getUpcomingEvents (options = {}) {
     let calendarClient = await this.getCalendarClient()
-    let obj = await this.getDBObject()
 
-    let calendarId = obj.calendarId
+    let cfg = {
+      calendarId: this.db.calendarId,
+      timeMin: moment().toISOString(),
+      singleEvents: true,
+      orderBy: 'startTime'
+    }
+
+    cfg = R.merge(options, cfg)
 
     let events = await new Promise((resolve, reject) => {
-      calendarClient.events.list({
-        calendarId,
-        timeMin: moment().toISOString(),
-        singleEvents: true,
-        orderBy: 'startTime',
-        maxResults: options.maxResults,
-        timeMax: options.timeMax
-      }, (err, data) => {
+      calendarClient.events.list(cfg, (err, data) => {
         if (err) {
           return reject(err)
         }
@@ -68,13 +67,10 @@ class Guild {
 
   async getEventDetails (eventId) {
     let calendarClient = await this.getCalendarClient()
-    let obj = await this.getDBObject()
-
-    let calendarId = obj.calendarId
 
     let event = await new Promise((resolve, reject) => {
       calendarClient.events.get({
-        calendarId,
+        calendarId: this.db.calendarId,
         eventId
       }, (err, data) => {
         if (err) {
@@ -90,20 +86,17 @@ class Guild {
 
   async _ensureAuthClient () {
     if (!this.authClient) {
-      let obj = await this.getDBObject()
-      this.authClient = this.client.gcal.getAuthClient(obj.authToken)
+      this.authClient = this.client.gcal.getAuthClient(this.db.authToken)
     }
   }
 
   async hasAuthToken () {
-    let obj = await this.getDBObject()
-    return (!!obj.authToken)
+    return (!!this.db.authToken)
   }
 
   async setCalendar (id) {
-    let obj = await this.getDBObject()
-    obj.calendarId = id
-    return obj.save()
+    this.db.calendarId = id
+    return this.db.save()
   }
 
   async getCalendarClient () {
@@ -162,9 +155,8 @@ class Guild {
         })
       })
 
-      let obj = await this.getDBObject()
-      obj.authToken = token
-      await obj.save()
+      this.db.authToken = token
+      await this.db.save()
       this.authClient.credentials = token
       this.calendarClient = null
       return token

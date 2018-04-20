@@ -13,7 +13,7 @@ class LastCalendarEvent extends Command {
       options: {
         guildOnly: true,
         hidden: false,
-        cooldown: 15000
+        cooldown: 15
       }
     })
   }
