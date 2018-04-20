@@ -32,7 +32,7 @@ class AuthCalendar extends Command {
         title: 'Are you sure you want to change the auth ticket?'
       })
 
-      if (selection === 'No') {
+      if (selection[0] === 'No') {
         return responder.send('Guild Calendar Auth Cancelled')
       }
     }

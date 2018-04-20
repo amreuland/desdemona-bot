@@ -19,24 +19,24 @@ class LastCalendarEvent extends Command {
   }
 
   async handle ({ msg, client }, responder) {
-    await responder.typing()
-
     let guildId = msg.channel.guild.id
     let channelId = msg.channel.id
 
     let guild = await client.guildManager.get(guildId)
 
-    let lastEvents = await client.models.Event.find({
+    await responder.typing()
+
+    let previousEvents = await client.models.Event.find({
       guild: guild.db._id,
       channelId
     }).sort({sentAt: 'desc'})
 
-    if (lastEvents.length < 1) {
+    if (previousEvents.length < 1) {
       return responder
         .error('there are no previous events for this channel!')
     }
 
-    let lastEvent = lastEvents[0]
+    let lastEvent = previousEvents[0]
 
     let event = await guild.getEventDetails(lastEvent.eventId)
 

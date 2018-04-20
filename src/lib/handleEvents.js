@@ -11,80 +11,78 @@ function handleEvents () {
   let guildIds = R.keys(self.guildShardMap)
 
   return Promise.each(guildIds, guildId => {
-    return self.guildManager.get(guildId)
-      // .tap(guild => guild.populateDBObj())
-      .then(guild => {
-        if (!guild.db.calendarId || !guild.db.authToken) {
-          return false
-        }
-        if (guild.db.settings.enableNotifications === false) {
-          return false
-        }
+    return self.guildManager.get(guildId).then(guild => {
+      if (!guild.db.calendarId || !guild.db.authToken) {
+        return false
+      }
+      if (guild.db.settings.enableNotifications === false) {
+        return false
+      }
 
-        let timeAdd = guild.db.settings.timeBefore || 5
+      let timeAdd = guild.db.settings.timeBefore || 5
 
-        return guild.getUpcomingEvents({
-          maxResults: 10,
-          timeMax: moment().add(timeAdd, 'minutes').toISOString()
-        }).then(events => {
-          let eventIds = R.map(R.prop('id'), events)
+      return guild.getUpcomingEvents({
+        maxResults: 10,
+        timeMax: moment().add(timeAdd, 'minutes').toISOString()
+      }).then(events => {
+        let eventIds = R.map(R.prop('id'), events)
 
-          Promise.each(self.models.Event.find({
+        Promise.each(self.models.Event.find({
+          guild: guild.db._id,
+          eventId: {
+            $in: eventIds
+          }
+        }).then(foundEvents => {
+          return R.differenceWith((x, y) => {
+            return x.id === y.eventId
+          }, events, foundEvents)
+        }), event => {
+          let params = calendarUtil.getParameters(event)
+
+          if (!params) {
+            return false
+          }
+
+          let foundChannel = R.find(channel => {
+            return (!!channel.name) &&
+            channel.name.toLowerCase() === params.channel &&
+            channel.type === 0
+          }, guild.erisObject.channels)
+
+          if (!foundChannel) {
+            return false
+          }
+
+          let message = '**Hey, Listen!**'
+
+          if (params.role) {
+            let foundRole = R.find(role => {
+              return role.name.toLowerCase() === params.role &&
+              role.mentionable === true
+            }, guild.erisObject.roles)
+
+            if (foundRole) {
+              message = message + ' ' + foundRole.mention
+            }
+          }
+
+          let dbEvent = new self.models.Event({
             guild: guild.db._id,
-            eventId: {
-              $in: eventIds
-            }
-          }).then(foundEvents => {
-            return R.differenceWith((x, y) => {
-              return x.id === y.eventId
-            }, events, foundEvents)
-          }), event => {
-            let params = calendarUtil.getParameters(event)
-
-            if (!params) {
-              return false
-            }
-
-            let foundChannel = R.find(channel => {
-              return (!!channel.name) &&
-              channel.name.toLowerCase() === params.channel &&
-              channel.type === 0
-            }, guild.erisObject.channels)
-
-            if (!foundChannel) {
-              return false
-            }
-
-            let message = '**Hey, Listen!**'
-
-            if (params.role) {
-              let foundRole = R.find(role => {
-                return role.name.toLowerCase() === params.role &&
-                role.mentionable === true
-              }, guild.erisObject.roles)
-
-              if (foundRole) {
-                message = message + ' ' + foundRole.mention
-              }
-            }
-
-            let dbEvent = new self.models.Event({
-              guild: guild.db._id,
-              eventId: params.eventId,
-              channelId: foundChannel.id,
-              sentAt: new Date(),
-              endsAt: params.endDateTime
-            })
-
-            let embed = calendarUtil.createEmbed(params)
-
-            self.createMessage(foundChannel.id, {
-              content: message,
-              embed
-            }).then(() => dbEvent.save())
+            eventId: params.eventId,
+            channelId: foundChannel.id,
+            sentAt: new Date(),
+            endsAt: params.endDateTime
           })
+
+          let embed = calendarUtil.createEmbed(params)
+
+          self.createMessage(foundChannel.id, {
+            content: message,
+            embed
+          }).then(() => dbEvent.save())
         })
       })
+    })
   })
 }
 

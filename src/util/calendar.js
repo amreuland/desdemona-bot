@@ -56,6 +56,10 @@ function getParameters (event) {
 }
 
 function createEmbed (params) {
+  if (!params) {
+    return null
+  }
+
   let title = `:calendar_spiral: ${params.title}`
 
   return {
@@ -67,9 +71,9 @@ function createEmbed (params) {
     },
     color: 0xdf3939,
     timestamp: params.startDateTime,
-    provider: {
+    author: {
       name: 'Calendar Bot',
-      url: 'https://github.com/noriah/desdemona-bot'
+      url: 'https://github.com/noriah/navi-bot'
     }
   }
 }
