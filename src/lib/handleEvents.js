@@ -19,7 +19,7 @@ function handleEvents () {
         return false
       }
 
-      let timeAdd = guild.db.settings.timeBefore || 5
+      let timeAdd = guild.db.settings.timeBefore || 30
 
       return guild.getUpcomingEvents({
         maxResults: 10,
