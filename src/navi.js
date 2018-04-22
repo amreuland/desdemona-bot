@@ -9,9 +9,9 @@ const moment = require('moment')
 
 const { Mongoose, Sentry, GuildManager } = require('./lib')
 
-const handleEvents = require('./lib/handleEvents')
+const { GoogleAuthAPI } = require('./api')
 
-const GCalAPI = require('./api/gcal')
+const handleEvents = require('./lib/handleEvents')
 
 const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join('..', 'config', str)
@@ -65,13 +65,9 @@ navi
   .register('middleware', resolve('middleware'))
   .register('commands', resolve('commands'), { groupedCommands: true })
 
-const guildManager = new GuildManager(navi)
+navi.guildManager = new GuildManager(navi)
 
-navi.guildManager = guildManager
-
-const GoogleCalendarAPI = new GCalAPI(googleClientId, googleClientSecret, googleClientRedirects)
-
-navi.gcal = GoogleCalendarAPI
+navi.gauth = new GoogleAuthAPI(googleClientId, googleClientSecret, googleClientRedirects)
 
 async function initStatusClock () {
   let index = 0
