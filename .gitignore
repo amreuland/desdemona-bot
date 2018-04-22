@@ -6,3 +6,5 @@ package-lock.json
 
 *.sublime-project
 *.sublime-workspace
+
+ecosystem.config.js
