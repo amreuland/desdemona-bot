@@ -73,7 +73,26 @@ const GoogleCalendarAPI = new GCalAPI(googleClientId, googleClientSecret, google
 
 navi.gcal = GoogleCalendarAPI
 
+async function initStatusClock () {
+  let index = 0
+  const statuses = [
+    '%s guilds',
+    '%d users'
+  ]
+  setInterval(function () {
+    index = (index + 1) % statuses.length
+    this.editStatus('online', {
+      name: statuses[index]
+        .replace('%s', this.guilds.size)
+        .replace('%d', this.users.size),
+      type: 0,
+      url: 'https://github.com/amreuland/navi-bot'
+    })
+  }.bind(navi), 20000)
+}
+
 navi.once('ready', () => {
+  initStatusClock()
   setInterval(handleEvents.bind(navi), (config.calendar.pollingRate || 20) * 1000)
 })
 
