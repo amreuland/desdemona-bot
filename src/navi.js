@@ -87,7 +87,7 @@ async function initStatusClock () {
         .replace('%s', this.guilds.size)
         .replace('%d', this.users.size),
       type: 0,
-      url: 'https://github.com/noriah/navi-bot'
+      url: 'https://navi.social'
     })
   }.bind(navi), 20000)
 }
