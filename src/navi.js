@@ -76,6 +76,7 @@ navi.gcal = GoogleCalendarAPI
 async function initStatusClock () {
   let index = 0
   const statuses = [
+    'https://navi.social',
     '%s guilds',
     '%d users'
   ]
@@ -93,7 +94,7 @@ async function initStatusClock () {
 
 navi.once('ready', () => {
   initStatusClock()
-  setInterval(handleEvents.bind(navi), (config.calendar.pollingRate || 20) * 1000)
+  setInterval(handleEvents.bind(navi), (config.calendar.pollingRate || 30) * 1000)
 })
 
 Mongoose(config.mongo).then(db => {
