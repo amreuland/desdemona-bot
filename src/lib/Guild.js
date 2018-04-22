@@ -15,9 +15,7 @@ class Guild {
     this.db = null
   }
 
-  get erisObject () {
-    return this.client.guilds.get(this.id)
-  }
+  get erisObject () { return this.client.guilds.get(this.id) }
 
   getGuildId () { return this.id }
 
@@ -71,7 +69,7 @@ class Guild {
 
   _ensureAuthClient () {
     if (!this.authClient) {
-      this.authClient = this.client.gcal.getAuthClient(this.db.authToken)
+      this.authClient = this.client.gauth.getAuthClient(this.db.authToken)
     }
   }
 
