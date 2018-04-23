@@ -6,7 +6,7 @@ const R = require('ramda')
 
 const { EventUtils } = require('../util')
 
-class GuildEventModule extends Module {
+class GuildEventsModule extends Module {
   constructor (...args) {
     super(...args, {
       name: 'guild:events',
@@ -205,4 +205,4 @@ class GuildEventModule extends Module {
   }
 }
 
-module.exports = GuildEventModule
+module.exports = GuildEventsModule

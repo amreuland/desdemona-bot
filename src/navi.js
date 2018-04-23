@@ -62,6 +62,7 @@ class Navi extends Client {
 
     this
       .register('modules', resolve('modules'))
+      .register('db', resolve('schemas'))
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
       .register('commands', resolve('commands'), { groupedCommands: true })
@@ -79,7 +80,7 @@ class Navi extends Client {
    * Runs the bot
    * @returns {Promise}
    */
-  async run () {
+  run () {
     if (typeof this.token !== 'string') {
       throw new TypeError('No bot token supplied')
     }
@@ -103,8 +104,6 @@ const bot = new Navi({
   mongo: config.mongo,
   botConfig: config
 })
-
-bot.register('db', resolve('schemas'))
 
 bot.register('api', 'google', GoogleAuthAPI, require(resolveConfig('client_secret')).installed)
 

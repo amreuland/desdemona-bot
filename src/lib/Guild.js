@@ -19,7 +19,7 @@ class Guild {
 
   getGuildId () { return this.id }
 
-  getDBObject () { return this.db }
+  // getDBObject () { return this.db }
 
   async populateDBObj () {
     if (this.db) {
