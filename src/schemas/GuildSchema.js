@@ -15,6 +15,11 @@ module.exports = {
       default: {}
     },
 
+    channels: {
+      type: Object,
+      default: {}
+    },
+
     authToken: Object,
 
     calendarId: String
