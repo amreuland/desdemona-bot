@@ -65,8 +65,6 @@ class Navi extends Client {
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
       .register('commands', resolve('commands'), { groupedCommands: true })
-
-    if (options.locales) this.register('i18n', options.locales)
   }
 
   get api () {
@@ -93,9 +91,6 @@ class Navi extends Client {
 
       return Promise.resolve()
     }).then(() => this.connect())
-
-    // this.plugins.forEach(plugin => {})
-    // return this.connect()
   }
 }
 
@@ -138,10 +133,5 @@ bot.once('ready', () => {
   initStatusClock()
   setInterval(handleEvents.bind(bot), (config.calendar.pollingRate || 30) * 1000)
 })
-
-// Mongoose(config.mongo).then(db => {
-//   bot.mongoose = db
-//   bot.models = db.models
-// })
 
 bot.run()
