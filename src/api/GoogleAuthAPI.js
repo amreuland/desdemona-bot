@@ -3,8 +3,14 @@
 const google = require('googleapis')
 const OAuth2Client = google.auth.OAuth2
 
-class GoogleAuthAPI {
+const { Interface } = require('../lib')
+
+class GoogleAuthAPI extends Interface {
   constructor (options = {}) {
+    super({
+      name: 'google'
+    })
+
     this.clientId = options.client_id
     this.clientSecret = options.client_secret
     this.redirectUris = options.redirect_uris
