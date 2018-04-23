@@ -27,7 +27,7 @@ function handleEvents () {
       }).then(events => {
         let eventIds = R.map(R.prop('id'), events)
 
-        Promise.each(self.models.Event.find({
+        Promise.each(self.db.Event.find({
           guild: guild.db._id,
           eventId: {
             $in: eventIds
@@ -66,7 +66,7 @@ function handleEvents () {
             }
           }
 
-          let dbEvent = new self.models.Event({
+          let dbEvent = new self.db.Event({
             guild: guild.db._id,
             eventId: params.eventId,
             channelId: foundChannel.id,

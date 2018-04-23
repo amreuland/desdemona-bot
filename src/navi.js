@@ -2,76 +2,113 @@
 
 global.Promise = require('bluebird')
 
+const VERSION = '0.0.1'
+
 const chalk = require('chalk')
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
 
-const { Mongoose, Sentry, GuildManager } = require('./lib')
+const { Sentry, GuildManager } = require('./lib')
+
+const { APIPlugin, MongoosePlugin } = require('./plugins')
 
 const handleEvents = require('./lib/handleEvents')
 
-const GCalAPI = require('./api/gcal')
+const { GoogleAuthAPI } = require('./api')
+
+const { Client } = require('sylphy')
 
 const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join('..', 'config', str)
 
+class Navi extends Client {
+  constructor (options = {}) {
+    let processID = parseInt(process.env['PROCESS_ID'], 10)
+    let processShards = parseInt(process.env['SHARDS_PER_PROCESS'], 10)
+    let firstShardID = processID * processShards
+    let lastShardID = firstShardID + processShards - 1
+
+    options.maxShards = processShards * parseInt(process.env['PROCESS_COUNT'], 10)
+    options.firstShardID = firstShardID
+    options.lastShardID = lastShardID
+
+    options.version = VERSION
+
+    // options.noDefaults = true
+
+    super(options)
+
+    const logger = new (winston.Logger)({
+      transports: [
+        new (winston.transports.Console)({
+          level: 'silly',
+          colorize: true,
+          label: processShards > 1 ? `C ${firstShardID}-${lastShardID}` : `C ${processID}`,
+          timestamp: () => `[${chalk.grey(moment().format('HH:mm:ss'))}]`
+        })
+      ]
+    })
+
+    this
+      .unregister('logger', 'console')
+      .register('logger', 'winston', logger)
+
+    this.raven = new Sentry(this, options)
+
+    this
+      .createPlugin('api', APIPlugin, options)
+      .createPlugin('db', MongoosePlugin, options)
+
+    this
+      .register('modules', resolve('modules'))
+      .unregister('middleware', true)
+      .register('middleware', resolve('middleware'))
+      .register('commands', resolve('commands'), { groupedCommands: true })
+  }
+
+  get api () {
+    return this.plugins.get('api')
+  }
+
+  get db () {
+    return this.plugins.get('db')
+  }
+
+  /**
+   * Runs the bot
+   * @returns {Promise}
+   */
+  async run () {
+    if (typeof this.token !== 'string') {
+      throw new TypeError('No bot token supplied')
+    }
+
+    return Promise.each(this.plugins.toArray(), plugin => {
+      if (typeof plugin.run === 'function') {
+        return plugin.run()
+      }
+
+      return Promise.resolve()
+    }).then(() => this.connect())
+  }
+}
+
 const config = require(resolveConfig('config'))
 
-const {
-  client_secret: googleClientSecret,
-  client_id: googleClientId,
-  redirect_uris: googleClientRedirects
-} = require(resolveConfig('client_secret')).installed
-
-const { Client } = require('sylphy')
-
-const processID = parseInt(process.env['PROCESS_ID'], 10)
-const processShards = parseInt(process.env['SHARDS_PER_PROCESS'], 10)
-const firstShardID = processID * processShards
-const lastShardID = firstShardID + processShards - 1
-
-const logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Console)({
-      level: 'silly',
-      colorize: true,
-      label: processShards > 1 ? `C ${firstShardID}-${lastShardID}` : `C ${processID}`,
-      timestamp: () => `[${chalk.grey(moment().format('HH:mm:ss'))}]`
-    })
-  ]
-})
-
-const navi = new Client({
+const bot = new Navi({
   token: config.bot.token,
-  modules: resolve('modules'),
   messageLimit: 0,
-  maxShards: processShards * parseInt(process.env['PROCESS_COUNT'], 10),
-  firstShardID,
-  lastShardID,
-  autoreconnect: true
+  autoreconnect: true,
+  mongo: config.mongo,
+  botConfig: config
 })
 
-navi
-  .unregister('logger', 'console')
-  .register('logger', 'winston', logger)
+bot.register('db', resolve('schemas'))
 
-const raven = new Sentry(navi, config)
+bot.register('api', 'google', GoogleAuthAPI, require(resolveConfig('client_secret')).installed)
 
-navi.raven = raven
-
-navi
-  .unregister('middleware', true)
-  .register('middleware', resolve('middleware'))
-  .register('commands', resolve('commands'), { groupedCommands: true })
-
-const guildManager = new GuildManager(navi)
-
-navi.guildManager = guildManager
-
-const GoogleCalendarAPI = new GCalAPI(googleClientId, googleClientSecret, googleClientRedirects)
-
-navi.gcal = GoogleCalendarAPI
+bot.guildManager = new GuildManager(bot)
 
 async function initStatusClock () {
   let index = 0
@@ -87,18 +124,14 @@ async function initStatusClock () {
         .replace('%s', this.guilds.size)
         .replace('%d', this.users.size),
       type: 0,
-      url: 'https://github.com/amreuland/navi-bot'
+      url: 'https://navi.social'
     })
-  }.bind(navi), 20000)
+  }.bind(bot), 20000)
 }
 
-navi.once('ready', () => {
+bot.once('ready', () => {
   initStatusClock()
-  setInterval(handleEvents.bind(navi), (config.calendar.pollingRate || 30) * 1000)
+  setInterval(handleEvents.bind(bot), (config.calendar.pollingRate || 30) * 1000)
 })
 
-Mongoose(config.mongo).then(db => {
-  navi.mongoose = db
-  navi.models = db.models
-  navi.run()
-})
+bot.run()

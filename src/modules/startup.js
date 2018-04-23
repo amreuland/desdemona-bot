@@ -37,10 +37,10 @@ class StartupModule extends Module {
 
   onWarn (msg, id = -1) {
     this.logger.warn(`Shard ${id} - ${msg}`)
-    this._client.raven.captureMessage(msg, {
-      level: 'warning',
-      extra: { shardId: id }
-    })
+    // this._client.raven.captureMessage(msg, {
+    //   level: 'warning',
+    //   extra: { shardId: id }
+    // })
   }
 
   onDebug (msg, id = -1) {
