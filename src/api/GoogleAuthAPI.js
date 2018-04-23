@@ -4,10 +4,13 @@ const google = require('googleapis')
 const OAuth2Client = google.auth.OAuth2
 
 class GoogleAuthAPI {
-  constructor (clientId, clientSecret, redirectUris) {
-    this.clientId = clientId
-    this.clientSecret = clientSecret
-    this.redirectUris = redirectUris
+  constructor (options = {}) {
+    this.clientId = options.client_id
+    this.clientSecret = options.client_secret
+    this.redirectUris = options.redirect_uris
+    if (!this.clientId || !this.clientSecret || !this.redirectUris) {
+      throw new Error('Missing Google OAuth Client Secret')
+    }
   }
 
   getAuthClient (token) {
