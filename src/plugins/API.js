@@ -10,7 +10,7 @@ class APIPlugin extends Collection {
 
   register (name, API, options) {
     if (this.has(name)) {
-      this._client.throwOrEmit('api:error', new Error(`Duplicate api - ${name}`))
+      this._client.throwOrEmit('api:error', new Error(`Duplicate API - ${name}`))
       return this
     }
 

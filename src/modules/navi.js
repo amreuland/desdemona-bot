@@ -4,10 +4,10 @@ const chalk = require('chalk')
 
 const { Module } = require('sylphy')
 
-class StartupModule extends Module {
+class NaviEventsModule extends Module {
   constructor (...args) {
     super(...args, {
-      name: 'navi:startup',
+      name: 'navi:events',
       events: {
         ready: 'onReady',
         error: 'onError',
@@ -48,4 +48,4 @@ class StartupModule extends Module {
   }
 }
 
-module.exports = StartupModule
+module.exports = NaviEventsModule
