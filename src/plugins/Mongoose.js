@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const util = require('util')
 
-const mongoose = require('mongoose')
+const Mongoose = require('mongoose')
 
 const { Collection, utils } = require('sylphy')
 
@@ -14,6 +14,10 @@ class MongoosePlugin extends Collection {
     this._client = client
 
     this.config = options.mongo
+  }
+
+  get mongoose () {
+    return Mongoose
   }
 
   register (schemas) {
@@ -66,9 +70,9 @@ class MongoosePlugin extends Collection {
       return this
     }
 
-    let schema = mongoose.Schema(Schema.schema)
+    let schema = Mongoose.Schema(Schema.schema)
 
-    let model = mongoose.model(name, schema)
+    let model = Mongoose.model(name, schema)
 
     this.set(name, model)
 
@@ -91,12 +95,16 @@ class MongoosePlugin extends Collection {
 
   run () {
     return new Promise((resolve, reject) => {
-      mongoose.connection.once('open', () => {
+      Mongoose.connection.once('open', () => {
         this._client.emit('mongoose:connected')
         resolve()
       })
 
-      mongoose.connect(this.config.uri)
+      Mongoose.connect(this.config.uri, err => {
+        if (err) {
+          this._client.throwOrEmit('mongoose:error', err)
+        }
+      })
     })
   }
 }

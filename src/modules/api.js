@@ -2,7 +2,7 @@
 
 const { Module } = require('sylphy')
 
-class APIModule extends Module {
+class APILoggerModule extends Module {
   constructor (...args) {
     super(...args, {
       name: 'api:logger',
@@ -17,4 +17,4 @@ class APIModule extends Module {
   }
 }
 
-module.exports = APIModule
+module.exports = APILoggerModule

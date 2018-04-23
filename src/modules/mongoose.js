@@ -8,7 +8,8 @@ class MongooseModule extends Module {
       name: 'mongoose:logger',
       events: {
         'mongoose:registered': 'onSchemaRegistered',
-        'mongoose:connected': 'onConnected'
+        'mongoose:connected': 'onConnected',
+        'mongoose:error': 'onError'
       }
     })
   }
@@ -19,6 +20,11 @@ class MongooseModule extends Module {
 
   onConnected () {
     this.logger.debug('MongoDB connection established')
+  }
+
+  onError (err) {
+    this.logger.error(`Mongo Error - ${err}`)
+    this._client.raven.captureException(err)
   }
 }
 
