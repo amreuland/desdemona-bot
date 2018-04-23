@@ -77,7 +77,16 @@ class GuildEventModule extends Module {
    * @param {Member} member The member
    */
   onGuildMemberAdd (guild, member) {
+    return this._client.guildManager.get(guild.id)
+      .then(naviGuild => {
+        let auditChannelId = naviGuild.db.channels.audit
+        if (!auditChannelId) {
+          return false
+        }
 
+        let embed = EventUtils.createUserJoinEmbed(guild, member)
+        return this._client.createMessage(auditChannelId, { embed })
+      })
   }
 
   /**
@@ -86,7 +95,16 @@ class GuildEventModule extends Module {
    * @param  {Member | Object} member The member. If the member is not cached, this will be an object with `id` and `user` key
    */
   onGuildMemberRemove (guild, member) {
+    return this._client.guildManager.get(guild.id)
+      .then(naviGuild => {
+        let auditChannelId = naviGuild.db.channels.audit
+        if (!auditChannelId) {
+          return false
+        }
 
+        let embed = EventUtils.createUserLeaveEmbed(guild, member)
+        return this._client.createMessage(auditChannelId, { embed })
+      })
   }
 
   /**
@@ -116,7 +134,7 @@ class GuildEventModule extends Module {
             oldNick = member.username
           }
 
-          let embed = EventUtils.createNickChangeEmbed(oldNick, member.nick, member.avatarURL)
+          let embed = EventUtils.createNickChangedEmbed(oldNick, member.nick, member.avatarURL)
           return this._client.createMessage(auditChannelId, { embed })
         }
 
