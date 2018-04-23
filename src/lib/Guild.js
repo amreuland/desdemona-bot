@@ -26,12 +26,12 @@ class Guild {
       return
     }
 
-    let obj = await this.client.models.Guild.findOne({
+    let obj = await this.client.db.Guild.findOne({
       guildId: this.id
     })
 
     if (!obj) {
-      obj = new this.client.models.Guild({guildId: this.id})
+      obj = new this.client.db.Guild({guildId: this.id})
       await obj.save()
     }
 
