@@ -69,7 +69,7 @@ class Guild {
 
   _ensureAuthClient () {
     if (!this.authClient) {
-      this.authClient = this.client.gauth.getAuthClient(this.db.authToken)
+      this.authClient = this.client.api.google.getAuthClient(this.db.authToken)
     }
   }
 

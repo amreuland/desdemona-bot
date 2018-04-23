@@ -27,32 +27,30 @@ class AuthCalendar extends Command {
 
     let guild = await client.guildManager.get(guildId)
 
-    if (await guild.hasAuthToken()) {
+    if (guild.hasAuthToken()) {
       let selection = await responder.selection(['Yes', 'No'], {
         title: 'Are you sure you want to change the auth ticket?'
       })
 
-      if (selection[0] === 'No') {
+      if (selection[0] !== 'Yes') {
         return responder.send('Guild Calendar Auth Cancelled')
       }
     }
 
-    await responder.typing()
-
-    let authUrl = await guild.authGoogle()
-
-    let {response: authCode} = await responder.dialog([
-      {
-        prompt: `Authorize the bot by visiting this url: \n\n ${authUrl} \n\n Respond with the code from that page`,
-        input: { name: 'response', type: 'string', bot: false }
-      }
-    ])
-
-    await responder.typing()
-
-    await guild.authGoogle(authCode)
-
-    return responder.send('Now call !calselect to select a calendar')
+    return responder.typing()
+      .then(() => guild.authGoogle())
+      .then(authUrl => {
+        return responder.dialog([
+          {
+            prompt: `Authorize the bot by visiting this url: \n\n ${authUrl} \n\n Respond with the code from that page`,
+            input: { name: 'response', type: 'string', bot: false }
+          }
+        ])
+      })
+      .tap(responder.typing())
+      .then(response => guild.authGoogle(response.response))
+      .then(responder.send('Now call !calselect to select a calendar'))
+      .catch(err => client.raven.captureException(err))
   }
 }
 
