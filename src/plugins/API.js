@@ -8,13 +8,17 @@ class APIPlugin extends Collection {
     this._client = client
   }
 
-  register (name, API, options) {
+  register (API, options) {
+    let api = typeof API === 'function' ? new API(options) : API
+
+    let name = api.name
+
     if (this.has(name)) {
       this._client.throwOrEmit('api:error', new Error(`Duplicate API - ${name}`))
       return this
     }
 
-    this.set(name, (typeof API === 'function' ? new API(options) : API))
+    this.set(name, api)
 
     Object.defineProperty(this, name, {
       get: function () { return this.get(name) }

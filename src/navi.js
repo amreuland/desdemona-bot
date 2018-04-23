@@ -15,7 +15,10 @@ const { APIPlugin, MongoosePlugin } = require('./plugins')
 
 const handleEvents = require('./lib/handleEvents')
 
-const { GoogleAuthAPI } = require('./api')
+const {
+  CleverbotAPI, GoogleAuthAPI, LeagueAPI, OverwatchAPI,
+  PastebinAPI, SoundCloudAPI, SteamAPI
+} = require('./api')
 
 const { Client } = require('sylphy')
 
@@ -34,8 +37,6 @@ class Navi extends Client {
     options.lastShardID = lastShardID
 
     options.version = VERSION
-
-    // options.noDefaults = true
 
     super(options)
 
@@ -105,7 +106,13 @@ const bot = new Navi({
   botConfig: config
 })
 
-bot.register('api', 'google', GoogleAuthAPI, require(resolveConfig('client_secret')).installed)
+bot.register('api', GoogleAuthAPI, require(resolveConfig('client_secret')).installed)
+bot.register('api', CleverbotAPI)
+bot.register('api', LeagueAPI)
+bot.register('api', OverwatchAPI)
+bot.register('api', PastebinAPI)
+bot.register('api', SoundCloudAPI)
+bot.register('api', SteamAPI)
 
 bot.guildManager = new GuildManager(bot)
 

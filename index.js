@@ -1,6 +1,7 @@
 'use strict'
 
 global.Promise = require('bluebird')
+
 const chalk = require('chalk')
 const path = require('path')
 const moment = require('moment')

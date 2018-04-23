@@ -87,7 +87,7 @@ class MongoosePlugin extends Collection {
      * @prop {Number} count Number of loaded schemas
      */
     this._client.emit('mongoose:registered', {
-      name: Schema.name,
+      name,
       count: this.size
     })
     return this

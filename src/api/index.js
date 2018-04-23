@@ -1,5 +1,11 @@
 'use strict'
 
 module.exports = {
-  GoogleAuthAPI: require('./GoogleAuthAPI')
+  CleverbotAPI: require('./CleverbotAPI'),
+  GoogleAuthAPI: require('./GoogleAuthAPI'),
+  LeagueAPI: require('./LeagueAPI'),
+  OverwatchAPI: require('./OverwatchAPI'),
+  PastebinAPI: require('./PastebinAPI'),
+  SoundCloudAPI: require('./SoundCloudAPI'),
+  SteamAPI: require('./SteamAPI')
 }
