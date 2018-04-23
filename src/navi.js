@@ -15,7 +15,7 @@ const handleEvents = require('./lib/handleEvents')
 
 const { GoogleAuthAPI } = require('./api')
 
-const { Client, Commander, Router, Bridge, Interpreter, Logger } = require('sylphy')
+const { Client } = require('sylphy')
 
 const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join('..', 'config', str)
@@ -31,7 +31,8 @@ class Navi extends Client {
     options.firstShardID = firstShardID
     options.lastShardID = lastShardID
 
-    options.noDefaults = true
+    // options.noDefaults = true
+
     super(options)
 
     const logger = new (winston.Logger)({
@@ -46,22 +47,17 @@ class Navi extends Client {
     })
 
     this
-      .createPlugin('logger', Logger, options)
       .unregister('logger', 'console')
       .register('logger', 'winston', logger)
 
     this.raven = new Sentry(this, options.botConfig)
 
     this
-      .createPlugin('commands', Commander, options)
-      .createPlugin('modules', Router, options)
-      .createPlugin('middleware', Bridge, options)
-      .createPlugin('i18n', Interpreter, options)
       .createPlugin('api', APIPlugin, options)
 
     this
-      .register('i18n', path.join(__dirname, '..', 'res/i18n'))
       .register('modules', resolve('modules'))
+      .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
       .register('commands', resolve('commands'), { groupedCommands: true })
 
@@ -70,10 +66,6 @@ class Navi extends Client {
 
   get api () {
     return this.plugins.get('api')
-  }
-
-  get sentry () {
-    return this.plugins.get('sentry')
   }
 }
 
