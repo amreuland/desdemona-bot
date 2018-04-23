@@ -15,9 +15,7 @@ class Guild {
     this.db = null
   }
 
-  get erisObject () {
-    return this.client.guilds.get(this.id)
-  }
+  get erisObject () { return this.client.guilds.get(this.id) }
 
   getGuildId () { return this.id }
 
@@ -28,12 +26,12 @@ class Guild {
       return
     }
 
-    let obj = await this.client.models.Guild.findOne({
+    let obj = await this.client.db.Guild.findOne({
       guildId: this.id
     })
 
     if (!obj) {
-      obj = new this.client.models.Guild({guildId: this.id})
+      obj = new this.client.db.Guild({guildId: this.id})
       await obj.save()
     }
 
@@ -71,7 +69,7 @@ class Guild {
 
   _ensureAuthClient () {
     if (!this.authClient) {
-      this.authClient = this.client.gcal.getAuthClient(this.db.authToken)
+      this.authClient = this.client.api.google.getAuthClient(this.db.authToken)
     }
   }
 

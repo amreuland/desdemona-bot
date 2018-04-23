@@ -26,7 +26,7 @@ class LastCalendarEvent extends Command {
 
     await responder.typing()
 
-    let previousEvents = await client.models.Event.find({
+    let previousEvents = await client.db.Event.find({
       guild: guild.db._id,
       channelId
     }).sort({sentAt: 'desc'})

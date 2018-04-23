@@ -7,8 +7,10 @@ const raven = require('raven')
 // const gitRevisionId = gitRevSync.long()
 
 class Sentry extends raven.Client {
-  constructor (bot, config) {
+  constructor (bot, options) {
     raven.disableConsoleAlerts()
+
+    let config = options.botConfig
     let dsn = process.env.SENTRY_DSN || config.sentry.dsn || ''
 
     let hasClient = true
@@ -27,7 +29,7 @@ class Sentry extends raven.Client {
 
       let defOptions = {
         environment: env,
-        release: config.version,
+        release: options.version,
         transport: new raven.transports.HTTPSTransport({rejectUnauthorized: false})
       }
 
