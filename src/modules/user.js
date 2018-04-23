@@ -22,7 +22,7 @@ class UserEventsModule extends Module {
    * @param {String} oldUser.discriminator The discriminator of the user
    * @param {String} oldUser.avatar The hash of the user's avatar, or null if no avatar
    */
-  onUserUpdate (user, oldUser) {
+  onUserUpdate (user = {}, oldUser = {}) {
     if (user.avatar !== oldUser.avatar) {
       return false
     }
