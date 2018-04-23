@@ -2,14 +2,16 @@
 
 global.Promise = require('bluebird')
 
+const VERSION = '0.0.1'
+
 const chalk = require('chalk')
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
 
-const { Mongoose, Sentry, GuildManager } = require('./lib')
+const { Sentry, GuildManager } = require('./lib')
 
-const { APIPlugin } = require('./plugins')
+const { APIPlugin, MongoosePlugin } = require('./plugins')
 
 const handleEvents = require('./lib/handleEvents')
 
@@ -31,6 +33,8 @@ class Navi extends Client {
     options.firstShardID = firstShardID
     options.lastShardID = lastShardID
 
+    options.version = VERSION
+
     // options.noDefaults = true
 
     super(options)
@@ -50,10 +54,11 @@ class Navi extends Client {
       .unregister('logger', 'console')
       .register('logger', 'winston', logger)
 
-    this.raven = new Sentry(this, options.botConfig)
+    this.raven = new Sentry(this, options)
 
     this
       .createPlugin('api', APIPlugin, options)
+      .createPlugin('db', MongoosePlugin, options)
 
     this
       .register('modules', resolve('modules'))
@@ -67,6 +72,31 @@ class Navi extends Client {
   get api () {
     return this.plugins.get('api')
   }
+
+  get db () {
+    return this.plugins.get('db')
+  }
+
+  /**
+   * Runs the bot
+   * @returns {Promise}
+   */
+  async run () {
+    if (typeof this.token !== 'string') {
+      throw new TypeError('No bot token supplied')
+    }
+
+    return Promise.each(this.plugins.toArray(), plugin => {
+      if (typeof plugin.run === 'function') {
+        return plugin.run()
+      }
+
+      return Promise.resolve()
+    }).then(() => this.connect())
+
+    // this.plugins.forEach(plugin => {})
+    // return this.connect()
+  }
 }
 
 const config = require(resolveConfig('config'))
@@ -75,8 +105,11 @@ const bot = new Navi({
   token: config.bot.token,
   messageLimit: 0,
   autoreconnect: true,
+  mongo: config.mongo,
   botConfig: config
 })
+
+bot.register('db', resolve('schemas'))
 
 bot.register('api', 'google', GoogleAuthAPI, require(resolveConfig('client_secret')).installed)
 
@@ -106,8 +139,9 @@ bot.once('ready', () => {
   setInterval(handleEvents.bind(bot), (config.calendar.pollingRate || 30) * 1000)
 })
 
-Mongoose(config.mongo).then(db => {
-  bot.mongoose = db
-  bot.models = db.models
-  bot.run()
-})
+// Mongoose(config.mongo).then(db => {
+//   bot.mongoose = db
+//   bot.models = db.models
+// })
+
+bot.run()
