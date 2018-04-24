@@ -9,14 +9,14 @@ const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
 
-const { Sentry, GuildManager } = require('./lib')
+const { Sentry } = require('./lib')
 
 const { APIPlugin, MongoosePlugin } = require('./plugins')
 
 const handleEvents = require('./lib/handleEvents')
 
 const {
-  CleverbotAPI, GoogleAuthAPI, LeagueAPI, OverwatchAPI,
+  CleverbotAPI, GoogleAPI, LeagueAPI, OverwatchAPI,
   PastebinAPI, SoundCloudAPI, SteamAPI
 } = require('./api')
 
@@ -35,8 +35,6 @@ class Navi extends Client {
     options.maxShards = processShards * parseInt(process.env['PROCESS_COUNT'], 10)
     options.firstShardID = firstShardID
     options.lastShardID = lastShardID
-
-    options.version = VERSION
 
     super(options)
 
@@ -99,6 +97,7 @@ class Navi extends Client {
 const config = require(resolveConfig('config'))
 
 const bot = new Navi({
+  version: VERSION,
   token: config.bot.token,
   messageLimit: 0,
   autoreconnect: true,
@@ -106,15 +105,13 @@ const bot = new Navi({
   botConfig: config
 })
 
-bot.register('api', GoogleAuthAPI, require(resolveConfig('client_secret')).installed)
+bot.register('api', GoogleAPI, require(resolveConfig('client_secret')).installed)
 bot.register('api', CleverbotAPI)
 bot.register('api', LeagueAPI)
 bot.register('api', OverwatchAPI)
 bot.register('api', PastebinAPI)
 bot.register('api', SoundCloudAPI)
 bot.register('api', SteamAPI)
-
-bot.guildManager = new GuildManager(bot)
 
 async function initStatusClock () {
   let index = 0

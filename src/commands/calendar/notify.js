@@ -25,21 +25,21 @@ class CalendarNotifications extends Command {
 
     let guildId = msg.channel.guild.id
 
-    let guild = await client.guildManager.get(guildId)
-
     let options = ['enable', 'disable']
 
-    await guild.populateDBObj()
-
-    let [response, _] = await responder.selection(options, {
-      title: 'Enable or Disable notifications'
-    })
-
-    guild.db.enableNotifications = (response === 'enable')
-
-    await guild.db.save()
-
-    return responder.send(`:white_check_mark: Calendar notifications have been ${response}d`)
+    return client.db.Guild.findOne({ guildId })
+      .then(dbGuild => {
+        return responder.selection(options, {
+          title: 'Enable or Disable notifications'
+        })
+          .then(response => {
+            dbGuild.settings.enableNotifications = (response[0] === 'enable')
+            dbGuild.markModified('settings')
+            return dbGuild.save()
+              .then(responder.success(`Calendar notifications have been ${response[0]}d`))
+          })
+      })
+      .catch(err => client.raven.captureException(err))
   }
 }
 

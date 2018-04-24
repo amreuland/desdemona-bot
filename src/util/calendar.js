@@ -70,11 +70,7 @@ function createEmbed (params) {
       text: 'Event'
     },
     color: 0xdf3939,
-    timestamp: params.startDateTime,
-    author: {
-      name: 'Calendar Bot',
-      url: 'https://github.com/noriah/navi-bot'
-    }
+    timestamp: params.startDateTime
   }
 }
 

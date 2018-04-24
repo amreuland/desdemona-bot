@@ -2,7 +2,7 @@
 
 module.exports = {
   CleverbotAPI: require('./CleverbotAPI'),
-  GoogleAuthAPI: require('./GoogleAuthAPI'),
+  GoogleAPI: require('./GoogleAPI'),
   LeagueAPI: require('./LeagueAPI'),
   OverwatchAPI: require('./OverwatchAPI'),
   PastebinAPI: require('./PastebinAPI'),

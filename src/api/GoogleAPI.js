@@ -24,13 +24,13 @@ class GoogleAPI extends Interface {
       throw new Error('Missing Google OAuth Client Secret')
     }
 
-    this.calendar = google.calendar({version: 'v3'})
+    let calendar = google.calendar({version: 'v3'})
 
-    Promise.promisifyAll([
-      this.calendar.calendarList,
-      this.calendar.calendars,
-      this.calendar.events
-    ])
+    Promise.promisifyAll(calendar.calendarList)
+    Promise.promisifyAll(calendar.calendars)
+    Promise.promisifyAll(calendar.events)
+
+    this.calendar = calendar
   }
 
   // ///////////////
@@ -47,7 +47,7 @@ class GoogleAPI extends Interface {
   }
 
   ensureAuthCredentials (auth) {
-    if (!auth.credentials) {
+    if (!auth.credentials.access_token) {
       throw new MissingTokenError()
     }
 
@@ -83,7 +83,7 @@ class GoogleAPI extends Interface {
    * @return {Promise}      A promise
    */
   getCalendarList (auth) {
-    return this.calendar.calendarList.listAsync({auth})
+    return this.calendar.calendarList.listAsync({ auth })
   }
 
   getCalendarEventDetails (auth, calendarId, eventId) {
@@ -94,6 +94,7 @@ class GoogleAPI extends Interface {
 
   getCalendarUpcomingEvents (auth, calendarId, options = {}) {
     let cfg = {
+      auth,
       calendarId,
       timeMin: moment().toISOString(),
       singleEvents: true,
@@ -102,7 +103,7 @@ class GoogleAPI extends Interface {
 
     cfg = R.merge(options, cfg)
 
-    return this.calendar.events.listAsync(cfg)
+    return this.calendar.events.listAsync(cfg).then(data => data.items)
   }
 }
 
