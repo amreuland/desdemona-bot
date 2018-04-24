@@ -27,15 +27,6 @@ const resolveConfig = (str) => path.join('..', 'config', str)
 
 class Navi extends Client {
   constructor (options = {}) {
-    let processID = parseInt(process.env['PROCESS_ID'], 10)
-    let processShards = parseInt(process.env['SHARDS_PER_PROCESS'], 10)
-    let firstShardID = processID * processShards
-    let lastShardID = firstShardID + processShards - 1
-
-    options.maxShards = processShards * parseInt(process.env['PROCESS_COUNT'], 10)
-    options.firstShardID = firstShardID
-    options.lastShardID = lastShardID
-
     super(options)
 
     const logger = new (winston.Logger)({
@@ -43,7 +34,7 @@ class Navi extends Client {
         new (winston.transports.Console)({
           level: 'silly',
           colorize: true,
-          label: processShards > 1 ? `C ${firstShardID}-${lastShardID}` : `C ${processID}`,
+          label: options.processShards > 1 ? `C ${options.firstShardID}-${options.lastShardID}` : `C ${options.processID}`,
           timestamp: () => `[${chalk.grey(moment().format('HH:mm:ss'))}]`
         })
       ]
@@ -96,13 +87,24 @@ class Navi extends Client {
 
 const config = require(resolveConfig('config'))
 
+let processID = parseInt(process.env['PROCESS_ID'], 10)
+let processShards = config.cluster.shardsPerProcess
+let firstShardID = processID * processShards
+let lastShardID = firstShardID + processShards - 1
+let maxShards = processShards * config.cluster.processCount
+
 const bot = new Navi({
   version: VERSION,
   token: config.bot.token,
   messageLimit: 0,
   autoreconnect: true,
   mongo: config.mongo,
-  botConfig: config
+  botConfig: config,
+  processID,
+  processShards,
+  firstShardID,
+  lastShardID,
+  maxShards
 })
 
 bot.register('api', GoogleAPI, require(resolveConfig('client_secret')).installed)
