@@ -34,9 +34,9 @@ class UserEventsModule extends Module {
         return false
       }
 
-      return this._client.guildManager.get(guild.id)
-        .then(naviGuild => {
-          let auditChannelId = naviGuild.db.channels.audit
+      return this._client.db.Guild.findOne({ guildId: guild.id })
+        .then(dbGuild => {
+          let auditChannelId = dbGuild.channels.audit
           if (!auditChannelId) {
             return false
           }

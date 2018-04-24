@@ -28,11 +28,11 @@ class EnableAuditChannelCommand extends Command {
   async handle ({ msg, client, args }, responder) {
     let guildId = msg.channel.guild.id
 
-    return client.guildManager.get(guildId)
-      .then(naviGuild => {
-        naviGuild.db.channels.audit = args.channel[0].id
-        naviGuild.db.markModified('channels')
-        return naviGuild.db.save()
+    return client.db.Guild.findOne({ guildId })
+      .then(dbGuild => {
+        dbGuild.channels.audit = args.channel[0].id
+        dbGuild.markModified('channels')
+        return dbGuild.save()
       })
       .then(() => responder.success('the audit log channel has been set!'))
       .catch(err => client.raven.captureException(err))

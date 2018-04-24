@@ -22,23 +22,28 @@ class LastCalendarEvent extends Command {
     let guildId = msg.channel.guild.id
     let channelId = msg.channel.id
 
-    let guild = await client.guildManager.get(guildId)
+    return client.db.Event.find({
+      guildId, channelId
+    })
+      .sort({sentAt: 'desc'})
+      .then(previousEvents => {
+        if (previousEvents.length < 1) {
+          return responder
+            .error('there are no previous events for this channel!')
+        }
 
-    await responder.typing()
+        let lastEvent = previousEvents[0]
 
-    let previousEvents = await client.db.Event.find({
-      guild: guild.db._id,
-      channelId
-    }).sort({sentAt: 'desc'})
+        return client.db.Guild.findOne({ guildId })
+          .then(dbGuild => {
+            let google = client.api.google
+            let authClient = google.getAuthClient(dbGuild.tokens.google)
+            google.ensureAuthCredentials(authClient)
 
-    if (previousEvents.length < 1) {
-      return responder
-        .error('there are no previous events for this channel!')
-    }
-
-    let lastEvent = previousEvents[0]
-
-    return guild.getEventDetails(lastEvent.eventId)
+            return google.getCalendarEventDetails(
+              authClient, dbGuild.calendarId, lastEvent.eventId)
+          })
+      })
       .then(event => {
         let params = calendarUtil.getParameters(event)
 
@@ -49,6 +54,7 @@ class LastCalendarEvent extends Command {
       .catch(MissingTokenError, () => {
         return responder.error('Missing authentication token for guild!')
       })
+      .catch(err => client.raven.captureException(err))
   }
 }
 
