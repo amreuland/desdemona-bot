@@ -1,6 +1,12 @@
 'use strict'
 
 module.exports = {
+  cluster: {
+    startId: 0,
+    processCount: 1,
+    shardsPerProcess: 1
+  },
+
   env: 'development',
 
   bot: {
