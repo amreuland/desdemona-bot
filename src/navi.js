@@ -96,6 +96,7 @@ let maxShards = processShards * config.cluster.processCount
 const bot = new Navi({
   version: VERSION,
   token: config.bot.token,
+  prefix: config.bot.prefix,
   messageLimit: 0,
   autoreconnect: true,
   mongo: config.mongo,
