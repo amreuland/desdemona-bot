@@ -30,15 +30,15 @@ class Help extends Command {
       if (command.triggers.length > 1) {
         reply.push(`\n**Aliases**: \`${command.triggers.slice(1).join(' ')}\``)
       }
-      reply.push('\n{{footer_group}}')
+      // reply.push('\n{{footer_group}}')
       responder.send(reply.join('\n'))
       return
     }
     let commands = {}
     let reply = [
-      `{{header_1}} ${prefix === client.prefix ? '' : '{{header_1_alt}}'}`,
-      '{{header_2}}',
-      '{{header_3}}',
+      // `{{header_1}} ${prefix === client.prefix ? '' : '{{header_1_alt}}'}`,
+      // '{{header_2}}',
+      // '{{header_3}}',
       '**```glsl'
     ]
     let maxPad = 10
