@@ -22,10 +22,7 @@ class Help extends Command {
       let description = command.description
       let reply = [
         `**\`${prefix}${name}\`**  __\`${description}\`__\n`,
-        `**Usage**: ${prefix}${name} ${Object.keys(command.resolver.usage).map(usage => {
-          usage = command.resolver.usage[usage]
-          return usage.optional ? `[${usage.displayName}]` : `<${usage.displayName}>`
-        }).join(' ')}`
+        `**Usage**: ${command.resolver.getUsage(command.usage, {prefix, command: name})}`
       ]
       if (command.triggers.length > 1) {
         reply.push(`\n**Aliases**: \`${command.triggers.slice(1).join(' ')}\``)
@@ -35,15 +32,19 @@ class Help extends Command {
     }
     let commands = {}
     let reply = [
-      // `{{header_1}} ${prefix === client.prefix ? '' : '{{header_1_alt}}'}`,
-      // '{{header_2}}',
-      // '{{header_3}}',
+      '{{%help.HEADER}}',
       '**```glsl'
     ]
     let maxPad = 10
 
     client.plugins.get('commands').unique().forEach(c => {
-      if (c.triggers[0] !== c.name || c.options.hidden || c.adminOnly) return
+      let permissions = c.options.permissions
+      if (c.triggers[0] !== c.name || c.options.hidden || c.options.adminOnly ||
+        (permissions && permissions.length &&
+          !this.hasPermissions(msg.channel, msg.author, permissions))) {
+        return
+      }
+
       let module = c.group
       let name = c.name
       let desc = c.description
@@ -62,7 +63,8 @@ class Help extends Command {
     reply.push('```**')
 
     return responder.send(reply.join('\n'), {
-      DM: true
+      DM: true,
+      guild: msg.channel.guild.name
     }).then(m => {
       if (msg.channel.guild) {
         responder.format('emoji:inbox').reply('check your PMs!')

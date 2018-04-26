@@ -10,10 +10,8 @@ class AuthCalendar extends Command {
       description: 'Authorize bot to access your calendars',
       options: {
         guildOnly: true,
-        requirements: {
-          permissions: {
-            administrator: true
-          }
+        permissions: {
+          administrator: true
         },
         hidden: false
       }

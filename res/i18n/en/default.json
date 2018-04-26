@@ -50,6 +50,9 @@
       "HEADER": "here is **{{user}}'s** Steam Profile info"
     }
   },
+  "help": {
+    "HEADER": "Here are the commands for **{{guild}}**"
+  },
   "menus": {
     "EXIT": "Enter {{cancel}} to exit the menu.",
     "ERRORED": "the menu has closed:",
