@@ -43,7 +43,7 @@ class Help extends Command {
     let maxPad = 10
 
     client.plugins.get('commands').unique().forEach(c => {
-      if (c.triggers[0] !== c.name || c.hidden || c.adminOnly) return
+      if (c.triggers[0] !== c.name || c.options.hidden || c.adminOnly) return
       let module = c.group
       let name = c.name
       let desc = c.description
