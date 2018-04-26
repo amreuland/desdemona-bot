@@ -22,7 +22,7 @@ class SteamLookupCommand extends Command {
       // cooldown: 30,
       options: {
         guildOnly: true,
-        hidden: false
+        hidden: true
       }
     })
   }
@@ -45,7 +45,7 @@ class SteamLookupCommand extends Command {
           })
         }
 
-        let steamId = new SteamID('76561197988758216')
+        let steamId = new SteamID(steamConnection.id)
         return client.api.steam.getUserSummary(steamId.getSteamID64())
           // .then(data => {
           //   if (data.visibilityState === 3) {
