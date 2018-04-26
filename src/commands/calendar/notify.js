@@ -10,9 +10,9 @@ class CalendarNotifications extends Command {
       description: 'Enable or disable Calendar notifications',
       options: {
         guildOnly: true,
-        permissions: {
-          administrator: true
-        },
+        permissions: [
+          'administrator'
+        ],
         hidden: false
       }
     })
