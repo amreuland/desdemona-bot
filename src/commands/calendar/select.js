@@ -14,10 +14,8 @@ class SelectCalendar extends Command {
       description: 'Select a calendar to monitor',
       options: {
         guildOnly: true,
-        requirements: {
-          permissions: {
-            administrator: true
-          }
+        permissions: {
+          administrator: true
         },
         hidden: false
       }

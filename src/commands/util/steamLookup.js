@@ -19,7 +19,7 @@ class SteamLookupCommand extends Command {
         type: 'member',
         optional: true
       }],
-      // cooldown: 30,
+      cooldown: 30,
       options: {
         guildOnly: true,
         hidden: true

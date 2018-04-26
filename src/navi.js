@@ -20,7 +20,9 @@ const {
   PastebinAPI, SoundCloudAPI, SteamAPI
 } = require('./api')
 
-const { Client } = require('sylphy')
+const { Client, utils } = require('sylphy')
+
+utils.emojis = require('../res/emoji')
 
 const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join('..', 'config', str)

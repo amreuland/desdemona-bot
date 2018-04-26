@@ -15,10 +15,8 @@ class AuditLogCommand extends Command {
       }],
       options: {
         guildOnly: true,
-        requirements: {
-          permissions: {
-            administrator: true
-          }
+        permissions: {
+          administrator: true
         },
         hidden: false
       }
