@@ -96,12 +96,14 @@ class EventUtils {
     if (addedRole) {
       field = {
         name: 'Added Role',
-        value: addedRole.name
+        value: addedRole.name,
+        inline: true
       }
     } else {
       field = {
         name: 'Removed Role',
-        value: removedRole.name
+        value: removedRole.name,
+        inline: true
       }
     }
 

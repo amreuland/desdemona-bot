@@ -27,26 +27,32 @@ class SelectCalendar extends Command {
   async handle ({ msg, client }, responder) {
     await responder.typing()
 
+    let google = client.api.google
+
     let guildId = msg.channel.guild.id
-
-    let guild = await client.guildManager.get(guildId)
-
-    return guild.getCalendarsForAuth()
-      .then(calendars => {
-        let options = R.map(R.prop('name'), calendars)
-
-        return responder.selection(options, {
-          title: 'Select Calendar'
-        }).then(selection => {
-          return responder.typing().then(() => {
-            let item = calendars[selection[1]]
-            return guild.setCalendar(item.id)
-          }).then(responder.send('Calendar Selected!'))
-        })
+    return client.db.Guild.findOne({guildId: guildId})
+      .then(dbGuild => {
+        let authClient = google.getAuthClient(dbGuild.tokens.google)
+        google.ensureAuthCredentials(authClient)
+        return google.getCalendarList(authClient)
+          .then(calendars => {
+            let options = R.map(R.prop('name'), calendars)
+            return responder.selection(options, {
+              title: 'Select Calendar'
+            }).then(selection => {
+              return responder.typing().then(() => {
+                let item = calendars[selection[1]]
+                dbGuild.calendarId = item.id
+                return dbGuild.save()
+                  .then(responder.send('Calendar Selected!'))
+              })
+            })
+          })
       })
       .catch(MissingTokenError, () => {
-        return responder.error('Missing authentication token for guild!\nPlease call `!calauth` first!')
+        return responder.error('Missing authentication token for guild!\n\t\t\tPlease call `!calauth` first!')
       })
+      .catch(err => client.raven.captureException(err))
   }
 }
 

@@ -46,7 +46,7 @@ function getParameters (event) {
   params = paramsFunc2(params)
 
   params.title = params.title || event.summary
-  params.url = params.url || event.htmlLink
+  params.url = event.htmlLink
   params.description = description
   params.eventId = event.id
   params.startDateTime = moment(event.start.dateTime).toDate()
@@ -60,21 +60,20 @@ function createEmbed (params) {
     return null
   }
 
-  let title = `:calendar_spiral: ${params.title}`
-
   return {
-    title,
+    title: params.title,
+    author: {
+      name: 'Navi - Calendar',
+      url: 'https://github.com/noriah/navi-bot',
+      icon_url: 'https://discordapp.com/assets/644ab12f2f874b0c5fb5b5b5f88a0bef.svg'
+    },
     url: params.url,
     description: params.description,
     footer: {
       text: 'Event'
     },
     color: 0xdf3939,
-    timestamp: params.startDateTime,
-    author: {
-      name: 'Calendar Bot',
-      url: 'https://github.com/noriah/navi-bot'
-    }
+    timestamp: params.startDateTime
   }
 }
 

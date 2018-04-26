@@ -10,25 +10,29 @@ function handleEvents () {
 
   let guildIds = R.keys(self.guildShardMap)
 
-  return Promise.each(guildIds, guildId => {
-    return self.guildManager.get(guildId).then(guild => {
-      if (!guild.db.calendarId || !guild.db.authToken) {
+  let google = this.api.google
+
+  return Promise.map(guildIds, guildId => {
+    return self.db.Guild.findOne({ guildId }).then(dbGuild => {
+      if (!dbGuild.calendarId || !dbGuild.tokens.google) {
         return false
       }
-      if (guild.db.settings.enableNotifications === false) {
+      if (dbGuild.settings.enableNotifications === false) {
         return false
       }
 
-      let timeAdd = guild.db.settings.timeBefore || 30
+      let timeAdd = dbGuild.settings.timeBefore || 30
 
-      return guild.getUpcomingEvents({
+      let authClient = google.getAuthClient(dbGuild.tokens.google)
+
+      return google.getCalendarUpcomingEvents(authClient, dbGuild.calendarId, {
         maxResults: 10,
         timeMax: moment().add(timeAdd, 'minutes').toISOString()
       }).then(events => {
         let eventIds = R.map(R.prop('id'), events)
 
         Promise.each(self.db.Event.find({
-          guild: guild.db._id,
+          guildId: guildId,
           eventId: {
             $in: eventIds
           }
@@ -43,11 +47,13 @@ function handleEvents () {
             return false
           }
 
+          let erisGuild = self.guilds.get(guildId)
+
           let foundChannel = R.find(channel => {
             return (!!channel.name) &&
             channel.name.toLowerCase() === params.channel &&
             channel.type === 0
-          }, guild.erisObject.channels)
+          }, erisGuild.channels)
 
           if (!foundChannel) {
             return false
@@ -59,7 +65,7 @@ function handleEvents () {
             let foundRole = R.find(role => {
               return role.name.toLowerCase() === params.role &&
               role.mentionable === true
-            }, guild.erisObject.roles)
+            }, erisGuild.roles)
 
             if (foundRole) {
               message = message + ' ' + foundRole.mention
@@ -67,7 +73,7 @@ function handleEvents () {
           }
 
           let dbEvent = new self.db.Event({
-            guild: guild.db._id,
+            guildId: guildId,
             eventId: params.eventId,
             channelId: foundChannel.id,
             sentAt: new Date(),

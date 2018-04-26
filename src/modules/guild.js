@@ -11,6 +11,8 @@ class GuildEventsModule extends Module {
     super(...args, {
       name: 'guild:events',
       events: {
+        'guildCreate': 'onGuildCreate',
+        'guildDelete': 'onGuildDelete',
         'guildAvailable': 'onGuildAvailable',
         'guildBanAdd': 'onGuildBanAdd',
         'guildBanRemove': 'onGuildBanRemove',
@@ -25,6 +27,32 @@ class GuildEventsModule extends Module {
         'guildUpdate': 'onGuildUpdate'
       }
     })
+  }
+
+  /**
+   * Called when the bot joins a guild
+   * @param  {Guild} guild The guild
+   */
+  onGuildCreate (guild) {
+    this.logger.debug(`Joined guild '${guild.name}' (${guild.id})`)
+    return this._client.db.Guild.findOne({
+      guildId: guild.id
+    }).then(obj => {
+      if (!obj) {
+        obj = new this._client.db.Guild({guildId: guild.id})
+        return obj.save()
+      }
+
+      return obj
+    })
+  }
+
+  /**
+   * Called when the bot leaves a guild
+   * @param  {Guild} guild The guild
+   */
+  onGuildDelete (guild) {
+    this.logger.debug(`Left guild '${guild.name}' (${guild.id})`)
   }
 
   /**
@@ -77,9 +105,13 @@ class GuildEventsModule extends Module {
    * @param {Member} member The member
    */
   onGuildMemberAdd (guild, member) {
-    return this._client.guildManager.get(guild.id)
-      .then(naviGuild => {
-        let auditChannelId = naviGuild.db.channels.audit
+    return this._client.db.Guild.findOne({guildId: guild.id})
+      .then(dbGuild => {
+        if (!dbGuild) {
+          return false
+        }
+
+        let auditChannelId = dbGuild.channels.audit
         if (!auditChannelId) {
           return false
         }
@@ -95,9 +127,13 @@ class GuildEventsModule extends Module {
    * @param  {Member | Object} member The member. If the member is not cached, this will be an object with `id` and `user` key
    */
   onGuildMemberRemove (guild, member) {
-    return this._client.guildManager.get(guild.id)
-      .then(naviGuild => {
-        let auditChannelId = naviGuild.db.channels.audit
+    return this._client.db.Guild.findOne({guildId: guild.id})
+      .then(dbGuild => {
+        if (!dbGuild) {
+          return false
+        }
+
+        let auditChannelId = dbGuild.channels.audit
         if (!auditChannelId) {
           return false
         }
@@ -116,9 +152,13 @@ class GuildEventsModule extends Module {
    * @param {String?} oldMember.nick The server nickname of the member
    */
   onGuildMemberUpdate (guild, member, oldMember) {
-    return this._client.guildManager.get(guild.id)
-      .then(naviGuild => {
-        let auditChannelId = naviGuild.db.channels.audit
+    return this._client.db.Guild.findOne({guildId: guild.id})
+      .then(dbGuild => {
+        if (!dbGuild) {
+          return false
+        }
+
+        let auditChannelId = dbGuild.channels.audit
         if (!auditChannelId) {
           return false
         }
