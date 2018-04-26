@@ -8,15 +8,10 @@ const OAuth2Client = google.auth.OAuth2
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-const { Interface } = require('../lib')
 const { MissingTokenError } = require('../util')
 
-class GoogleAPI extends Interface {
+class GoogleAPI {
   constructor (options = {}) {
-    super({
-      name: 'google'
-    })
-
     this.clientId = options.client_id
     this.clientSecret = options.client_secret
     this.redirectUris = options.redirect_uris

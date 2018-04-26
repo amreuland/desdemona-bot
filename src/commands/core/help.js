@@ -31,8 +31,7 @@ class Help extends Command {
         reply.push(`\n**Aliases**: \`${command.triggers.slice(1).join(' ')}\``)
       }
       // reply.push('\n{{footer_group}}')
-      responder.send(reply.join('\n'))
-      return
+      return responder.send(reply.join('\n'))
     }
     let commands = {}
     let reply = [
@@ -62,14 +61,13 @@ class Help extends Command {
     }
     reply.push('```**')
 
-    responder.send(reply.join('\n'), {
+    return responder.send(reply.join('\n'), {
       DM: true
+    }).then(m => {
+      if (msg.channel.guild) {
+        responder.format('emoji:inbox').reply('check your PMs!')
+      }
     })
-      .then(m => {
-        if (msg.channel.guild) {
-          responder.format('emoji:inbox').reply('check your PMs!')
-        }
-      })
   }
 }
 

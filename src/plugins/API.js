@@ -8,10 +8,8 @@ class APIPlugin extends Collection {
     this._client = client
   }
 
-  register (API, options) {
+  register (name, API, options) {
     let api = typeof API === 'function' ? new API(options) : API
-
-    let name = api.name
 
     if (this.has(name)) {
       this._client.throwOrEmit('api:error', new Error(`Duplicate API - ${name}`))

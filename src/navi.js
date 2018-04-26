@@ -51,6 +51,7 @@ class Navi extends Client {
       .createPlugin('db', MongoosePlugin, options)
 
     this
+      .register('i18n', path.join(__dirname, '..', 'res/i18n'))
       .register('modules', resolve('modules'))
       .register('db', resolve('schemas'))
       .unregister('middleware', true)
@@ -108,19 +109,27 @@ const bot = new Navi({
   maxShards
 })
 
-bot.register('api', GoogleAPI, require(resolveConfig('client_secret')).installed)
-bot.register('api', CleverbotAPI)
-bot.register('api', LeagueAPI)
-bot.register('api', OverwatchAPI)
-bot.register('api', PastebinAPI)
-bot.register('api', SoundCloudAPI)
-bot.register('api', SteamAPI)
+const userBot = new Client({
+  token: config.user.token,
+  selfbot: true
+})
+
+bot.userBot = userBot
+
+bot.register('api', 'google', GoogleAPI, require(resolveConfig('client_secret')).installed)
+bot.register('api', 'cleverbot', CleverbotAPI)
+bot.register('api', 'lol', LeagueAPI)
+bot.register('api', 'overwatch', OverwatchAPI)
+bot.register('api', 'pastebin', PastebinAPI)
+bot.register('api', 'soundcloud', SoundCloudAPI)
+bot.register('api', 'steam', SteamAPI, config.steam.apiKey)
 
 async function initStatusClock () {
   let index = 0
   const statuses = [
     'https://navi.social',
     '%s guilds',
+    'Use \'n!help\'',
     '%d users'
   ]
   setInterval(function () {
@@ -132,7 +141,7 @@ async function initStatusClock () {
       type: 0,
       url: 'https://navi.social'
     })
-  }.bind(bot), 20000)
+  }.bind(bot), 60000)
 }
 
 bot.once('ready', () => {
@@ -140,4 +149,4 @@ bot.once('ready', () => {
   setInterval(handleEvents.bind(bot), (config.calendar.pollingRate || 30) * 1000)
 })
 
-bot.run()
+bot.run().then(() => userBot.run())
