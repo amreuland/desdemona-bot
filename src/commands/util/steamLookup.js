@@ -32,7 +32,7 @@ class SteamLookupCommand extends Command {
     let isSelf = true
 
     if (args.member && args.member[0].id !== member.id) {
-      member = args.member[0].member
+      member = args.member[0]
       isSelf = false
     }
 
