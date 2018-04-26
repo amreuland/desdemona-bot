@@ -43,7 +43,7 @@ class AuthCalendar extends Command {
             return dbGuild.save()
           })
       })
-      .then(() => responder.send('Now call !calselect to select a calendar'))
+      .then(() => responder.send('Now call n!calselect to select a calendar'))
       .catch(err => client.raven.captureException(err))
   }
 }

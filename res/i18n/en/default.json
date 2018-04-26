@@ -40,6 +40,16 @@
       "MIN": "{{arg}} must be more than or equals to {{min}}"
     }
   },
+  "steam": {
+    "errors": {
+      "NOT_LINKED_SELF": "**you** do not have a steam account linked to your discord!",
+      "NOT_LINKED": "**{{user}}** does not have a steam account linked to their discord!"
+    },
+    "lookup": {
+      "HEADER_SELF": "here is **your** Steam Profile info",
+      "HEADER": "here is **{{user}}'s** Steam Profile info"
+    }
+  },
   "menus": {
     "EXIT": "Enter {{cancel}} to exit the menu.",
     "ERRORED": "the menu has closed:",

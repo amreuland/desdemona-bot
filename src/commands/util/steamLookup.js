@@ -1,5 +1,10 @@
 'use strict'
 
+const R = require('ramda')
+const SteamID = require('steamid')
+
+const { SteamUtils } = require('../../util')
+
 const { Command } = require('sylphy')
 
 class SteamLookupCommand extends Command {
@@ -11,9 +16,10 @@ class SteamLookupCommand extends Command {
       usage: [{
         name: 'member',
         displayName: 'user',
-        type: 'member'
+        type: 'member',
+        optional: true
       }],
-      cooldown: 30,
+      // cooldown: 30,
       options: {
         guildOnly: true,
         hidden: false
@@ -21,8 +27,49 @@ class SteamLookupCommand extends Command {
     })
   }
 
-  async handle ({ msg, client }, responder) {
+  async handle ({ msg, client, args }, responder) {
+    let member = msg.member
+    let isSelf = true
 
+    if (args.member && args.member[0].id !== member.id) {
+      member = args.member[0].member
+      isSelf = false
+    }
+
+    return client.userBot.getUserProfile(member.id)
+      .then(profile => {
+        let steamConnection = R.find(R.propEq('type', 'steam'), profile.connected_accounts)
+        if (!steamConnection) {
+          return responder.error(`{{%steam.errors.NOT_LINKED${isSelf ? '_SELF' : ''}}}`, {
+            user: member.username
+          })
+        }
+
+        let steamId = new SteamID('76561197988758216')
+        return client.api.steam.getUserSummary(steamId.getSteamID64())
+          // .then(data => {
+          //   if (data.visibilityState === 3) {
+          //     if (data.gameId) {
+          //       return client.api.steam.getGameDetails(data.gameId)
+          //         .then(details => {
+          //           data.gameDetails = details
+          //           console.log(details)
+          //           return data
+          //         })
+          //     }
+          //   }
+
+          //   return data
+          // })
+          .then(data => SteamUtils.createSteamProfileEmbed(member, data, steamId))
+          .then(embed => responder
+            .embed(embed)
+            .reply(`{{%steam.lookup.HEADER${isSelf ? '_SELF' : ''}}}`, {
+              user: member.username
+            })
+          )
+      })
+      .catch(err => client.raven.captureException(err))
   }
 }
 
