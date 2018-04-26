@@ -2,15 +2,15 @@
 
 const { Command } = require('sylphy')
 
-class EnableAuditChannelCommand extends Command {
+class AuditLogCommand extends Command {
   constructor (...args) {
     super(...args, {
-      name: 'auditchannel',
+      name: 'auditlog',
       group: 'audit',
       description: 'Set an audit channel for the bot to report to',
       usage: [{
         name: 'channel',
-        displayName: 'auditChannel',
+        displayName: 'channel',
         type: 'channel'
       }],
       options: {
@@ -39,4 +39,4 @@ class EnableAuditChannelCommand extends Command {
   }
 }
 
-module.exports = EnableAuditChannelCommand
+module.exports = AuditLogCommand
