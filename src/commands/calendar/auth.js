@@ -25,31 +25,25 @@ class AuthCalendar extends Command {
 
     let guildId = msg.channel.guild.id
 
-    let guild = await client.guildManager.get(guildId)
+    let google = client.api.google
 
-    if (guild.hasAuthToken()) {
-      let selection = await responder.selection(['Yes', 'No'], {
-        title: 'Are you sure you want to change the auth ticket?'
+    return client.db.Guild.findOne({ guildId })
+      .then(dbGuild => {
+        let authClient = google.getAuthClient()
+        let authUrl = google.getAuthUrl(authClient)
+
+        return responder.dialog([{
+          prompt: `Authorize the bot by visiting this url: \n\n ${authUrl} \n\n Respond with the code from that page`,
+          input: { name: 'response', type: 'string' }
+        }])
+          .then(response => google.getToken(authClient, response.response))
+          .then(token => {
+            dbGuild.tokens.google = token
+            dbGuild.markModified('tokens')
+            return dbGuild.save()
+          })
       })
-
-      if (selection[0] !== 'Yes') {
-        return responder.send('Guild Calendar Auth Cancelled')
-      }
-    }
-
-    return responder.typing()
-      .then(() => guild.authGoogle())
-      .then(authUrl => {
-        return responder.dialog([
-          {
-            prompt: `Authorize the bot by visiting this url: \n\n ${authUrl} \n\n Respond with the code from that page`,
-            input: { name: 'response', type: 'string', bot: false }
-          }
-        ])
-      })
-      .tap(responder.typing())
-      .then(response => guild.authGoogle(response.response))
-      .then(responder.send('Now call !calselect to select a calendar'))
+      .then(() => responder.send('Now call n!calselect to select a calendar'))
       .catch(err => client.raven.captureException(err))
   }
 }

@@ -20,7 +20,10 @@ module.exports = {
       default: {}
     },
 
-    authToken: Object,
+    tokens: {
+      type: Object,
+      default: {}
+    },
 
     calendarId: String
   }

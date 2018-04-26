@@ -24,11 +24,17 @@ class NextCalendarEvent extends Command {
     let guildId = msg.channel.guild.id
     let channelName = msg.channel.name.toLowerCase()
 
-    let guild = await client.guildManager.get(guildId)
-
     await responder.typing()
 
-    return guild.getUpcomingEvents()
+    let google = client.api.google
+
+    return client.db.Guild.findOne({ guildId })
+      .then(dbGuild => {
+        let authClient = google.getAuthClient(dbGuild.tokens.google)
+        google.ensureAuthCredentials(authClient)
+
+        return google.getCalendarUpcomingEvents(authClient, dbGuild.calendarId)
+      })
       .then(upcomingEvents => {
         let params = null
 
@@ -58,6 +64,7 @@ class NextCalendarEvent extends Command {
       .catch(MissingTokenError, () => {
         return responder.error('Missing authentication token for guild!')
       })
+      .catch(err => client.raven.captureException(err))
   }
 }
 
