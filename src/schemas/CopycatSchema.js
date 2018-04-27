@@ -6,11 +6,10 @@ module.exports = {
   schema: {
     guildId: {
       type: String,
-      unique: true,
       index: true
     },
 
-    channeld: {
+    channelId: {
       type: String,
       unique: true,
       index: true
