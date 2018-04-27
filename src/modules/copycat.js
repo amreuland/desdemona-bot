@@ -1,5 +1,7 @@
 'use strict'
 
+const
+
 const { Module } = require('sylphy')
 
 class CopycatModule extends Module {
@@ -14,6 +16,12 @@ class CopycatModule extends Module {
   }
 
   onMessageCreate (message) {
+    let channelId = message.channel.id
+
+    return this._client.cache.copycat.hmgetall(`copycat.channel.${channelId}`)
+      .then(data => {
+
+      })
     // First check cache for channel id as key
     // If found, take value and use as copy channel
     // Check Cache for flag saying we have already checked guiild db in X time
