@@ -1,8 +1,8 @@
 'use strict'
 
-const
-
 const { Module } = require('sylphy')
+
+const { CopycatUtils } = require('../util')
 
 class CopycatModule extends Module {
   constructor (...args) {
@@ -10,6 +10,7 @@ class CopycatModule extends Module {
       name: 'copycat:logic',
       events: {
         messageCreate: 'onMessageCreate',
+        messageDelete: 'onMessageDelete',
         messageUpdate: 'onMessageUpdate'
       }
     })
@@ -17,10 +18,31 @@ class CopycatModule extends Module {
 
   onMessageCreate (message) {
     let channelId = message.channel.id
+    let guildId = message.channel.guild.id
 
-    return this._client.cache.copycat.hmgetall(`copycat.channel.${channelId}`)
+    let copyCache = this._client.cache.copycat
+
+    return copyCache.smembers(`copycat:channel:${channelId}`)
       .then(data => {
+        if (!data || !data.length) {
+          return copyCache.get(`copycat:flag:guildId`)
+            .then(flag => {
+              if (flag) {
+                return null
+              }
 
+              return
+            })
+        }
+
+        return data
+      })
+      .then(data => {
+        if (!data || !data.length) {
+          return
+        }
+
+        let message = CopycatUtils.createMirrorEmbed(message)
       })
     // First check cache for channel id as key
     // If found, take value and use as copy channel
@@ -35,6 +57,10 @@ class CopycatModule extends Module {
     // Store source message id and destination message id in cache as
     //    source => destination
     // Set expiry on source key
+  }
+
+  onMessageDelete (message) {
+
   }
 
   onMessageUpdate (message, OldMessage) {

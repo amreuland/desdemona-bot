@@ -55,7 +55,11 @@
   },
   "copycat": {
     "errors": {
-      "SAME_CHANNEL": "You can't mirror a channel into itself!"
+      "SAME_CHANNEL": "You can't mirror a channel into itself!",
+      "LINK_EXISTS": "**{{dest}}** is already set to mirror **{{src}}**"
+    },
+    "success": {
+      "CHANNELS_LINKED": "**{{dest}}** has been set to copy **{{src}}**"
     }
   },
   "menus": {

@@ -8,7 +8,6 @@ const chalk = require('chalk')
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
-const Redis = require('ioredis')
 
 const { Sentry } = require('./lib')
 
@@ -132,7 +131,7 @@ bot.register('api', 'pastebin', PastebinAPI)
 bot.register('api', 'soundcloud', SoundCloudAPI)
 // bot.register('api', 'steam', SteamAPI, config.steam.apiKey)
 
-bot.register('cache', 'copycat', Redis, config.cache.copycat)
+bot.register('cache', 'copycat', config.cache.copycat)
 
 async function initStatusClock () {
   let index = 0
