@@ -10,9 +10,14 @@ module.exports = {
       index: true
     },
 
-    channels: {
-      type: Object,
-      default: {}
-    }
+    channeld: {
+      type: String,
+      unique: true,
+      index: true
+    },
+
+    targets: [
+      { type: String, unique: true }
+    ]
   }
 }

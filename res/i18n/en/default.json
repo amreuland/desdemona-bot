@@ -53,6 +53,11 @@
   "help": {
     "HEADER": "Here are the commands for **{{guild}}**"
   },
+  "copycat": {
+    "errors": {
+      "SAME_CHANNEL": "You can't mirror a channel into itself!"
+    }
+  },
   "menus": {
     "EXIT": "Enter {{cancel}} to exit the menu.",
     "ERRORED": "the menu has closed:",

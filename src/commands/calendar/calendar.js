@@ -57,8 +57,7 @@ class CalendarCommand extends Command {
             ]
           }
         }
-      },
-      hidden: false
+      }
     })
   }
 
