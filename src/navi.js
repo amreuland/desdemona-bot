@@ -8,16 +8,17 @@ const chalk = require('chalk')
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
+const redis = require('redis')
 
 const { Sentry } = require('./lib')
 
-const { APIPlugin, MongoosePlugin } = require('./plugins')
+const { APIPlugin, MongoosePlugin, RedisPlugin } = require('./plugins')
 
 const handleEvents = require('./lib/handleEvents')
 
 const {
   CleverbotAPI, GoogleAPI, LeagueAPI, OverwatchAPI,
-  PastebinAPI, SoundCloudAPI, SteamAPI
+  PastebinAPI, SoundCloudAPI
 } = require('./api')
 
 const { Client, utils } = require('sylphy')
@@ -50,6 +51,7 @@ class Navi extends Client {
 
     this
       .createPlugin('api', APIPlugin, options)
+      .createPlugin('cache', RedisPlugin, options)
       .createPlugin('db', MongoosePlugin, options)
 
     this
@@ -63,6 +65,10 @@ class Navi extends Client {
 
   get api () {
     return this.plugins.get('api')
+  }
+
+  get cache () {
+    return this.plugins.get('cache')
   }
 
   get db () {
@@ -111,12 +117,12 @@ const bot = new Navi({
   maxShards
 })
 
-const userBot = new Client({
-  token: config.user.token,
-  selfbot: true
-})
+// const userBot = new Client({
+//   token: config.user.token,
+//   selfbot: true
+// })
 
-bot.userBot = userBot
+// bot.userBot = userBot
 
 bot.register('api', 'google', GoogleAPI, require(resolveConfig('client_secret')).installed)
 bot.register('api', 'cleverbot', CleverbotAPI)
@@ -124,14 +130,18 @@ bot.register('api', 'lol', LeagueAPI)
 bot.register('api', 'overwatch', OverwatchAPI)
 bot.register('api', 'pastebin', PastebinAPI)
 bot.register('api', 'soundcloud', SoundCloudAPI)
-bot.register('api', 'steam', SteamAPI, config.steam.apiKey)
+// bot.register('api', 'steam', SteamAPI, config.steam.apiKey)
+
+const copycatCache = redis.createClient(config.cache.copycat)
+
+bot.register('cache', 'copycat', copycatCache)
 
 async function initStatusClock () {
   let index = 0
   const statuses = [
     'https://navi.social',
     '%s guilds',
-    'Use \'n!help\'',
+    `Use '${bot.prefix}help'`,
     '%d users'
   ]
   setInterval(function () {
@@ -151,4 +161,5 @@ bot.once('ready', () => {
   setInterval(handleEvents.bind(bot), (config.calendar.pollingRate || 30) * 1000)
 })
 
-bot.run().then(() => userBot.run())
+bot.run()
+// .then(() => userBot.run())
