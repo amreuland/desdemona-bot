@@ -160,7 +160,7 @@ class CopycatCommand extends Command {
     }
 
     let question = `Are you sure you want to unlink all mirrors from ${
-      !channel ? 'the guid' : `#${channel.name}`
+      !channel ? 'the guild' : `#${channel.name}`
     }?`
 
     let selection = await responder.selection(['Yes', 'No'], {
@@ -193,7 +193,45 @@ class CopycatCommand extends Command {
   async list ({ msg, client, args }, responder) {
     let guildId = msg.channel.guild.id
 
-    let ch = args.channel[0]
+    let search = { guildId }
+    let channel = null
+    if (args.channel && args.channel[0]) {
+      channel = args.channel[0]
+      search.channelId = channel.id
+    }
+
+    let reply = [
+      `Here are the mirror links for **${!channel ? 'the guild' : channel.mention}**`,
+      '**```glsl'
+    ]
+
+    return Promise.map(client.db.Copycat.find(search), dbItem => {
+      let sourceCh = msg.channel.guild.channels.get(dbItem.channelId)
+      let targets = R.map(target => {
+        let targetCh = msg.channel.guild.channels.get(target)
+        return targetCh ? targetCh.name : `deleted-channel (${target})`
+      }, dbItem.targets)
+
+      return {
+        source: sourceCh ? sourceCh.name : null,
+        targets
+      }
+    })
+      .each(listing => {
+        if (!listing.source) return
+        if (!listing.targets.length) return
+        reply.push(`#${listing.source}:\n${listing.targets.map(t => `\t#${t}`).join('\n')}`)
+      })
+      .then(() => {
+        reply.push('```**')
+
+        if (reply.length === 3) {
+          return responder.error(`there are no mirror links for ${!channel ? 'the guild' : channel.mention}`)
+        }
+
+        return responder.send(reply.join('\n'))
+      })
+      .catch(err => client.raven.captureException(err))
   }
 }
 
