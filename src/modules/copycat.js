@@ -19,19 +19,35 @@ class CopycatModule extends Module {
   onMessageCreate (message) {
     let channelId = message.channel.id
     let guildId = message.channel.guild.id
+    let messageId = message.id
 
     let copyCache = this._client.cache.copycat
+
+    if (message.author.bot) {
+      return false
+    }
 
     return copyCache.smembers(`copycat:channel:${channelId}`)
       .then(data => {
         if (!data || !data.length) {
-          return copyCache.get(`copycat:flag:guildId`)
+          return copyCache.get(`copycat:flag:${guildId}`)
             .then(flag => {
               if (flag) {
                 return null
               }
 
-              return
+              return this._client.db.Copycat.findOne({guildId, channelId})
+                .then(dbItem => {
+                  if (!dbItem || !dbItem.targets.length) {
+                    return copyCache.set(`copycat:flag:${guildId}`, 1, 'EX', 3600)
+                      .return(null)
+                  }
+
+                  let items = dbItem.targets
+                  return copyCache.sadd(`copycat:channel:${channelId}`, ...items)
+                    .then(() => copyCache.expire(`copycat:channel:${channelId}`, 3600))
+                    .return(items)
+                })
             })
         }
 
@@ -42,7 +58,16 @@ class CopycatModule extends Module {
           return
         }
 
-        let message = CopycatUtils.createMirrorEmbed(message)
+        let embed = CopycatUtils.createMirrorEmbed(message)
+
+        Promise.map(data, destinationId => {
+          return this._client.createMessage(destinationId, { embed })
+            .then(newMsg => {
+              return copyCache.sadd(`copycat:message:${messageId}`, newMsg.id)
+            })
+        }).then(() => {
+          return copyCache.expire(`copycat:message:${messageId}`, 3600)
+        })
       })
     // First check cache for channel id as key
     // If found, take value and use as copy channel

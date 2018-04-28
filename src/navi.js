@@ -138,7 +138,7 @@ async function initStatusClock () {
   const statuses = [
     'https://navi.social',
     '%s guilds',
-    `Use '${bot.prefix}help'`,
+    `Use ${bot.prefix}help`,
     '%d users'
   ]
   setInterval(function () {
