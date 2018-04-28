@@ -1,5 +1,7 @@
 'use strict'
 
+const R = require('ramda')
+
 const { Module } = require('sylphy')
 
 const { CopycatUtils } = require('../util')
@@ -63,10 +65,10 @@ class CopycatModule extends Module {
         Promise.map(data, destinationId => {
           return this._client.createMessage(destinationId, { embed })
             .then(newMsg => {
-              return copyCache.sadd(`copycat:message:${messageId}`, newMsg.id)
+              return copyCache.sadd(`copycat:message:${messageId}`, `${destinationId}:${newMsg.id}`)
             })
         }).then(() => {
-          return copyCache.expire(`copycat:message:${messageId}`, 3600)
+          return copyCache.expire(`copycat:message:${messageId}`, 7200)
         })
       })
     // First check cache for channel id as key
@@ -85,7 +87,23 @@ class CopycatModule extends Module {
   }
 
   onMessageDelete (message) {
+    let messageId = message.id
 
+    let copyCache = this._client.cache.copycat
+
+    return Promise.map(copyCache.smembers(`copycat:message:${messageId}`), mirrorStr => {
+      let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
+      return this._client.getMessage(mirrorChId, mirrorMsgId)
+        .then(mirrorMsg => {
+          let embed = mirrorMsg.embeds[0]
+          embed.fields.push({
+            name: 'Deleted At',
+            value: new Date()
+          })
+
+          return this._client.editMessage(mirrorChId, mirrorMsgId, { embed })
+        })
+    }).then(() => copyCache.del(`copycat:message:${messageId}`))
   }
 
   onMessageUpdate (message, OldMessage) {
