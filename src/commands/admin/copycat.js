@@ -220,7 +220,7 @@ class CopycatCommand extends Command {
       .each(listing => {
         if (!listing.source) return
         if (!listing.targets.length) return
-        reply.push(`#${listing.source}:\n${listing.targets.map(t => `\t#${t}`).join('\n')}`)
+        reply.push(`#${listing.source}:\n${listing.targets.map(t => `\t-> #${t}`).join('\n')}`)
       })
       .then(() => {
         reply.push('```**')
