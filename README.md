@@ -1,7 +1,7 @@
 # Navi
 A annoying bot for discord
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/f23eafdbeb3e7fbe8d54/maintainability)](https://codeclimate.com/github/noriah/navi-bot/maintainability)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0b4cb2ade2f445d4b379d7aa2b3452f4)](https://www.codacy.com/app/noriah/navi-bot)
 [![dependencies Status](https://david-dm.org/noriah/navi-bot/status.svg)](https://david-dm.org/noriah/navi-bot)
 [![Navi's Forest](https://discordapp.com/api/guilds/421366326775513108/embed.png)](https://discord.gg/jPhuKT8)
 
