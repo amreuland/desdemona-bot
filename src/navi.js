@@ -60,6 +60,11 @@ class Navi extends Client {
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
       .register('commands', resolve('commands'), { groupedCommands: true })
+
+    // this.db.User.findOne({userId: '437998046849007616'}).populate('warnings')
+    // .then(dbUser => {
+    //   console.log(dbUser.warnings.create)
+    // })
   }
 
   get api () {
@@ -124,7 +129,7 @@ const bot = new Navi({
 // bot.userBot = userBot
 
 bot.register('api', 'google', GoogleAPI, require(resolveConfig('client_secret')).installed)
-// bot.register('api', 'cleverbot', CleverbotAPI)
+bot.register('api', 'cleverbot', CleverbotAPI)
 bot.register('api', 'lol', LeagueAPI)
 bot.register('api', 'overwatch', OverwatchAPI)
 bot.register('api', 'pastebin', PastebinAPI)

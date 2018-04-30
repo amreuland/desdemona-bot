@@ -7,6 +7,7 @@ module.exports = Object.assign(
     SteamUtils: require('./steam'),
     calendarUtil: require('./calendar'),
     EventUtils: require('./events'),
+    ModerationUtils: require('./moderation'),
     RoleUtils: require('./roles')
   }
 )
