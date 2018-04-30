@@ -19,6 +19,10 @@ class CopycatModule extends Module {
   }
 
   onMessageCreate (message) {
+    if (!message.channel.guild) {
+      return
+    }
+
     let channelId = message.channel.id
     let guildId = message.channel.guild.id
     let messageId = message.id
@@ -75,6 +79,10 @@ class CopycatModule extends Module {
   }
 
   onMessageDelete (message) {
+    if (!message.channel.guild) {
+      return
+    }
+
     let messageId = message.id
 
     let copyCache = this._client.cache.copycat
@@ -99,6 +107,10 @@ class CopycatModule extends Module {
   }
 
   onMessageUpdate (message, OldMessage) {
+    if (!message.channel.guild) {
+      return
+    }
+
     let messageId = message.id
 
     let copyCache = this._client.cache.copycat
