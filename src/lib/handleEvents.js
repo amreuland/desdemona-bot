@@ -14,7 +14,7 @@ function handleEvents () {
 
   return Promise.map(guildIds, guildId => {
     return self.db.Guild.findOne({ guildId }).then(dbGuild => {
-      if (!dbGuild.calendarId || !dbGuild.tokens.google) {
+      if (!dbGuild || !dbGuild.calendarId || !dbGuild.tokens.google) {
         return false
       }
       if (dbGuild.settings.enableNotifications === false) {

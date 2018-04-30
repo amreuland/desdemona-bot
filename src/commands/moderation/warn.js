@@ -6,7 +6,7 @@ const { Command } = require('sylphy')
 
 const { ModerationUtils } = require('../../util')
 
-class AuditLogCommand extends Command {
+class WarnCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'warn',
@@ -76,4 +76,4 @@ class AuditLogCommand extends Command {
   }
 }
 
-module.exports = AuditLogCommand
+module.exports = WarnCommand
