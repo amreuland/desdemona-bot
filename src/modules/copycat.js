@@ -81,7 +81,7 @@ class CopycatModule extends Module {
 
     let p = {
       name: 'Deleted At',
-      value: new Date()
+      value: `${new Date()}`
     }
 
     return Promise.map(copyCache.smembers(`copycat:message:${messageId}`), mirrorStr => {
@@ -106,7 +106,7 @@ class CopycatModule extends Module {
     let content = CopycatUtils.sanitizeMentions(message)
 
     let p = {
-      name: `Edit at ${new Date()}`,
+      name: `Edited at ${new Date()}`,
       value: (content === '' ? '*Empty*' : content)
     }
 
