@@ -4,20 +4,8 @@ const moment = require('moment')
 const R = require('ramda')
 
 class CopycatUtils {
-  static createMirrorEmbed (msg) {
-    let description = `**Posted in ${msg.channel.mention}**`
-    let author = {
-      name: `${msg.author.username}#${msg.author.discriminator}`,
-      icon_url: msg.author.avatarURL
-    }
-
-    if (msg.member.nick) {
-      author.name = `${msg.member.nick} (${author.name})`
-    }
-
-    // let title = `Posted in ${msg.channel.mention}`
-
-    let content = msg.content
+  static sanitizeMentions (msg) {
+    let content = msg.content || ''
 
     if (msg.mentions) {
       msg.mentions.forEach(mention => {
@@ -42,6 +30,24 @@ class CopycatUtils {
     content = content
       .replace(/@everyone/g, '@\u200beveryone')
       .replace(/@here/g, '@\u200bhere')
+
+    return content
+  }
+
+  static createMirrorEmbed (msg) {
+    let description = `**Posted in ${msg.channel.mention}**`
+    let author = {
+      name: `${msg.author.username}#${msg.author.discriminator}`,
+      icon_url: msg.author.avatarURL
+    }
+
+    if (msg.member.nick) {
+      author.name = `${msg.member.nick} (${author.name})`
+    }
+
+    // let title = `Posted in ${msg.channel.mention}`
+
+    let content = this.sanitizeMentions(msg)
 
     let image = R.find(R.has('width'), msg.attachments)
 

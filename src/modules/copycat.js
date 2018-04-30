@@ -62,7 +62,7 @@ class CopycatModule extends Module {
 
         let embed = CopycatUtils.createMirrorEmbed(message)
 
-        Promise.map(data, destinationId => {
+        return Promise.map(data, destinationId => {
           return this._client.createMessage(destinationId, { embed })
             .then(newMsg => {
               return copyCache.sadd(`copycat:message:${messageId}`, `${destinationId}:${newMsg.id}`)
@@ -71,19 +71,7 @@ class CopycatModule extends Module {
           return copyCache.expire(`copycat:message:${messageId}`, 7200)
         })
       })
-    // First check cache for channel id as key
-    // If found, take value and use as copy channel
-    // Check Cache for flag saying we have already checked guiild db in X time
-    // If flag, don't check db
-    // If no flag, check db, using guild id, look for copycat channels
-    // If any found, set all in the database
-    // Set flag in cache saying we have checked
-    // Set expiry on flag
-    // Take key for channel and get value of destination
-    // Send message formatted to look like quote to destination
-    // Store source message id and destination message id in cache as
-    //    source => destination
-    // Set expiry on source key
+      .catch(err => this._client.raven.captureException(err))
   }
 
   onMessageDelete (message) {
@@ -91,34 +79,48 @@ class CopycatModule extends Module {
 
     let copyCache = this._client.cache.copycat
 
+    let p = {
+      name: 'Deleted At',
+      value: new Date()
+    }
+
     return Promise.map(copyCache.smembers(`copycat:message:${messageId}`), mirrorStr => {
       let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
       return this._client.getMessage(mirrorChId, mirrorMsgId)
         .then(mirrorMsg => {
           let embed = mirrorMsg.embeds[0]
-          embed.fields.push({
-            name: 'Deleted At',
-            value: new Date()
-          })
+          embed.fields.push(p)
 
           return this._client.editMessage(mirrorChId, mirrorMsgId, { embed })
         })
-    }).then(() => copyCache.del(`copycat:message:${messageId}`))
+    })
+      .then(() => copyCache.del(`copycat:message:${messageId}`))
+      .catch(err => this._client.raven.captureException(err))
   }
 
   onMessageUpdate (message, OldMessage) {
-    // Check cache for message id matching message id
-    // If found, get value of shadow-message in copy channel
-    // Update shadow-message with message content
-    // Set expiry on message id
-  }
+    let messageId = message.id
 
-  // Clearing flag:
-  // When command runs
-  // If we add a copy channel
-  // Set in database, set in cache, set expiry and remove flag
-  // If we remove channel
-  // Remove entry from cache
+    let copyCache = this._client.cache.copycat
+
+    let content = CopycatUtils.sanitizeMentions(message)
+
+    let p = {
+      name: `Edit at ${new Date()}`,
+      value: (content === '' ? '*Empty*' : content)
+    }
+
+    return Promise.map(copyCache.smembers(`copycat:message:${messageId}`), mirrorStr => {
+      let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
+      return this._client.getMessage(mirrorChId, mirrorMsgId)
+        .then(mirrorMsg => {
+          let embed = mirrorMsg.embeds[0]
+          embed.fields.push(p)
+
+          return this._client.editMessage(mirrorChId, mirrorMsgId, { embed })
+        })
+    }).catch(err => this._client.raven.captureException(err))
+  }
 }
 
 module.exports = CopycatModule
