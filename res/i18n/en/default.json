@@ -66,6 +66,11 @@
       "CHANNELS_UNLINKED_BULK_CHANNEL": "All mirrors for the channel **{{src}}** have been unlinked"
     }
   },
+  "warnlog": {
+    "errors": {
+      "NO_HISTORY": "**{{user}}** has no previous warnings"
+    }
+  },
   "menus": {
     "EXIT": "Enter {{cancel}} to exit the menu.",
     "ERRORED": "the menu has closed:",
