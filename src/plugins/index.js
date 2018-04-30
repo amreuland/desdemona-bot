@@ -2,5 +2,6 @@
 
 module.exports = {
   APIPlugin: require('./API'),
-  MongoosePlugin: require('./Mongoose')
+  MongoosePlugin: require('./Mongoose'),
+  RedisPlugin: require('./Redis')
 }

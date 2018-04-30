@@ -53,6 +53,19 @@
   "help": {
     "HEADER": "Here are the commands for **{{guild}}**"
   },
+  "copycat": {
+    "errors": {
+      "SAME_CHANNEL": "You can't mirror a channel into itself!",
+      "LINK_EXISTS": "**{{dest}}** is already set to mirror **{{src}}**",
+      "LINK_NOT_EXIST": "**{{dest}}** is not mirroring **{{src}}**"
+    },
+    "success": {
+      "CHANNELS_LINKED": "**{{dest}}** has been set to mirror **{{src}}**",
+      "CHANNELS_UNLINKED": "**{{dest}}** is no longer mirroring **{{src}}**",
+      "CHANNELS_UNLINKED_BULK_GUILD": "All mirrors for **the guild** have been unlinked",
+      "CHANNELS_UNLINKED_BULK_CHANNEL": "All mirrors for the channel **{{src}}** have been unlinked"
+    }
+  },
   "menus": {
     "EXIT": "Enter {{cancel}} to exit the menu.",
     "ERRORED": "the menu has closed:",
