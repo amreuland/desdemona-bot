@@ -6,6 +6,7 @@ module.exports = Object.assign(
     CopycatUtils: require('./copycat'),
     SteamUtils: require('./steam'),
     calendarUtil: require('./calendar'),
-    EventUtils: require('./events')
+    EventUtils: require('./events'),
+    RoleUtils: require('./roles')
   }
 )

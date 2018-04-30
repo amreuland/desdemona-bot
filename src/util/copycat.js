@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const R = require('ramda')
+const RoleUtils = require('./roles')
 
 class CopycatUtils {
   static sanitizeMentions (msg) {
@@ -44,6 +45,9 @@ class CopycatUtils {
     if (msg.member.nick) {
       author.name = `${msg.member.nick} (${author.name})`
     }
+
+    let highRole = RoleUtils.getHighestUserRole(
+      msg.member.roles, msg.channel.guild.roles) || {}
 
     // let title = `Posted in ${msg.channel.mention}`
 
@@ -88,7 +92,7 @@ class CopycatUtils {
 
     let timestamp = moment(msg.timestamp).toDate()
 
-    let color = 0xff8300
+    let color = highRole.color || 0x99AAB5
 
     return {
       description,
