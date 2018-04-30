@@ -124,7 +124,7 @@ const bot = new Navi({
 // bot.userBot = userBot
 
 bot.register('api', 'google', GoogleAPI, require(resolveConfig('client_secret')).installed)
-bot.register('api', 'cleverbot', CleverbotAPI)
+// bot.register('api', 'cleverbot', CleverbotAPI)
 bot.register('api', 'lol', LeagueAPI)
 bot.register('api', 'overwatch', OverwatchAPI)
 bot.register('api', 'pastebin', PastebinAPI)
