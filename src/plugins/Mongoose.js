@@ -72,6 +72,12 @@ class MongoosePlugin extends Collection {
 
     let schema = Mongoose.Schema(Schema.schema)
 
+    if (Schema.virtuals) {
+      for (const key in Schema.virtuals) {
+        schema.virtual(key, Schema.virtuals[key])
+      }
+    }
+
     let model = Mongoose.model(name, schema)
 
     this.set(name, model)
