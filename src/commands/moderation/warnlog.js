@@ -28,17 +28,11 @@ class WarnLogCommand extends Command {
       group: 'moderation',
       description: 'Lookup a users warning hisotry',
       usage: [
-        {
-          name: 'member',
-          displayName: 'member',
-          type: 'member'
-        }
+        { name: 'member', displayName: 'member', type: 'member' }
       ],
       options: {
         guildOnly: true,
-        permissions: [
-          'kickMembers'
-        ],
+        permissions: ['kickMembers'],
         hidden: false
       }
     })

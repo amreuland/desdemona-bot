@@ -21,7 +21,7 @@ class ModerationUtils {
 
     let description = [
       `**${name}** joined on **${warningFormat(member.joinedAt)}**`,
-      `They have **${warnings.length}** total warning${warnings.length > 1 ? 's' : ''} on this server.`
+      `They have **${warnings.length}** ${warnings.length > 1 ? 'total warnings' : 'warning'} on this server.`
     ]
 
     if (owc > 0) {
@@ -52,12 +52,15 @@ class ModerationUtils {
       {
         name: 'Reason',
         value: reason
-      },
-      {
-        name: 'Total Warnings',
-        value: warnCount
       }
     ]
+
+    if (warnCount > 1) {
+      fields.push({
+        name: 'Total Warnings',
+        value: warnCount
+      })
+    }
 
     return {
       title: 'Warning Notice',
