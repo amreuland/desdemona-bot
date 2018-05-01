@@ -33,10 +33,10 @@ class CopycatModule extends Module {
       return false
     }
 
-    return copyCache.smembers(`copycat:channel:${channelId}`)
+    return copyCache.smembers(`channel:${channelId}`)
       .then(data => {
         if (!data || !data.length) {
-          return copyCache.get(`copycat:flag:${guildId}`)
+          return copyCache.get(`flag:${guildId}`)
             .then(flag => {
               if (flag) {
                 return null
@@ -45,13 +45,13 @@ class CopycatModule extends Module {
               return this._client.db.Copycat.findOne({guildId, channelId})
                 .then(dbItem => {
                   if (!dbItem || !dbItem.targets.length) {
-                    return copyCache.set(`copycat:flag:${guildId}`, 1, 'EX', 3600)
+                    return copyCache.set(`flag:${guildId}`, 1, 'EX', 3600)
                       .return(null)
                   }
 
                   let items = dbItem.targets
-                  return copyCache.sadd(`copycat:channel:${channelId}`, ...items)
-                    .then(() => copyCache.expire(`copycat:channel:${channelId}`, 3600))
+                  return copyCache.sadd(`channel:${channelId}`, ...items)
+                    .then(() => copyCache.expire(`channel:${channelId}`, 3600))
                     .return(items)
                 })
             })
@@ -69,10 +69,10 @@ class CopycatModule extends Module {
         return Promise.map(data, destinationId => {
           return this._client.createMessage(destinationId, { embed })
             .then(newMsg => {
-              return copyCache.sadd(`copycat:message:${messageId}`, `${destinationId}:${newMsg.id}`)
+              return copyCache.sadd(`message:${messageId}`, `${destinationId}:${newMsg.id}`)
             })
         }).then(() => {
-          return copyCache.expire(`copycat:message:${messageId}`, 7200)
+          return copyCache.expire(`message:${messageId}`, 7200)
         })
       })
       .catch(err => this._client.raven.captureException(err))
@@ -92,7 +92,7 @@ class CopycatModule extends Module {
       value: `${new Date()}`
     }
 
-    return Promise.map(copyCache.smembers(`copycat:message:${messageId}`), mirrorStr => {
+    return Promise.map(copyCache.smembers(`message:${messageId}`), mirrorStr => {
       let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
       return this._client.getMessage(mirrorChId, mirrorMsgId)
         .then(mirrorMsg => {
@@ -102,7 +102,7 @@ class CopycatModule extends Module {
           return this._client.editMessage(mirrorChId, mirrorMsgId, { embed })
         })
     })
-      .then(() => copyCache.del(`copycat:message:${messageId}`))
+      .then(() => copyCache.del(`message:${messageId}`))
       .catch(err => this._client.raven.captureException(err))
   }
 
@@ -122,7 +122,7 @@ class CopycatModule extends Module {
       value: (content === '' ? '*Empty*' : content)
     }
 
-    return Promise.map(copyCache.smembers(`copycat:message:${messageId}`), mirrorStr => {
+    return Promise.map(copyCache.smembers(`message:${messageId}`), mirrorStr => {
       let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
       return this._client.getMessage(mirrorChId, mirrorMsgId)
         .then(mirrorMsg => {

@@ -94,10 +94,10 @@ class CopycatCommand extends Command {
         return dbItem.save()
       })
       .then(() => {
-        return client.cache.copycat.sadd(`copycat:channel:${srcCh.id}`, destCh.id)
-          .then(() => client.cache.copycat.expire(`copycat:channel:${srcCh.id}`, 3600))
+        return client.cache.copycat.sadd(`channel:${srcCh.id}`, destCh.id)
+          .then(() => client.cache.copycat.expire(`channel:${srcCh.id}`, 3600))
       })
-      .then(() => client.cache.copycat.del(`copycat:flag:${guildId}`))
+      .then(() => client.cache.copycat.del(`flag:${guildId}`))
       .then(() => {
         return responder.success('{{%copycat.success.CHANNELS_LINKED}}', {
           src: srcCh.mention,
@@ -138,7 +138,7 @@ class CopycatCommand extends Command {
         dbItem.targets = newTargets
         return dbItem.save()
       })
-      .then(() => client.cache.copycat.srem(`copycat:channel:${srcCh.id}`, destCh.id))
+      .then(() => client.cache.copycat.srem(`channel:${srcCh.id}`, destCh.id))
       .then(() => {
         return responder.success('{{%copycat.success.CHANNELS_UNLINKED}}', {
           src: srcCh.mention,
@@ -175,7 +175,7 @@ class CopycatCommand extends Command {
       let total = dbItem.targets.length
       dbItem.targets = []
       return dbItem.save()
-        .then(() => client.cache.copycat.del(`copycat:channel:${dbItem.channelId}`))
+        .then(() => client.cache.copycat.del(`channel:${dbItem.channelId}`))
         .return(total)
     })
       .then(() => {

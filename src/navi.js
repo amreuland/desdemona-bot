@@ -60,11 +60,6 @@ class Navi extends Client {
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
       .register('commands', resolve('commands'), { groupedCommands: true })
-
-    // this.db.User.findOne({userId: '437998046849007616'}).populate('warnings')
-    // .then(dbUser => {
-    //   console.log(dbUser.warnings.create)
-    // })
   }
 
   get api () {
@@ -121,20 +116,13 @@ const bot = new Navi({
   maxShards
 })
 
-// const userBot = new Client({
-//   token: config.user.token,
-//   selfbot: true
-// })
-
-// bot.userBot = userBot
-
-bot.register('api', 'google', GoogleAPI, require(resolveConfig('client_secret')).installed)
+bot.register('api', 'google', GoogleAPI, config.apis.google)
 bot.register('api', 'cleverbot', CleverbotAPI)
 bot.register('api', 'lol', LeagueAPI)
 bot.register('api', 'overwatch', OverwatchAPI)
 bot.register('api', 'pastebin', PastebinAPI)
 bot.register('api', 'soundcloud', SoundCloudAPI)
-// bot.register('api', 'steam', SteamAPI, config.steam.apiKey)
+// bot.register('api', 'steam', SteamAPI, config.apis.steam.apiKey)
 
 bot.register('cache', 'copycat', config.cache.copycat)
 

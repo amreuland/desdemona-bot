@@ -1,5 +1,5 @@
 {
-  "name": "navi-bot",
+  "name": "navi",
   "version": "1.0.0",
   "description": "Navi is a discord bot to annoy",
   "main": "./index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/noriah/navi-bot.git"
+    "url": "git+https://github.com/naviforest/navi.git"
   },
   "keywords": [
     "discord",
@@ -20,9 +20,9 @@
   "author": "noriah",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/noriah/navi-bot/issues"
+    "url": "https://github.com/naviforest/navi/issues"
   },
-  "homepage": "https://github.com/noriah/navi-bot#readme",
+  "homepage": "https://github.com/naviforest/navi#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
     "bufferutil": "^3.0.4",
@@ -39,7 +39,7 @@
     "raven": "^2.6.0",
     "steamapi": "^2.0.2",
     "steamid": "^1.1.0",
-    "sylphy": "github:noriah/sylphy",
+    "sylphy": "github:naviforest/sylphy",
     "uws": "^9.148.0",
     "winston": "^2.4.2"
   }
