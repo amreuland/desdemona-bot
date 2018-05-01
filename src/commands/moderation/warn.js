@@ -56,14 +56,18 @@ class WarnCommand extends Command {
 
             let unforgivenWarnings = R.filter(R.propEq('forgiven', false), guildWarnings)
 
-            // let warnCount = guildWarnings.length + 1
+            let warnCount = guildWarnings.length + 1
             let embed = ModerationUtils.createWarningEmbed(
               guild, msg.member, unforgivenWarnings.length, reason)
 
             return pmChannel.createMessage({ embed })
+              .then(() => responder.success('{{%warn.SUCCESS}}', {
+                user: member.mention,
+                count: warnCount,
+                unforgiven: unforgivenWarnings
+              }))
           })
       })
-      .then(() => responder.success('action complete', {deleteDelay: 5000}))
       .catch(err => client.raven.captureException(err))
   }
 }

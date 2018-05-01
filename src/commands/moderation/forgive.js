@@ -23,9 +23,7 @@ class ForgiveCommand extends Command {
       ],
       options: {
         guildOnly: true,
-        permissions: [
-          'kickMembers'
-        ],
+        permissions: ['kickMembers'],
         hidden: false
       }
     })
