@@ -2,7 +2,7 @@
 
 const { Command, utils: { padEnd } } = require('sylphy')
 
-class Help extends Command {
+class HelpCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'help',
@@ -73,4 +73,4 @@ class Help extends Command {
   }
 }
 
-module.exports = Help
+module.exports = HelpCommand

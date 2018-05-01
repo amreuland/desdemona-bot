@@ -60,6 +60,11 @@ class Navi extends Client {
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
       .register('commands', resolve('commands'), { groupedCommands: true })
+
+    // this.db.User.findOne({userId: '437998046849007616'}).populate('warnings')
+    // .then(dbUser => {
+    //   console.log(dbUser.warnings.create)
+    // })
   }
 
   get api () {

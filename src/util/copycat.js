@@ -66,11 +66,7 @@ class CopycatUtils {
     }
 
     let fields = [
-      {
-        name: 'Message ID',
-        value: msg.id,
-        inline: false
-      },
+      { name: 'Message ID', value: msg.id, inline: false },
       {
         name: `Content${parts.length > 1 ? ' part 1' : ''}`,
         value: parts[0],
@@ -79,16 +75,10 @@ class CopycatUtils {
     ]
 
     if (parts.length > 1) {
-      fields.push({
-        name: 'Content part 2',
-        value: parts[1],
-        inline: false
-      })
+      fields.push({ name: 'Content part 2', value: parts[1], inline: false })
     }
 
-    let footer = {
-      text: `User ID: ${msg.author.id}`
-    }
+    let footer = { text: `User ID: ${msg.author.id}` }
 
     let timestamp = moment(msg.timestamp).toDate()
 

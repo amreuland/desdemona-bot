@@ -66,6 +66,19 @@
       "CHANNELS_UNLINKED_BULK_CHANNEL": "All mirrors for the channel **{{src}}** have been unlinked"
     }
   },
+  "warnlog": {
+    "errors": {
+      "NO_HISTORY": "**{{user}}** has no previous warnings"
+    }
+  },
+  "forgive": {
+    "SUCCESS": "**{{user}}** has been forgiven for ```{{reason}}```",
+    "errors": {
+      "USER_NOT_FOUND": "user has no warnings",
+      "WARN_NOT_EXIST": "that warning number was not found",
+      "ALREADY_FORGIVEN": "the user has already been forgiven for that offense"
+    }
+  },
   "menus": {
     "EXIT": "Enter {{cancel}} to exit the menu.",
     "ERRORED": "the menu has closed:",
