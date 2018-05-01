@@ -13,22 +13,12 @@ class WarnCommand extends Command {
       group: 'moderation',
       description: 'Warn a user',
       usage: [
-        {
-          name: 'member',
-          displayName: 'member',
-          type: 'member'
-        },
-        {
-          name: 'reason',
-          displayName: 'reason',
-          type: 'string'
-        }
+        { name: 'member', displayName: 'member', type: 'member' },
+        { name: 'reason', displayName: 'reason', type: 'string' }
       ],
       options: {
         guildOnly: true,
-        permissions: [
-          'kickMembers'
-        ],
+        permissions: ['kickMembers'],
         hidden: false
       }
     })
@@ -64,9 +54,11 @@ class WarnCommand extends Command {
             let guildWarnings = R.filter(
               R.propEq('guildId', guildId), dbUser.warnings || [])
 
-            let warnCount = guildWarnings.length + 1
+            let unforgivenWarnings = R.filter(R.propEq('forgiven', false), guildWarnings)
+
+            // let warnCount = guildWarnings.length + 1
             let embed = ModerationUtils.createWarningEmbed(
-              guild, msg.member, warnCount, reason)
+              guild, msg.member, unforgivenWarnings.length, reason)
 
             return pmChannel.createMessage({ embed })
           })
