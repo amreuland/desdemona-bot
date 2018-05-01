@@ -14,7 +14,7 @@ class WarnCommand extends Command {
       description: 'Warn a user',
       usage: [
         { name: 'member', displayName: 'member', type: 'member' },
-        { name: 'reason', displayName: 'reason', type: 'string' }
+        { name: 'reason', displayName: 'reason', type: 'string', last: true }
       ],
       options: {
         guildOnly: true,
