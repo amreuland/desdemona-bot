@@ -1,7 +1,7 @@
 {
   "warn": {
     "errors": {
-      "IS_BOT": "bots cannot be warned!",
+      "IS_BOT": "bots cannot be warned!"
     },
     "SUCCESS": "{{user}} has been warned. {{count}} total warnings ({{unforgiven}})"
   },

@@ -17,7 +17,8 @@ module.exports = {
     }
 
     if (!actOnMsg) {
-      for (const prefix of commands.prefixes.keys()) {
+      let prefixes = commands.prefixes.keys()
+      for (const prefix of prefixes) {
         if (!msg.content.startsWith(prefix)) {
           continue
         }
@@ -33,6 +34,7 @@ module.exports = {
     }
 
     const rawArgs = msg.content.substring(foundPrefix.length).trim().split(' ')
+    container.settings.prefix = foundPrefix
     container.trigger = rawArgs[0].toLowerCase()
     container.isCommand = commands.has(container.trigger)
     container.rawArgs = rawArgs.slice(1).filter(v => v)
