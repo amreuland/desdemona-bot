@@ -11,11 +11,24 @@ class CopycatCommand extends Command {
       aliases: ['mirror'],
       group: 'admin',
       description: 'Manage Navi copycat module',
+      usage: [
+        {
+          name: 'subcmd',
+          choices: [ 'link', 'unlink', 'unlinkall', 'list' ],
+          type: 'string'
+        }
+      ],
       options: {
         guildOnly: true,
         permissions: ['administrator'],
         hidden: false
       },
+      examples: [
+        {
+          args: 'link #general #general-mirror',
+          description: 'Link #genearl-mirror to #general'
+        }
+      ],
       subcommands: {
         link: {
           aliases: ['add'],
@@ -73,7 +86,7 @@ class CopycatCommand extends Command {
     let destCh = args.destChannel[0]
 
     if (srcCh.id === destCh.id) {
-      return responder.error('{{%copycat.errors.SAME_CHANNEL}}')
+      return responder.error('{{copycat.errors.SAME_CHANNEL}}')
     }
 
     let search = {guildId, channelId: srcCh.id}
@@ -99,12 +112,12 @@ class CopycatCommand extends Command {
       })
       .then(() => client.cache.copycat.del(`flag:${guildId}`))
       .then(() => {
-        return responder.success('{{%copycat.success.CHANNELS_LINKED}}', {
+        return responder.success('{{copycat.success.CHANNELS_LINKED}}', {
           src: srcCh.mention,
           dest: destCh.mention
         })
       })
-      .catch({isMessage: true}, err => responder.error(`{{%copycat.${err.message}}}`, err))
+      .catch({isMessage: true}, err => responder.error(`{{copycat.${err.message}}}`, err))
       .catch(err => client.raven.captureException(err))
   }
 
@@ -115,7 +128,7 @@ class CopycatCommand extends Command {
     let destCh = args.destChannel[0]
 
     if (srcCh.id === destCh.id) {
-      return responder.error('{{%copycat.errors.SAME_CHANNEL}}')
+      return responder.error('{{copycat.errors.SAME_CHANNEL}}')
     }
 
     let search = {guildId, channelId: srcCh.id}
@@ -140,12 +153,12 @@ class CopycatCommand extends Command {
       })
       .then(() => client.cache.copycat.srem(`channel:${srcCh.id}`, destCh.id))
       .then(() => {
-        return responder.success('{{%copycat.success.CHANNELS_UNLINKED}}', {
+        return responder.success('{{copycat.success.CHANNELS_UNLINKED}}', {
           src: srcCh.mention,
           dest: destCh.mention
         })
       })
-      .catch({isMessage: true}, err => responder.error(`{{%copycat.${err.message}}}`, err))
+      .catch({isMessage: true}, err => responder.error(`{{copycat.${err.message}}}`, err))
       .catch(err => client.raven.captureException(err))
   }
 
@@ -180,13 +193,13 @@ class CopycatCommand extends Command {
     })
       .then(() => {
         if (channel) {
-          return responder.success('{{%copycat.success.CHANNELS_UNLINKED_BULK_CHANNEL}}', {
+          return responder.success('{{copycat.success.CHANNELS_UNLINKED_BULK_CHANNEL}}', {
             src: channel.mention
           })
         }
-        return responder.success('{{%copycat.success.CHANNELS_UNLINKED_BULK_GUILD}}')
+        return responder.success('{{copycat.success.CHANNELS_UNLINKED_BULK_GUILD}}')
       })
-      .catch({isMessage: true}, err => responder.error(`{{%copycat.${err.message}}}`, err))
+      .catch({isMessage: true}, err => responder.error(`{{copycat.${err.message}}}`, err))
       .catch(err => client.raven.captureException(err))
   }
 

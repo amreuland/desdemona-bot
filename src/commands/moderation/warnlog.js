@@ -26,7 +26,7 @@ class WarnLogCommand extends Command {
     super(...args, {
       name: 'warnlog',
       group: 'moderation',
-      description: 'Lookup a users warning hisotry',
+      description: 'Lookup a users warning history',
       usage: [
         { name: 'member', displayName: 'member', type: 'member' }
       ],
@@ -34,7 +34,13 @@ class WarnLogCommand extends Command {
         guildOnly: true,
         permissions: ['kickMembers'],
         hidden: false
-      }
+      },
+      examples: [
+        {
+          args: '@user',
+          description: 'Retrieve the warning log for user'
+        }
+      ]
     })
   }
 
@@ -48,7 +54,9 @@ class WarnLogCommand extends Command {
       .populate('warnings')
       .then(dbUser => {
         if (!dbUser || !dbUser.warnings.length) {
-          return responder.error('{{warnlog.errors.NO_HISTORY}}', {user: `${member.username}#${member.discriminator}`})
+          return responder.error('{{warnlog.errors.NO_HISTORY}}', {
+            user: `${member.username}#${member.discriminator}`
+          })
         }
 
         let guildWarnings = sortFunc(dbUser.warnings, guildId)
