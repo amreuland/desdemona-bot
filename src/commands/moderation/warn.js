@@ -20,7 +20,13 @@ class WarnCommand extends Command {
         guildOnly: true,
         permissions: ['kickMembers'],
         hidden: false
-      }
+      },
+      examples: [
+        {
+          args: '@user Bad Language',
+          description: 'warn user for Bad Language'
+        }
+      ]
     })
   }
 

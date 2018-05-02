@@ -9,13 +9,13 @@ class HelpCommand extends Command {
       description: 'Help!',
       group: 'core',
       usage: [
-        { name: 'command', types: 'command', optional: true }
+        { name: 'command', type: 'command', optional: true }
       ]
     })
   }
 
-  async handle ({ msg, client, args, settings }, responder) {
-    let prefix = client.prefix
+  async handle ({ msg, client, args, settings = {} }, responder) {
+    let prefix = settings.prefix || client.prefix
     if (args.command) {
       let command = args.command
       let name = command.name
@@ -27,6 +27,14 @@ class HelpCommand extends Command {
       if (command.triggers.length > 1) {
         reply.push(`\n**Aliases**: \`${command.triggers.slice(1).join(' ')}\``)
       }
+
+      if (command.examples.length) {
+        reply.push('\n**Examples:**')
+        for (let example of command.examples) {
+          reply.push(`\`${prefix}${name} ${example.args}\` - ${example.description}`)
+        }
+      }
+
       // reply.push('\n{{footer_group}}')
       return responder.send(reply.join('\n'))
     }

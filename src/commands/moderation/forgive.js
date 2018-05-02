@@ -4,8 +4,6 @@ const R = require('ramda')
 
 const { Command } = require('sylphy')
 
-const { ModerationUtils } = require('../../util')
-
 const sortFunc = (warnings, guildId) => R.compose(
   R.sortBy(R.prop('timestamp')),
   R.filter(R.propEq('guildId', guildId))
@@ -25,7 +23,10 @@ class ForgiveCommand extends Command {
         guildOnly: true,
         permissions: ['kickMembers'],
         hidden: false
-      }
+      },
+      examples: [
+        { args: '@user 3', description: 'forgive user for their 3rd warning' }
+      ]
     })
   }
 
@@ -40,23 +41,23 @@ class ForgiveCommand extends Command {
       .populate('warnings')
       .then(dbUser => {
         if (!dbUser) {
-          return responder.error('{{%forgive.errors.USER_NOT_FOUND}}')
+          return responder.error('{{forgive.errors.USER_NOT_FOUND}}')
         }
 
         let guildWarnings = sortFunc(dbUser.warnings, guildId)
         let warning = guildWarnings[warnNumber]
 
         if (!warning) {
-          return responder.error('{{%forgive.errors.WARN_NOT_EXIST}}')
+          return responder.error('{{forgive.errors.WARN_NOT_EXIST}}')
         }
 
         if (warning.forgiven) {
-          return responder.error('{{%forgive.errors.ALREADY_FORGIVEN}}')
+          return responder.error('{{forgive.errors.ALREADY_FORGIVEN}}')
         }
 
         warning.forgiven = true
         return warning.save()
-          .then(() => responder.success('{{%forgive.SUCCESS}}', {
+          .then(() => responder.success('{{forgive.SUCCESS}}', {
             user: member.mention,
             reason: warning.reason
           }))
