@@ -1,13 +1,13 @@
 'use strict'
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
 const { EventUtils } = require('../util')
 
-class UserEventsModule extends Module {
+class UserEventsListener extends Listener {
   constructor (...args) {
     super(...args, {
-      name: 'user:events',
+      name: 'admin:audit:user:events',
       events: {
         'userUpdate': 'onUserUpdate'
       }
@@ -51,4 +51,4 @@ class UserEventsModule extends Module {
   }
 }
 
-module.exports = UserEventsModule
+module.exports = UserEventsListener

@@ -2,9 +2,9 @@
 
 const chalk = require('chalk')
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
-class ShardsModule extends Module {
+class ShardsListener extends Listener {
   constructor (...args) {
     super(...args, {
       name: 'shard:logger',
@@ -32,4 +32,4 @@ class ShardsModule extends Module {
   }
 }
 
-module.exports = ShardsModule
+module.exports = ShardsListener

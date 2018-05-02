@@ -1,15 +1,15 @@
 'use strict'
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
 const R = require('ramda')
 
 const { EventUtils } = require('../util')
 
-class GuildEventsModule extends Module {
+class GuildEventsListener extends Listener {
   constructor (...args) {
     super(...args, {
-      name: 'guild:events',
+      name: 'admin:audit:guild:events',
       events: {
         'guildCreate': 'onGuildCreate',
         'guildDelete': 'onGuildDelete',
@@ -245,4 +245,4 @@ class GuildEventsModule extends Module {
   }
 }
 
-module.exports = GuildEventsModule
+module.exports = GuildEventsListener

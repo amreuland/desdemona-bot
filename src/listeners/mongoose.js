@@ -1,8 +1,8 @@
 'use strict'
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
-class MongooseModule extends Module {
+class MongooseListener extends Listener {
   constructor (...args) {
     super(...args, {
       name: 'mongoose:logger',
@@ -28,4 +28,4 @@ class MongooseModule extends Module {
   }
 }
 
-module.exports = MongooseModule
+module.exports = MongooseListener

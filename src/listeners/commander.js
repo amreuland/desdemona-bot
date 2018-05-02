@@ -1,8 +1,8 @@
 'use strict'
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
-class CommanderModule extends Module {
+class CommanderListener extends Listener {
   constructor (...args) {
     super(...args, {
       name: 'commander:logger',
@@ -22,4 +22,4 @@ class CommanderModule extends Module {
   }
 }
 
-module.exports = CommanderModule
+module.exports = CommanderListener

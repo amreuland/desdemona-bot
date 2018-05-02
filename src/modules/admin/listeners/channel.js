@@ -1,11 +1,11 @@
 'use strict'
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
-class ChannelEventsModule extends Module {
+class ChannelEventsListener extends Listener {
   constructor (...args) {
     super(...args, {
-      name: 'channel:events',
+      name: 'admin:audit:channel:events',
       events: {
         'channelCreate': 'onChannelCreate',
         'channelDelete': 'onChannelDelete',
@@ -57,4 +57,4 @@ class ChannelEventsModule extends Module {
   }
 }
 
-module.exports = ChannelEventsModule
+module.exports = ChannelEventsListener
