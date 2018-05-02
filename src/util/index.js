@@ -3,6 +3,7 @@
 module.exports = Object.assign(
   require('./errors'),
   {
+    CacheUtils: require('./cache'),
     CopycatUtils: require('./copycat'),
     GuildUtils: require('./guild'),
     SteamUtils: require('./steam'),

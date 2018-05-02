@@ -45,7 +45,7 @@ class CopycatModule extends Module {
               return this._client.db.Copycat.findOne({guildId, channelId})
                 .then(dbItem => {
                   if (!dbItem || !dbItem.targets.length) {
-                    return copyCache.set(`flag:${guildId}`, 1, 'EX', 3600)
+                    return copyCache.set(`flag:${guildId}`, 1, 'EX', 1800)
                       .return(null)
                   }
 

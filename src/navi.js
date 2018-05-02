@@ -58,7 +58,7 @@ class Navi extends Client {
       .register('modules', resolve('modules'))
       .register('db', resolve('schemas'))
       .unregister('middleware', true)
-      .register('middleware', resolve('middleware'))
+      .register('middleware', resolve('listeners'))
       .register('commands', resolve('commands'), { groupedCommands: true })
   }
 
