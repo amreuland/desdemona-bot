@@ -17,7 +17,7 @@ const handleEvents = require('./lib/handleEvents')
 
 const {
   CleverbotAPI, GoogleAPI, LeagueAPI, OverwatchAPI,
-  PastebinAPI, SoundCloudAPI
+  PastebinAPI, SoundCloudAPI, SteamAPI
 } = require('./api')
 
 const { Client, utils } = require('sylphy')

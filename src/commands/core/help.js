@@ -9,7 +9,7 @@ class HelpCommand extends Command {
       description: 'Help!',
       group: 'core',
       usage: [
-        { name: 'command', type: 'command', optional: true }
+        { name: 'command', types: 'command', optional: true }
       ]
     })
   }
@@ -32,7 +32,7 @@ class HelpCommand extends Command {
     }
     let commands = {}
     let reply = [
-      '{{%help.HEADER}}',
+      '{{help.HEADER}}',
       '**```glsl'
     ]
     let maxPad = 10

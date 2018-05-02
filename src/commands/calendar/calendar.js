@@ -26,15 +26,27 @@ class CalendarCommand extends Command {
         ],
         hidden: false
       },
+      examples: [
+        {
+          args: 'authorize',
+          description: 'Authorize Navi to use your google calendar'
+        },
+        {
+          args: 'select',
+          description: 'Select a google calendar to use for notifications'
+        },
+        {
+          args: 'notify',
+          description: 'Enable or disable calendar notifications'
+        }
+      ],
       subcommands: {
         authorize: {
           name: 'authorize',
           aliases: ['auth', 'authenticate'],
           options: {
             guildOnly: true,
-            permissions: [
-              'administrator'
-            ]
+            permissions: ['administrator']
           }
         },
         select: {
@@ -42,9 +54,7 @@ class CalendarCommand extends Command {
           aliases: ['pick', 'choose'],
           options: {
             guildOnly: true,
-            permissions: [
-              'administrator'
-            ]
+            permissions: ['administrator']
           }
         },
         notify: {
@@ -52,9 +62,7 @@ class CalendarCommand extends Command {
           aliases: ['enable', 'toggle'],
           options: {
             guildOnly: true,
-            permissions: [
-              'administrator'
-            ]
+            permissions: ['administrator']
           }
         }
       }
@@ -89,7 +97,6 @@ class CalendarCommand extends Command {
           })
       })
       .then(() => responder.send('Now call n!calselect to select a calendar'))
-      .catch(err => client.raven.captureException(err))
   }
 
   async select ({ msg, client }, responder) {
@@ -120,7 +127,6 @@ class CalendarCommand extends Command {
       .catch(MissingTokenError, () => {
         return responder.error('Missing authentication token for guild!\n\t\t\tPlease call `!calauth` first!')
       })
-      .catch(err => client.raven.captureException(err))
   }
 
   async notify ({ msg, client }, responder) {
@@ -142,7 +148,6 @@ class CalendarCommand extends Command {
               .then(responder.success(`Calendar notifications have been ${response[0]}d`))
           })
       })
-      .catch(err => client.raven.captureException(err))
   }
 }
 

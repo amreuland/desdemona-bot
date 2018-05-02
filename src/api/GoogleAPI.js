@@ -12,9 +12,9 @@ const { MissingTokenError } = require('../util')
 
 class GoogleAPI {
   constructor (options = {}) {
-    this.clientId = options.client_id
-    this.clientSecret = options.client_secret
-    this.redirectUris = options.redirect_uris
+    this.clientId = options.clientId
+    this.clientSecret = options.clientSecret
+    this.redirectUris = options.redirectUris
     if (!this.clientId || !this.clientSecret || !this.redirectUris) {
       throw new Error('Missing Google OAuth Client Secret')
     }
