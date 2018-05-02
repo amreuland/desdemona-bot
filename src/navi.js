@@ -124,7 +124,9 @@ bot.register('api', 'pastebin', PastebinAPI)
 bot.register('api', 'soundcloud', SoundCloudAPI)
 // bot.register('api', 'steam', SteamAPI, config.apis.steam.apiKey)
 
-bot.register('cache', 'copycat', config.cache.copycat)
+for (const name in config.cache) {
+  bot.register('cache', name, config.cache[name])
+}
 
 async function initStatusClock () {
   let index = 0
