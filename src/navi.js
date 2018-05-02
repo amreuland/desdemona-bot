@@ -13,13 +13,6 @@ const { Sentry } = require('./lib')
 
 const { APIPlugin, MongoosePlugin, RedisPlugin } = require('./plugins')
 
-const handleEvents = require('./lib/handleEvents')
-
-const {
-  CleverbotAPI, GoogleAPI, LeagueAPI, OverwatchAPI,
-  PastebinAPI, SoundCloudAPI, SteamAPI
-} = require('./api')
-
 const { Client, utils } = require('sylphy')
 
 utils.emojis = require('../res/emoji')
@@ -55,11 +48,10 @@ class Navi extends Client {
 
     this
       .register('i18n', path.join(__dirname, '..', 'res/i18n'))
-      .register('modules', resolve('modules'))
+      .register('modules', resolve('listeners'))
       .register('db', resolve('schemas'))
       .unregister('middleware', true)
-      .register('middleware', resolve('listeners'))
-      .register('commands', resolve('commands'), { groupedCommands: true })
+      .register('middleware', resolve('middleware'))
   }
 
   get api () {
@@ -116,14 +108,6 @@ const bot = new Navi({
   maxShards
 })
 
-bot.register('api', 'google', GoogleAPI, config.apis.google)
-bot.register('api', 'cleverbot', CleverbotAPI)
-bot.register('api', 'lol', LeagueAPI)
-bot.register('api', 'overwatch', OverwatchAPI)
-bot.register('api', 'pastebin', PastebinAPI)
-bot.register('api', 'soundcloud', SoundCloudAPI)
-// bot.register('api', 'steam', SteamAPI, config.apis.steam.apiKey)
-
 for (const name in config.cache) {
   bot.register('cache', name, config.cache[name])
 }
@@ -150,7 +134,6 @@ async function initStatusClock () {
 
 bot.once('ready', () => {
   initStatusClock()
-  setInterval(handleEvents.bind(bot), (config.calendar.pollingRate || 30) * 1000)
 })
 
 bot.run()
