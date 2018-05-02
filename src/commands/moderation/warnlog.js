@@ -37,8 +37,8 @@ class WarnLogCommand extends Command {
       },
       examples: [
         {
-          args: '@user',
-          description: 'Retrieve the warning log for user'
+          args: '@Apples',
+          description: 'Retrieve the warning log for Apples'
         }
       ]
     })
@@ -49,6 +49,10 @@ class WarnLogCommand extends Command {
     let guildId = guild.id
     let member = args.member[0]
     let userId = member.id
+
+    if (member.bot) {
+      return responder.error('{{warnlog.errors.IS_BOT}}')
+    }
 
     return client.db.User.findOne({ userId })
       .populate('warnings')

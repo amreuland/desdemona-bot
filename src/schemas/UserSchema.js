@@ -17,6 +17,12 @@ module.exports = {
   },
 
   virtuals: {
+    connections: {
+      ref: 'Connection',
+      localField: '_id',
+      foreignField: 'user'
+    },
+
     warnings: {
       ref: 'Warning',
       localField: '_id',

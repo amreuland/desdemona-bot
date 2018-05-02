@@ -26,5 +26,13 @@ module.exports = {
     },
 
     calendarId: String
+  },
+
+  virtuals: {
+    connections: {
+      ref: 'Connection',
+      localField: '_id',
+      foreignField: 'guild'
+    }
   }
 }

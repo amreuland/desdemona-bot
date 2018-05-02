@@ -25,7 +25,7 @@ class ForgiveCommand extends Command {
         hidden: false
       },
       examples: [
-        { args: '@user 3', description: 'forgive user for their 3rd warning' }
+        { args: '@Apples 3', description: 'forgive Apples for their 3rd warning' }
       ]
     })
   }
@@ -36,6 +36,10 @@ class ForgiveCommand extends Command {
     let member = args.member[0]
     let userId = member.id
     let warnNumber = args.warnNumber - 1
+
+    if (member.bot) {
+      return responder.error('{{forgive.errors.IS_BOT}}')
+    }
 
     return client.db.User.findOne({ userId })
       .populate('warnings')
