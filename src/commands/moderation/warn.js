@@ -23,8 +23,8 @@ class WarnCommand extends Command {
       },
       examples: [
         {
-          args: '@user Bad Language',
-          description: 'warn user for Bad Language'
+          args: '@Apples Bad Language',
+          description: 'warn Apples for Bad Language'
         }
       ]
     })
@@ -36,6 +36,10 @@ class WarnCommand extends Command {
     let member = args.member[0]
     let userId = member.id
     let reason = args.reason
+
+    if (member.bot) {
+      return responder.error('{{warn.errors.IS_BOT}}')
+    }
 
     return msg.delete('Hide moderation commands')
       .then(() => client.db.User.findOne({ userId }).populate('warnings'))
