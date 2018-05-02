@@ -48,7 +48,7 @@ class WarnLogCommand extends Command {
       .populate('warnings')
       .then(dbUser => {
         if (!dbUser || !dbUser.warnings.length) {
-          return responder.error('{{%warnlog.errors.NO_HISTORY}}', {user: `${member.username}#${member.discriminator}`})
+          return responder.error('{{warnlog.errors.NO_HISTORY}}', {user: `${member.username}#${member.discriminator}`})
         }
 
         let guildWarnings = sortFunc(dbUser.warnings, guildId)

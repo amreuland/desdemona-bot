@@ -1,0 +1,18 @@
+{
+  "warn": {
+    "SUCCESS": "{{user}} has been warned. {{count}} total warnings ({{unforgiven}})"
+  },
+  "warnlog": {
+    "errors": {
+      "NO_HISTORY": "**{{user}}** has no previous warnings"
+    }
+  },
+  "forgive": {
+    "SUCCESS": "**{{user}}** has been forgiven for ```{{reason}}```",
+    "errors": {
+      "USER_NOT_FOUND": "user has no warnings",
+      "WARN_NOT_EXIST": "that warning number was not found",
+      "ALREADY_FORGIVEN": "the user has already been forgiven for that offense"
+    }
+  }
+}

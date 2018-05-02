@@ -61,10 +61,10 @@ class WarnCommand extends Command {
               guild, msg.member, unforgivenWarnings.length, reason)
 
             return pmChannel.createMessage({ embed })
-              .then(() => responder.success('{{%warn.SUCCESS}}', {
+              .then(() => responder.success('{{warn.SUCCESS}}', {
                 user: member.mention,
                 count: warnCount,
-                unforgiven: unforgivenWarnings
+                unforgiven: unforgivenWarnings.length
               }))
           })
       })
