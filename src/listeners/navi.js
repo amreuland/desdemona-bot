@@ -2,9 +2,9 @@
 
 const chalk = require('chalk')
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
-class NaviEventsModule extends Module {
+class NaviEventsListener extends Listener {
   constructor (...args) {
     super(...args, {
       name: 'navi:events',
@@ -48,4 +48,4 @@ class NaviEventsModule extends Module {
   }
 }
 
-module.exports = NaviEventsModule
+module.exports = NaviEventsListener

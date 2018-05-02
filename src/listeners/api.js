@@ -1,8 +1,8 @@
 'use strict'
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
-class APILoggerModule extends Module {
+class APILoggerListener extends Listener {
   constructor (...args) {
     super(...args, {
       name: 'api:logger',
@@ -17,4 +17,4 @@ class APILoggerModule extends Module {
   }
 }
 
-module.exports = APILoggerModule
+module.exports = APILoggerListener

@@ -2,14 +2,14 @@
 
 const R = require('ramda')
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
 const { CopycatUtils } = require('../util')
 
-class CopycatModule extends Module {
+class CopycatListener extends Listener {
   constructor (...args) {
     super(...args, {
-      name: 'copycat:logic',
+      name: 'admin:copycat:logic',
       events: {
         messageCreate: 'onMessageCreate',
         messageDelete: 'onMessageDelete',
@@ -135,4 +135,4 @@ class CopycatModule extends Module {
   }
 }
 
-module.exports = CopycatModule
+module.exports = CopycatListener

@@ -1,8 +1,8 @@
 'use strict'
 
-const { Module } = require('sylphy')
+const { Listener } = require('sylphy')
 
-class RedisModule extends Module {
+class RedisListener extends Listener {
   constructor (...args) {
     super(...args, {
       name: 'redis:logger',
@@ -28,4 +28,4 @@ class RedisModule extends Module {
   }
 }
 
-module.exports = RedisModule
+module.exports = RedisListener
