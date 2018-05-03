@@ -1,15 +1,9 @@
 'use strict'
 
-module.exports = Object.assign(
-  require('./errors'),
+module.exports = Object.assign({},
   {
     CacheUtils: require('./cache'),
-    CopycatUtils: require('./copycat'),
     GuildUtils: require('./guild'),
-    SteamUtils: require('./steam'),
-    calendarUtil: require('./calendar'),
-    EventUtils: require('./events'),
-    ModerationUtils: require('./moderation'),
     RoleUtils: require('./roles')
   }
 )

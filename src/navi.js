@@ -2,7 +2,7 @@
 
 global.Promise = require('bluebird')
 
-const VERSION = '0.0.1'
+const VERSION = '0.1.0'
 
 const chalk = require('chalk')
 const path = require('path')
@@ -11,14 +11,16 @@ const moment = require('moment')
 
 const { Sentry } = require('./lib')
 
-const { APIPlugin, MongoosePlugin, RedisPlugin } = require('./plugins')
+const { APIPlugin, MongoosePlugin, RedisPlugin, Loader, Tasker } = require('./plugins')
+
+const modules = require('./modules')
 
 const { Client, utils } = require('sylphy')
 
 utils.emojis = require('../res/emoji')
 
 const resolve = (str) => path.join('src', str)
-const resolveConfig = (str) => path.join('..', 'config', str)
+const resolveConfig = (str) => path.join(process.cwd(), 'config', str)
 
 class Navi extends Client {
   constructor (options = {}) {
@@ -45,10 +47,12 @@ class Navi extends Client {
       .createPlugin('api', APIPlugin, options)
       .createPlugin('cache', RedisPlugin, options)
       .createPlugin('db', MongoosePlugin, options)
+      .createPlugin('module', Loader, options)
+      .createPlugin('tasks', Tasker, options)
 
     this
-      .register('i18n', path.join(__dirname, '..', 'res/i18n'))
-      .register('modules', resolve('listeners'))
+      .register('i18n', path.join(process.cwd(), 'res/i18n'))
+      .register('listeners', resolve('listeners'))
       .register('db', resolve('schemas'))
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
@@ -111,6 +115,8 @@ const bot = new Navi({
 for (const name in config.cache) {
   bot.register('cache', name, config.cache[name])
 }
+
+bot.register('module', modules.AdminModule)
 
 async function initStatusClock () {
   let index = 0
