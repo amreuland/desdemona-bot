@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const RoleUtils = require('./roles')
+const { RoleUtils } = require.main.require('./util')
 
 class CopycatUtils {
   static sanitizeMentions (msg) {
