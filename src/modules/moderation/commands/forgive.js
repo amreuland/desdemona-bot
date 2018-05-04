@@ -13,7 +13,6 @@ class ForgiveCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'forgive',
-      group: 'moderation',
       description: 'Forgive a users warning',
       usage: [
         { name: 'member', displayName: 'member', type: 'member' },

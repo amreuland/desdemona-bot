@@ -6,7 +6,6 @@ class AuditLogCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'auditlog',
-      group: 'audit',
       description: 'Set an audit channel for the bot to report to',
       usage: [{
         name: 'channel',

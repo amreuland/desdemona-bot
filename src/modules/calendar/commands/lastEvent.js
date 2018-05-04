@@ -8,7 +8,6 @@ class LastCalendarEvent extends Command {
   constructor (...args) {
     super(...args, {
       name: 'lastevent',
-      group: 'calendar',
       description: 'Get the most recent event in this channel',
       options: {
         guildOnly: true,

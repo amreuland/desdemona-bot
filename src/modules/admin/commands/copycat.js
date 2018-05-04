@@ -9,7 +9,6 @@ class CopycatCommand extends Command {
     super(...args, {
       name: 'copycat',
       aliases: ['mirror'],
-      group: 'admin',
       description: 'Manage Navi copycat module',
       usage: [
         {

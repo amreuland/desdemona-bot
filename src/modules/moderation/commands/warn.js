@@ -10,7 +10,6 @@ class WarnCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'warn',
-      group: 'moderation',
       description: 'Warn a user',
       usage: [
         { name: 'member', displayName: 'member', type: 'member' },

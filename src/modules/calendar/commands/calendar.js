@@ -10,7 +10,6 @@ class CalendarCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'calendar',
-      group: 'calendar',
       description: 'Calendar Management Commands',
       usage: [
         {
