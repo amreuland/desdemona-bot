@@ -11,7 +11,6 @@ class SteamLookupCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'steam',
-      group: 'util',
       description: 'Lookup a users profile',
       usage: [{
         name: 'member',

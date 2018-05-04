@@ -10,7 +10,6 @@ class NextCalendarEvent extends Command {
   constructor (...args) {
     super(...args, {
       name: 'nextevent',
-      group: 'calendar',
       description: 'Get the closest upcoming event in this channel',
       cooldown: 15,
       options: {

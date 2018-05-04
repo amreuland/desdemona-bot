@@ -23,8 +23,8 @@ class Loader extends Collection {
     let commands = module.commands
     let listeners = module.listeners
 
-    this._client.register('listeners', listeners)
-    this._client.register('commands', commands)
+    this._client.register('listeners', listeners, {group: name})
+    this._client.register('commands', commands, {group: name})
 
     this._client.emit('loader:registered', {
       name: name,
@@ -35,4 +35,3 @@ class Loader extends Collection {
 }
 
 module.exports = Loader
-

@@ -25,7 +25,6 @@ class WarnLogCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'warnlog',
-      group: 'moderation',
       description: 'Lookup a users warning history',
       usage: [
         { name: 'member', displayName: 'member', type: 'member' }

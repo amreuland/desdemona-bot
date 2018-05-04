@@ -116,7 +116,9 @@ for (const name in config.cache) {
   bot.register('cache', name, config.cache[name])
 }
 
-bot.register('module', modules.AdminModule)
+for (const name in modules) {
+  bot.register('module', modules[name])
+}
 
 async function initStatusClock () {
   let index = 0
