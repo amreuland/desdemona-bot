@@ -7,7 +7,8 @@ class CalendarModule extends NaviModule {
     super(...args, {
       name: 'calendar',
       description: 'Calendar commands and components',
-      listeners: false
+      commands: true,
+      tasks: true
     })
   }
 

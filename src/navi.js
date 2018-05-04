@@ -120,29 +120,5 @@ for (const name in modules) {
   bot.register('module', modules[name])
 }
 
-async function initStatusClock () {
-  let index = 0
-  const statuses = [
-    'https://navi.social',
-    '%s guilds',
-    `Use ${bot.prefix}help`,
-    '%d users'
-  ]
-  setInterval(function () {
-    index = (index + 1) % statuses.length
-    this.editStatus('online', {
-      name: statuses[index]
-        .replace('%s', this.guilds.size)
-        .replace('%d', this.users.size),
-      type: 0,
-      url: 'https://navi.social'
-    })
-  }.bind(bot), 60000)
-}
-
-bot.once('ready', () => {
-  initStatusClock()
-})
-
 bot.run()
 // .then(() => userBot.run())
