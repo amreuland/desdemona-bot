@@ -4,7 +4,7 @@ const R = require('ramda')
 
 const { Command } = require('sylphy')
 
-const { ModerationUtils } = require('../../util')
+const ModerationUtils = require('../util')
 
 class WarnCommand extends Command {
   constructor (...args) {
@@ -77,7 +77,6 @@ class WarnCommand extends Command {
               }))
           })
       })
-      .catch(err => client.raven.captureException(err))
   }
 }
 

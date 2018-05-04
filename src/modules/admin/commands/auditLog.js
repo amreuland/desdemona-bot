@@ -32,7 +32,6 @@ class AuditLogCommand extends Command {
         return dbGuild.save()
       })
       .then(() => responder.success('the audit log channel has been set!'))
-      .catch(err => client.raven.captureException(err))
   }
 }
 

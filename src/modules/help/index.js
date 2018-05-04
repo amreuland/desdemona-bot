@@ -6,7 +6,8 @@ class HelpModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'help',
-      description: 'Help commands and components'
+      description: 'Help commands and components',
+      commands: 'commands.js'
     })
   }
 

@@ -2,7 +2,8 @@
 
 const { Command } = require('sylphy')
 
-const { calendarUtil, MissingTokenError } = require('../../util')
+const CalendarUtils = require('../util')
+const { MissingTokenError } = require('../errors')
 
 class LastCalendarEvent extends Command {
   constructor (...args) {
@@ -44,16 +45,15 @@ class LastCalendarEvent extends Command {
           })
       })
       .then(event => {
-        let params = calendarUtil.getParameters(event)
+        let params = CalendarUtils.getParameters(event)
 
-        let embed = calendarUtil.createEmbed(params)
+        let embed = CalendarUtils.createEmbed(params)
 
         return responder.embed(embed).reply('here is the most recent event for this channel')
       })
       .catch(MissingTokenError, () => {
         return responder.error('Missing authentication token for guild!')
       })
-      .catch(err => client.raven.captureException(err))
   }
 }
 

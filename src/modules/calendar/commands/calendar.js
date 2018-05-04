@@ -4,7 +4,7 @@ const R = require('ramda')
 
 const { Command } = require('sylphy')
 
-const { MissingTokenError } = require('../../util')
+const { MissingTokenError } = require('../errors')
 
 class CalendarCommand extends Command {
   constructor (...args) {

@@ -67,13 +67,18 @@ class CopycatListener extends Listener {
         let embed = CopycatUtils.createMirrorEmbed(message)
 
         return Promise.map(data, destinationId => {
+          let ch = this._client.channels.get(destinationId)
+          if (!ch) {
+            return copyCache.srem(`channel:${channelId}`, destinationId)
+          }
           return this._client.createMessage(destinationId, { embed })
             .then(newMsg => {
               return copyCache.sadd(`message:${messageId}`, `${destinationId}:${newMsg.id}`)
             })
-        }).then(() => {
-          return copyCache.expire(`message:${messageId}`, 7200)
         })
+          .then(() => {
+            return copyCache.expire(`message:${messageId}`, 7200)
+          })
       })
       .catch(err => this._client.raven.captureException(err))
   }
@@ -94,6 +99,10 @@ class CopycatListener extends Listener {
 
     return Promise.map(copyCache.smembers(`message:${messageId}`), mirrorStr => {
       let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
+      let ch = this._client.channels.get(mirrorChId)
+      if (!ch) {
+        return false
+      }
       return this._client.getMessage(mirrorChId, mirrorMsgId)
         .then(mirrorMsg => {
           let embed = mirrorMsg.embeds[0]
@@ -124,6 +133,10 @@ class CopycatListener extends Listener {
 
     return Promise.map(copyCache.smembers(`message:${messageId}`), mirrorStr => {
       let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
+      let ch = this._client.channels.get(mirrorChId)
+      if (!ch) {
+        return copyCache.srem(`message:${messageId}`, mirrorStr)
+      }
       return this._client.getMessage(mirrorChId, mirrorMsgId)
         .then(mirrorMsg => {
           let embed = mirrorMsg.embeds[0]
@@ -131,7 +144,8 @@ class CopycatListener extends Listener {
 
           return this._client.editMessage(mirrorChId, mirrorMsgId, { embed })
         })
-    }).catch(err => this._client.raven.captureException(err))
+    })
+      .catch(err => this._client.raven.captureException(err))
   }
 }
 

@@ -25,7 +25,7 @@ class NaviModule {
       name,
       description,
       commands = 'commands',
-      listeners = 'listeners',
+      listeners = false,
       options = {}
     } = args
 
@@ -80,6 +80,10 @@ class NaviModule {
   _resolveListeners (listeners) {
     if (!listeners) {
       return this
+    }
+
+    if (listeners === true) {
+      listeners = 'listeners'
     }
 
     switch (typeof listeners) {
