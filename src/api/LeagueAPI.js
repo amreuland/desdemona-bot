@@ -1,13 +1,6 @@
 'use strict'
 
-const { Interface } = require('../lib')
-
-class LeagueAPI extends Interface {
-  constructor (...args) {
-    super({
-      name: 'lol'
-    })
-  }
+class LeagueAPI {
 }
 
 module.exports = LeagueAPI

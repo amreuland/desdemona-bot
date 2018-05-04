@@ -1,13 +1,6 @@
 'use strict'
 
-const { Interface } = require('../lib')
-
-class PastebinAPI extends Interface {
-  constructor (...args) {
-    super({
-      name: 'pastebin'
-    })
-  }
+class PastebinAPI {
 }
 
 module.exports = PastebinAPI
