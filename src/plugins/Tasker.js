@@ -1,7 +1,5 @@
 'use strict'
 
-const later = require('later')
-
 class Tasker {
   constructor (client, options = {}) {
     this._client = client
