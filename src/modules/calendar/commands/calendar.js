@@ -95,7 +95,7 @@ class CalendarCommand extends Command {
             return dbGuild.save()
           })
       })
-      .then(() => responder.send('Now call n!calselect to select a calendar'))
+      .then(() => responder.send('Now call `n!calendar select` to select a calendar'))
   }
 
   async select ({ msg, client }, responder) {
@@ -110,12 +110,12 @@ class CalendarCommand extends Command {
         google.ensureAuthCredentials(authClient)
         return google.getCalendarList(authClient)
           .then(calendars => {
-            let options = R.map(R.prop('name'), calendars)
+            let options = R.map(R.prop('summary'), calendars.items)
             return responder.selection(options, {
               title: 'Select Calendar'
             }).then(selection => {
               return responder.typing().then(() => {
-                let item = calendars[selection[1]]
+                let item = calendars.items[selection[1]]
                 dbGuild.calendarId = item.id
                 return dbGuild.save()
                   .then(responder.send('Calendar Selected!'))
