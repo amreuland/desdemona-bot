@@ -13,6 +13,8 @@ const { Sentry } = require('./lib')
 
 const { APIPlugin, MongoosePlugin, RedisPlugin, Loader, Tasker } = require('./plugins')
 
+const { GoogleAPI } = require('./api')
+
 const modules = require('./modules')
 
 const { Client, utils } = require('sylphy')
@@ -51,8 +53,8 @@ class Navi extends Client {
       .createPlugin('tasks', Tasker, options)
 
     this
-      .register('i18n', path.join(process.cwd(), 'res/i18n'))
       .register('listeners', resolve('listeners'))
+      .register('i18n', path.join(process.cwd(), 'res/i18n'))
       .register('db', resolve('schemas'))
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
@@ -112,6 +114,8 @@ const bot = new Navi({
   maxShards
 })
 
+bot.register('api', 'google', GoogleAPI, config.apis.google)
+
 for (const name in config.cache) {
   bot.register('cache', name, config.cache[name])
 }
@@ -121,4 +125,3 @@ for (const name in modules) {
 }
 
 bot.run()
-// .then(() => userBot.run())
