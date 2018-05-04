@@ -117,7 +117,6 @@ class CopycatCommand extends Command {
         })
       })
       .catch({isMessage: true}, err => responder.error(`{{copycat.${err.message}}}`, err))
-      .catch(err => client.raven.captureException(err))
   }
 
   async unlink ({ msg, client, args }, responder) {
@@ -158,7 +157,6 @@ class CopycatCommand extends Command {
         })
       })
       .catch({isMessage: true}, err => responder.error(`{{copycat.${err.message}}}`, err))
-      .catch(err => client.raven.captureException(err))
   }
 
   async unlinkall ({ msg, client, args }, responder) {
@@ -199,7 +197,6 @@ class CopycatCommand extends Command {
         return responder.success('{{copycat.success.CHANNELS_UNLINKED_BULK_GUILD}}')
       })
       .catch({isMessage: true}, err => responder.error(`{{copycat.${err.message}}}`, err))
-      .catch(err => client.raven.captureException(err))
   }
 
   async list ({ msg, client, args }, responder) {
@@ -243,7 +240,6 @@ class CopycatCommand extends Command {
 
         return responder.send(reply.join('\n'))
       })
-      .catch(err => client.raven.captureException(err))
   }
 }
 

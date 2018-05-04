@@ -4,7 +4,7 @@ const R = require('ramda')
 
 const { Command } = require('sylphy')
 
-const { ModerationUtils } = require('../../util')
+const ModerationUtils = require('../util')
 
 const sortFunc = (warnings, guildId) => R.compose(
   R.sortBy(R.prop('timestamp')),
@@ -70,7 +70,6 @@ class WarnLogCommand extends Command {
 
         msg.channel.createMessage({ embed })
       })
-      .catch(err => client.raven.captureException(err))
   }
 }
 

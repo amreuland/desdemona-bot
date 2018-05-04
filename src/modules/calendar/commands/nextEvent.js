@@ -4,7 +4,8 @@ const R = require('ramda')
 
 const { Command } = require('sylphy')
 
-const { calendarUtil, MissingTokenError } = require('../../util')
+const CalendarUtils = require('../util')
+const { MissingTokenError } = require('../errors')
 
 class NextCalendarEvent extends Command {
   constructor (...args) {
@@ -38,7 +39,7 @@ class NextCalendarEvent extends Command {
         let params = null
 
         let nextEvent = R.find(event => {
-          params = calendarUtil.getParameters(event)
+          params = CalendarUtils.getParameters(event)
           if (!params || !params.channel) {
             return false
           }
@@ -54,7 +55,7 @@ class NextCalendarEvent extends Command {
           return responder.error('there are no upcoming events for this channel!')
         }
 
-        let embed = calendarUtil.createEmbed(params)
+        let embed = CalendarUtils.createEmbed(params)
 
         return responder
           .embed(embed)
@@ -63,7 +64,6 @@ class NextCalendarEvent extends Command {
       .catch(MissingTokenError, () => {
         return responder.error('Missing authentication token for guild!')
       })
-      .catch(err => client.raven.captureException(err))
   }
 }
 

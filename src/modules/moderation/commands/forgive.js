@@ -65,7 +65,6 @@ class ForgiveCommand extends Command {
             reason: warning.reason
           }))
       })
-      .catch(err => client.raven.captureException(err))
   }
 }
 

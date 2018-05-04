@@ -32,52 +32,51 @@ const paramsFunc2 = R.compose(
   R.map(R.split('::'))
 )
 
-function getParameters (event) {
-  let lines = (event.description || '').split('\n')
+class CalendarUtils {
+  static getParameters (event) {
+    let lines = (event.description || '').split('\n')
 
-  let params = paramsFunc1(lines)
+    let params = paramsFunc1(lines)
 
-  if (params.length < 1) {
-    return null
+    if (params.length < 1) {
+      return null
+    }
+
+    let description = descFunc(lines, params)
+
+    params = paramsFunc2(params)
+
+    params.title = params.title || event.summary
+    params.url = event.htmlLink
+    params.description = description
+    params.eventId = event.id
+    params.startDateTime = moment(event.start.dateTime).toDate()
+    params.endDateTime = moment(event.end.dateTime).toDate()
+
+    return params
   }
 
-  let description = descFunc(lines, params)
+  static createEmbed (params) {
+    if (!params) {
+      return null
+    }
 
-  params = paramsFunc2(params)
-
-  params.title = params.title || event.summary
-  params.url = event.htmlLink
-  params.description = description
-  params.eventId = event.id
-  params.startDateTime = moment(event.start.dateTime).toDate()
-  params.endDateTime = moment(event.end.dateTime).toDate()
-
-  return params
-}
-
-function createEmbed (params) {
-  if (!params) {
-    return null
-  }
-
-  return {
-    title: params.title,
-    author: {
-      name: 'Navi - Calendar',
-      url: 'https://github.com/amreuland/navi-bot',
-      icon_url: 'https://discordapp.com/assets/644ab12f2f874b0c5fb5b5b5f88a0bef.svg'
-    },
-    url: params.url,
-    description: params.description,
-    footer: {
-      text: 'Event'
-    },
-    color: 0xdf3939,
-    timestamp: params.startDateTime
+    return {
+      title: params.title,
+      author: {
+        name: 'Navi - Calendar',
+        url: 'https://github.com/amreuland/navi-bot',
+        icon_url: 'https://discordapp.com/assets/644ab12f2f874b0c5fb5b5b5f88a0bef.svg'
+      },
+      url: params.url,
+      description: params.description,
+      footer: {
+        text: 'Event'
+      },
+      color: 0xdf3939,
+      timestamp: params.startDateTime
+    }
   }
 }
 
-module.exports = {
-  getParameters,
-  createEmbed
-}
+module.exports = CalendarUtils

@@ -6,7 +6,8 @@ class AdminModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'admin',
-      description: 'Admin commands and components'
+      description: 'Admin commands and components',
+      listeners: true
     })
   }
 
