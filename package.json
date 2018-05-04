@@ -34,7 +34,7 @@
     "ioredis": "^3.2.2",
     "longjohn": "^0.2.12",
     "moment": "^2.22.1",
-    "mongoose": "^5.0.16",
+    "mongoose": "^5.0.17",
     "ramda": "^0.25.0",
     "raven": "^2.6.0",
     "steamapi": "^2.0.2",

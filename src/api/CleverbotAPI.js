@@ -1,13 +1,6 @@
 'use strict'
 
-const { Interface } = require('../lib')
-
-class CleverbotAPI extends Interface {
-  constructor (...args) {
-    super({
-      name: 'cleverbot'
-    })
-  }
+class CleverbotAPI {
 }
 
 module.exports = CleverbotAPI

@@ -70,7 +70,7 @@ class MongoosePlugin extends Collection {
       return this
     }
 
-    let schema = Mongoose.Schema(Schema.schema)
+    let schema = Mongoose.Schema(Schema.schema, Schema.options || {})
 
     if (Schema.virtuals) {
       for (const key in Schema.virtuals) {

@@ -1,6 +1,7 @@
 'use strict'
 
 module.exports = {
-  Interface: require('./Interface'),
+  NaviModule: require('./NaviModule'),
+  NaviTask: require('./NaviTask'),
   Sentry: require('./Sentry')
 }

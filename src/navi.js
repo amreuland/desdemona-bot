@@ -2,7 +2,7 @@
 
 global.Promise = require('bluebird')
 
-const VERSION = '0.0.1'
+const VERSION = '0.1.0'
 
 const chalk = require('chalk')
 const path = require('path')
@@ -11,21 +11,18 @@ const moment = require('moment')
 
 const { Sentry } = require('./lib')
 
-const { APIPlugin, MongoosePlugin, RedisPlugin } = require('./plugins')
+const { APIPlugin, MongoosePlugin, RedisPlugin, Loader, Tasker } = require('./plugins')
 
-const handleEvents = require('./lib/handleEvents')
+const { GoogleAPI } = require('./api')
 
-const {
-  CleverbotAPI, GoogleAPI, LeagueAPI, OverwatchAPI,
-  PastebinAPI, SoundCloudAPI, SteamAPI
-} = require('./api')
+const modules = require('./modules')
 
 const { Client, utils } = require('sylphy')
 
 utils.emojis = require('../res/emoji')
 
 const resolve = (str) => path.join('src', str)
-const resolveConfig = (str) => path.join('..', 'config', str)
+const resolveConfig = (str) => path.join(process.cwd(), 'config', str)
 
 class Navi extends Client {
   constructor (options = {}) {
@@ -52,14 +49,15 @@ class Navi extends Client {
       .createPlugin('api', APIPlugin, options)
       .createPlugin('cache', RedisPlugin, options)
       .createPlugin('db', MongoosePlugin, options)
+      .createPlugin('module', Loader, options)
+      .createPlugin('tasks', Tasker, options)
 
     this
-      .register('i18n', path.join(__dirname, '..', 'res/i18n'))
-      .register('modules', resolve('modules'))
+      .register('listeners', resolve('listeners'))
+      .register('i18n', path.join(process.cwd(), 'res/i18n'))
       .register('db', resolve('schemas'))
       .unregister('middleware', true)
       .register('middleware', resolve('middleware'))
-      .register('commands', resolve('commands'), { groupedCommands: true })
   }
 
   get api () {
@@ -117,39 +115,13 @@ const bot = new Navi({
 })
 
 bot.register('api', 'google', GoogleAPI, config.apis.google)
-bot.register('api', 'cleverbot', CleverbotAPI)
-bot.register('api', 'lol', LeagueAPI)
-bot.register('api', 'overwatch', OverwatchAPI)
-bot.register('api', 'pastebin', PastebinAPI)
-bot.register('api', 'soundcloud', SoundCloudAPI)
-// bot.register('api', 'steam', SteamAPI, config.apis.steam.apiKey)
 
-bot.register('cache', 'copycat', config.cache.copycat)
-
-async function initStatusClock () {
-  let index = 0
-  const statuses = [
-    'https://navi.social',
-    '%s guilds',
-    `Use ${bot.prefix}help`,
-    '%d users'
-  ]
-  setInterval(function () {
-    index = (index + 1) % statuses.length
-    this.editStatus('online', {
-      name: statuses[index]
-        .replace('%s', this.guilds.size)
-        .replace('%d', this.users.size),
-      type: 0,
-      url: 'https://navi.social'
-    })
-  }.bind(bot), 60000)
+for (const name in config.cache) {
+  bot.register('cache', name, config.cache[name])
 }
 
-bot.once('ready', () => {
-  initStatusClock()
-  setInterval(handleEvents.bind(bot), (config.calendar.pollingRate || 30) * 1000)
-})
+for (const name in modules) {
+  bot.register('module', modules[name])
+}
 
 bot.run()
-// .then(() => userBot.run())
