@@ -3,93 +3,102 @@
 const R = require('ramda')
 const moment = require('moment')
 
-const { calendarUtil } = require('../util')
+const CalendarUtils = require('../util')
 
-function handleEvents () {
-  let self = this
+const { NaviTask } = require.main.require('./lib')
 
-  let guildIds = R.keys(self.guildShardMap)
+class HandleEventsTask extends NaviTask {
+  constructor (opts) {
+    super({
+      name: 'handleEvents',
+      interval: 30000
+    })
+  }
 
-  let google = this.api.google
+  run (client) {
+    let guildIds = R.keys(client.guildShardMap)
 
-  return Promise.map(guildIds, guildId => {
-    return self.db.Guild.findOne({ guildId }).then(dbGuild => {
-      if (!dbGuild || !dbGuild.calendarId || !dbGuild.tokens.google) {
-        return false
-      }
-      if (dbGuild.settings.enableNotifications === false) {
-        return false
-      }
+    let google = client.api.google
 
-      let timeAdd = dbGuild.settings.timeBefore || 30
+    return Promise.map(guildIds, guildId => {
+      return client.db.Guild.findOne({ guildId }).then(dbGuild => {
+        if (!dbGuild || !dbGuild.calendarId || !dbGuild.tokens.google) {
+          return false
+        }
+        if (dbGuild.settings.enableNotifications === false) {
+          return false
+        }
 
-      let authClient = google.getAuthClient(dbGuild.tokens.google)
+        let timeAdd = dbGuild.settings.timeBefore || 30
 
-      return google.getCalendarUpcomingEvents(authClient, dbGuild.calendarId, {
-        maxResults: 10,
-        timeMax: moment().add(timeAdd, 'minutes').toISOString()
-      }).then(events => {
-        let eventIds = R.map(R.prop('id'), events)
+        let authClient = google.getAuthClient(dbGuild.tokens.google)
 
-        Promise.each(self.db.Event.find({
-          guildId: guildId,
-          eventId: {
-            $in: eventIds
-          }
-        }).then(foundEvents => {
-          return R.differenceWith((x, y) => {
-            return x.id === y.eventId
-          }, events, foundEvents)
-        }), event => {
-          let params = calendarUtil.getParameters(event)
+        return google.getCalendarUpcomingEvents(authClient, dbGuild.calendarId, {
+          maxResults: 10,
+          timeMax: moment().add(timeAdd, 'minutes').toISOString()
+        }).then(events => {
+          let eventIds = R.map(R.prop('id'), events)
 
-          if (!params) {
-            return false
-          }
-
-          let erisGuild = self.guilds.get(guildId)
-
-          let foundChannel = R.find(channel => {
-            return (!!channel.name) &&
-            channel.name.toLowerCase() === params.channel &&
-            channel.type === 0
-          }, erisGuild.channels)
-
-          if (!foundChannel) {
-            return false
-          }
-
-          let message = '**Hey, Listen!**'
-
-          if (params.role) {
-            let foundRole = R.find(role => {
-              return role.name.toLowerCase() === params.role &&
-              role.mentionable === true
-            }, erisGuild.roles)
-
-            if (foundRole) {
-              message = message + ' ' + foundRole.mention
-            }
-          }
-
-          let dbEvent = new self.db.Event({
+          Promise.each(client.db.Event.find({
             guildId: guildId,
-            eventId: params.eventId,
-            channelId: foundChannel.id,
-            sentAt: new Date(),
-            endsAt: params.endDateTime
+            eventId: {
+              $in: eventIds
+            }
+          }).then(foundEvents => {
+            return R.differenceWith((x, y) => {
+              return x.id === y.eventId
+            }, events, foundEvents)
+          }), event => {
+            let params = CalendarUtils.getParameters(event)
+
+            if (!params) {
+              return false
+            }
+
+            let erisGuild = client.guilds.get(guildId)
+
+            let foundChannel = R.find(channel => {
+              return (!!channel.name) &&
+              channel.name.toLowerCase() === params.channel &&
+              channel.type === 0
+            }, erisGuild.channels)
+
+            if (!foundChannel) {
+              return false
+            }
+
+            let message = '**Hey, Listen!**'
+
+            if (params.role) {
+              let foundRole = R.find(role => {
+                return role.name.toLowerCase() === params.role &&
+                role.mentionable === true
+              }, erisGuild.roles)
+
+              if (foundRole) {
+                message = message + ' ' + foundRole.mention
+              }
+            }
+
+            let dbEvent = new client.db.Event({
+              guildId: guildId,
+              eventId: params.eventId,
+              channelId: foundChannel.id,
+              sentAt: new Date(),
+              endsAt: params.endDateTime
+            })
+
+            let embed = CalendarUtils.createEmbed(params)
+
+            client.createMessage(foundChannel.id, {
+              content: message,
+              embed
+            }).then(() => dbEvent.save())
           })
-
-          let embed = calendarUtil.createEmbed(params)
-
-          self.createMessage(foundChannel.id, {
-            content: message,
-            embed
-          }).then(() => dbEvent.save())
         })
       })
     })
-  })
+  }
 }
 
-module.exports = handleEvents
+module.exports = HandleEventsTask

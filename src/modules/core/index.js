@@ -6,7 +6,8 @@ class CoreModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'core',
-      description: 'Core commands and components'
+      description: 'Core commands and components',
+      tasks: true
     })
   }
 

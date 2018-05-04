@@ -22,9 +22,11 @@ class Loader extends Collection {
 
     let commands = module.commands
     let listeners = module.listeners
+    let tasks = module.tasks
 
     this._client.register('listeners', listeners, {group: name})
     this._client.register('commands', commands, {group: name})
+    this._client.register('tasks', tasks, {group: name})
 
     this._client.emit('loader:registered', {
       name: name,

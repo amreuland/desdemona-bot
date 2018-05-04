@@ -24,8 +24,9 @@ class NaviModule {
     const {
       name,
       description,
-      commands = 'commands',
+      commands = false,
       listeners = false,
+      tasks = false,
       options = {}
     } = args
 
@@ -40,14 +41,20 @@ class NaviModule {
 
     this.commands = []
     this.listeners = []
+    this.tasks = []
 
     this._resolveCommands(commands)
     this._resolveListeners(listeners)
+    this._resolveTasks(tasks)
   }
 
   _resolveCommands (commands) {
     if (!commands) {
       return this
+    }
+
+    if (commands === true) {
+      commands = 'commands'
     }
 
     switch (typeof commands) {
@@ -104,6 +111,42 @@ class NaviModule {
         }
         for (let listener in listeners) {
           this.listeners.push(listeners[listener])
+        }
+        return this
+      }
+      default: {
+        throw new Error('Path supplied is not an object or string')
+      }
+    }
+  }
+
+  _resolveTasks (tasks) {
+    if (!tasks) {
+      return this
+    }
+
+    if (tasks === true) {
+      tasks = 'tasks'
+    }
+
+    switch (typeof tasks) {
+      case 'string': {
+        const filepath = path.join(this.getModulePath(), tasks)
+        if (!fs.existsSync(filepath)) {
+          throw new Error(`Folder path ${filepath} does not exist`)
+        }
+        const lstnrs = isDir(filepath) ? requireAll(filepath) : require(filepath)
+        return this._resolveTasks(lstnrs)
+      }
+      case 'object': {
+        if (Array.isArray(tasks)) {
+          for (const task of tasks) {
+            this.tasks.push(task)
+          }
+          return this
+        }
+        for (let task in tasks) {
+          this.tasks.push(tasks[task])
         }
         return this
       }
