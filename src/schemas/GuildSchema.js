@@ -10,6 +10,10 @@ module.exports = {
       index: true
     },
 
+    prefix: {
+      type: String
+    },
+
     settings: {
       type: Object,
       default: {}
@@ -23,8 +27,14 @@ module.exports = {
     tokens: {
       type: Object,
       default: {}
-    },
+    }
+  },
 
-    calendarId: String
+  virtuals: {
+    connections: {
+      ref: 'Connection',
+      localField: '_id',
+      foreignField: 'guild'
+    }
   }
 }
