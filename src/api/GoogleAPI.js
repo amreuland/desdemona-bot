@@ -8,7 +8,7 @@ const OAuth2Client = google.auth.OAuth2
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-const { MissingTokenError } = require('../util')
+const { MissingTokenError } = require('../lib')
 
 class GoogleAPI {
   constructor (options = {}) {
