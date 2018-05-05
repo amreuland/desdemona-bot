@@ -104,7 +104,8 @@ class CalendarCommand extends Command {
     let google = client.api.google
 
     let guildId = msg.channel.guild.id
-    return client.db.Guild.findOne({guildId: guildId})
+    return client.db.Guild.findOne({ guildId })
+      .populate('connections')
       .then(dbGuild => {
         let authClient = google.getAuthClient(dbGuild.tokens.google)
         google.ensureAuthCredentials(authClient)
@@ -116,10 +117,20 @@ class CalendarCommand extends Command {
             }).then(selection => {
               return responder.typing().then(() => {
                 let item = calendars.items[selection[1]]
-                dbGuild.calendarId = item.id
-                return dbGuild.save()
-                  .then(responder.send('Calendar Selected!'))
+
+                let connection = R.find(R.propEq('type', 'google#calendarId'), dbGuild.connections)
+                if (!connection) {
+                  return client.db.Connection.create({
+                    guild: dbGuild._id,
+                    guildId,
+                    type: 'google#calendarId',
+                    value: item.id
+                  })
+                }
+                connection.value = item.id
+                return connection.save()
               })
+                .then(() => responder.success('Calendar Selected!'))
             })
           })
       })

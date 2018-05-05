@@ -65,8 +65,7 @@ class CalendarUtils {
       title: params.title,
       author: {
         name: 'Navi - Calendar',
-        url: 'https://github.com/amreuland/navi-bot',
-        icon_url: 'https://discordapp.com/assets/644ab12f2f874b0c5fb5b5b5f88a0bef.svg'
+        url: 'https://github.com/amreuland/navi-bot'
       },
       url: params.url,
       description: params.description,

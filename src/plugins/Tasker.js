@@ -45,9 +45,9 @@ class Tasker {
   }
 
   run () {
-    for (const task of this.tasks) {
+    return Promise.map(this.tasks, task => {
       setInterval(task.run.bind(task), task.interval, this._client)
-    }
+    })
   }
 }
 
