@@ -13,7 +13,7 @@ const { Sentry } = require('./lib')
 
 const { APIPlugin, MongoosePlugin, RedisPlugin, Loader, Tasker } = require('./plugins')
 
-const { GoogleAPI, TheCatAPI } = require('./api')
+const { GoogleAPI, TheCatAPI, TheDogAPI } = require('./api')
 
 const modules = require('./modules')
 
@@ -116,6 +116,7 @@ const bot = new Navi({
 
 bot.register('api', 'google', GoogleAPI, config.apis.google)
 bot.register('api', 'cats', TheCatAPI, config.apis.thecatapi)
+bot.register('api', 'dogs', TheDogAPI)
 
 for (const name in config.cache) {
   bot.register('cache', name, config.cache[name])

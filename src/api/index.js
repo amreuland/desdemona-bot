@@ -8,5 +8,6 @@ module.exports = {
   PastebinAPI: require('./PastebinAPI'),
   SoundCloudAPI: require('./SoundCloudAPI'),
   SteamAPI: require('./SteamAPI'),
-  TheCatAPI: require('./TheCatAPI')
+  TheCatAPI: require('./TheCatAPI'),
+  TheDogAPI: require('./TheDogAPI')
 }
