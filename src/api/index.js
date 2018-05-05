@@ -7,5 +7,6 @@ module.exports = {
   OverwatchAPI: require('./OverwatchAPI'),
   PastebinAPI: require('./PastebinAPI'),
   SoundCloudAPI: require('./SoundCloudAPI'),
-  SteamAPI: require('./SteamAPI')
+  SteamAPI: require('./SteamAPI'),
+  TheCatAPI: require('./TheCatAPI')
 }
