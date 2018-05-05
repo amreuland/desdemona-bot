@@ -120,10 +120,9 @@ class GoogleAPI {
   // YOUTUBE METHODS //
   // //////////////////
 
-  getYouTubeSearchSingle (query) {
+  getYouTubeSearch (query) {
     return this.youtube.search.listAsync({
       part: 'snippet',
-      maxResults: 1,
       q: query,
       type: 'video,playlist'
     })
