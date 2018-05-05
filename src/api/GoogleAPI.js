@@ -12,20 +12,35 @@ const { MissingTokenError } = require('../lib')
 
 class GoogleAPI {
   constructor (options = {}) {
+    this.apiKey = options.apiKey
     this.clientId = options.clientId
     this.clientSecret = options.clientSecret
     this.redirectUris = options.redirectUris
+    if (!this.apiKey) {
+      throw new Error('Missing Google API Key')
+    }
+
     if (!this.clientId || !this.clientSecret || !this.redirectUris) {
       throw new Error('Missing Google OAuth Client Secret')
     }
 
+    // google.client.setApiKey(this.apiKey)
+
     let calendar = google.calendar({version: 'v3'})
+    let youtube = google.youtube({
+      version: 'v3',
+      auth: this.apiKey
+    })
 
     Promise.promisifyAll(calendar.calendarList)
     Promise.promisifyAll(calendar.calendars)
     Promise.promisifyAll(calendar.events)
 
     this.calendar = calendar
+
+    Promise.promisifyAll(youtube.search)
+
+    this.youtube = youtube
   }
 
   // ///////////////
@@ -99,6 +114,19 @@ class GoogleAPI {
     cfg = R.merge(options, cfg)
 
     return this.calendar.events.listAsync(cfg).then(data => data.items)
+  }
+
+  // //////////////////
+  // YOUTUBE METHODS //
+  // //////////////////
+
+  getYouTubeSearchSingle (query) {
+    return this.youtube.search.listAsync({
+      part: 'snippet',
+      maxResults: 1,
+      q: query,
+      type: 'video,playlist'
+    })
   }
 }
 
