@@ -67,7 +67,7 @@ class CopycatListener extends Listener {
         let embed = CopycatUtils.createMirrorEmbed(message)
 
         return Promise.map(data, destinationId => {
-          let ch = message.guild.channels.get(destinationId)
+          let ch = message.channel.guild.channels.get(destinationId)
           if (!ch) {
             return copyCache.srem(`channel:${channelId}`, destinationId)
           }
@@ -99,7 +99,7 @@ class CopycatListener extends Listener {
 
     return Promise.map(copyCache.smembers(`message:${messageId}`), mirrorStr => {
       let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
-      let ch = message.guild.channels.get(mirrorChId)
+      let ch = message.channel.guild.channels.get(mirrorChId)
       if (!ch) {
         return false
       }
@@ -133,7 +133,7 @@ class CopycatListener extends Listener {
 
     return Promise.map(copyCache.smembers(`message:${messageId}`), mirrorStr => {
       let [mirrorChId, mirrorMsgId] = R.split(':', mirrorStr)
-      let ch = message.guild.channels.get(mirrorChId)
+      let ch = message.channel.guild.channels.get(mirrorChId)
       if (!ch) {
         return copyCache.srem(`message:${messageId}`, mirrorStr)
       }
