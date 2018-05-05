@@ -3,7 +3,7 @@
 const { Command } = require('sylphy')
 
 const CalendarUtils = require('../util')
-const { MissingTokenError } = require('../errors')
+const { MissingTokenError } = require.main.require('./lib')
 
 class LastCalendarEvent extends Command {
   constructor (...args) {

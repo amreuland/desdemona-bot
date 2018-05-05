@@ -5,7 +5,7 @@ const R = require('ramda')
 const { Command } = require('sylphy')
 
 const CalendarUtils = require('../util')
-const { MissingTokenError } = require('../errors')
+const { MissingTokenError } = require.main.require('./lib')
 
 class NextCalendarEvent extends Command {
   constructor (...args) {
