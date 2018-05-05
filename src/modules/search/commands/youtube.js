@@ -35,7 +35,7 @@ class YouTubeSearchCommand extends Command {
 
     let search = args.search
 
-    return client.api.google.getYouTubeSearchSingle(search)
+    return client.api.google.getYouTubeSearch(search)
       .then(results => {
         let type = results.items[0].id.kind
         let url
