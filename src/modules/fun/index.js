@@ -6,7 +6,8 @@ class FunModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'fun',
-      description: 'Fun commands and components'
+      description: 'Fun commands and components',
+      commands: true
     })
   }
 
