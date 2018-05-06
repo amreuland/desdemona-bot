@@ -81,6 +81,13 @@ class CalendarCommand extends Command {
 
     return client.db.Guild.findOne({ guildId })
       .then(dbGuild => {
+        if (!dbGuild) {
+          return client.db.Guild.create({ guildId })
+        }
+
+        return dbGuild
+      })
+      .then(dbGuild => {
         let authClient = google.getAuthClient()
         let authUrl = google.getAuthUrl(authClient)
 
@@ -107,6 +114,9 @@ class CalendarCommand extends Command {
     return client.db.Guild.findOne({ guildId })
       .populate('connections')
       .then(dbGuild => {
+        if (!dbGuild) {
+          return Promise.reject(new MissingTokenError())
+        }
         let authClient = google.getAuthClient(dbGuild.tokens.google)
         google.ensureAuthCredentials(authClient)
         return google.getCalendarList(authClient)
@@ -135,7 +145,7 @@ class CalendarCommand extends Command {
           })
       })
       .catch(MissingTokenError, () => {
-        return responder.error('Missing authentication token for guild!\n\t\t\tPlease call `!calauth` first!')
+        return responder.error('Missing authentication token for guild!\n\t\t\tPlease call `n!calednar auth` first!')
       })
   }
 

@@ -13,8 +13,6 @@ const { Sentry } = require('./lib')
 
 const { APIPlugin, MongoosePlugin, RedisPlugin, Loader, Tasker } = require('./plugins')
 
-const { GoogleAPI, TheCatAPI, TheDogAPI } = require('./api')
-
 const modules = require('./modules')
 
 const { Client, utils } = require('sylphy')
@@ -23,6 +21,8 @@ utils.emojis = require('../res/emoji')
 
 const resolve = (str) => path.join('src', str)
 const resolveConfig = (str) => path.join(process.cwd(), 'config', str)
+
+const apis = utils.requireAll(path.join(process.cwd(), resolve('api')))
 
 class Navi extends Client {
   constructor (options = {}) {
@@ -114,9 +114,10 @@ const bot = new Navi({
   maxShards
 })
 
-bot.register('api', 'google', GoogleAPI, config.apis.google)
-bot.register('api', 'cats', TheCatAPI, config.apis.thecatapi)
-bot.register('api', 'dogs', TheDogAPI)
+bot.register('api', 'google', apis.GoogleAPI, config.apis.google)
+bot.register('api', 'cats', apis.TheCatAPI, config.apis.thecatapi)
+bot.register('api', 'dogs', apis.TheDogAPI)
+bot.register('api', 'urbandict', apis.UrbanDictionaryAPI)
 
 for (const name in config.cache) {
   bot.register('cache', name, config.cache[name])
