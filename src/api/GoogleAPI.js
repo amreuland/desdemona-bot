@@ -27,6 +27,10 @@ class GoogleAPI {
     // google.client.setApiKey(this.apiKey)
 
     let calendar = google.calendar({version: 'v3'})
+    let customsearch = google.customsearch({
+      version: 'v1',
+      auth: this.apiKey
+    })
     let youtube = google.youtube({
       version: 'v3',
       auth: this.apiKey
@@ -37,6 +41,10 @@ class GoogleAPI {
     Promise.promisifyAll(calendar.events)
 
     this.calendar = calendar
+
+    Promise.promisifyAll(customsearch.cse)
+
+    this.customsearch = customsearch
 
     Promise.promisifyAll(youtube.search)
 
@@ -114,6 +122,12 @@ class GoogleAPI {
     cfg = R.merge(options, cfg)
 
     return this.calendar.events.listAsync(cfg).then(data => data.items)
+  }
+
+  getGoogleSearch (query) {
+    return this.customsearch.cse.listAsync({
+      q: query
+    })
   }
 
   // //////////////////
