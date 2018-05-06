@@ -8,12 +8,12 @@ const videoUrl = 'https://www.youtube.com/watch?v='
 class YouTubeSearchCommand extends Command {
   constructor (...args) {
     super(...args, {
-      name: 'youtube',
+      name: 'yt',
       description: 'Search youtube and return the first result',
-      aliases: ['yt'],
+      aliases: ['youtube'],
       cooldown: 30,
       usage: [
-        { name: 'search', displayName: 'search-string', type: 'string', last: true}
+        { name: 'search', displayName: 'search-string', type: 'string', last: true }
       ],
       options: {
         guildOnly: true,
