@@ -10,6 +10,7 @@ module.exports = {
   ModerationModule: require('./moderation'),
   MusicModule: require('./music'),
   NsfwModule: require('./nsfw'),
+  PermissionsModule: require('./permissions'),
   PokemonModule: require('./pokemon'),
   SearchModule: require('./search'),
   UtilModule: require('./util')
