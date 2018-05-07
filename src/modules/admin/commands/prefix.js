@@ -6,16 +6,27 @@ class PrefixCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'prefix',
-      description: 'Set the prefix for the bot on this server',
+      description: 'Set the prefix for the bot on this server.',
       usage: [{
         name: 'prefix',
         displayName: 'prefix',
-        type: 'string'
+        type: 'string',
+        optional: true
       }],
+      examples: [
+        {
+          args: '!.',
+          description: 'Set the bot prefix to \'!.\''
+        },
+        {
+          args: '',
+          description: 'Clear the bot prefix'
+        }
+      ],
       options: {
         guildOnly: true,
         permissions: [
-          'administrator'
+          'manageGuild'
         ]
       }
     })
@@ -23,6 +34,8 @@ class PrefixCommand extends Command {
 
   async handle ({ msg, client, args }, responder) {
     let guildId = msg.channel.guild.id
+
+    let prefix = args.prefix
 
     return client.db.Guild.findOne({ guildId })
       .then(dbGuild => {
@@ -33,11 +46,22 @@ class PrefixCommand extends Command {
         return dbGuild
       })
       .then(dbGuild => {
-        dbGuild.channels.audit = args.channel[0].id
+        if (!prefix) {
+          delete dbGuild.settings.prefix
+          dbGuild.markModified('settings')
+          return dbGuild.save()
+            .then(() => responder.success('prefix removed!'))
+        }
+
+        dbGuild.settings.prefix = prefix
         dbGuild.markModified('settings')
         return dbGuild.save()
+          .then(() => responder.success('prefix changed!'))
       })
-      .then(() => responder.success('the audit log channel has been set!'))
+      .then(() => {
+        return client.cache.guild.del(`flag:${guildId}:prefix`)
+      })
+
   }
 }
 
