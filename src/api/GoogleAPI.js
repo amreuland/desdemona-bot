@@ -12,19 +12,7 @@ const { MissingTokenError } = require('../lib')
 
 class GoogleAPI {
   constructor (options = {}) {
-    this.apiKey = options.apiKey
-    this.clientId = options.clientId
-    this.clientSecret = options.clientSecret
-    this.redirectUris = options.redirectUris
-    if (!this.apiKey) {
-      throw new Error('Missing Google API Key')
-    }
-
-    if (!this.clientId || !this.clientSecret || !this.redirectUris) {
-      throw new Error('Missing Google OAuth Client Secret')
-    }
-
-    // google.client.setApiKey(this.apiKey)
+    this._options = options
 
     let calendar = google.calendar({version: 'v3'})
     let customsearch = google.customsearch({
@@ -49,6 +37,31 @@ class GoogleAPI {
     Promise.promisifyAll(youtube.search)
 
     this.youtube = youtube
+  }
+
+  set _options (opts) {
+    const {
+      apiKey,
+      clientId,
+      clientSecret,
+      redirectUris,
+      options = {}
+    } = opts
+
+    if (!apiKey) {
+      throw new Error('Missing Google API Key')
+    }
+
+    if (!clientId || !clientSecret || !redirectUris) {
+      throw new Error('Missing Google OAuth Client Secret')
+    }
+
+    this.apiKey = apiKey
+    this.clientId = clientId
+    this.clientSecret = clientSecret
+    this.redirectUris = redirectUris
+
+    this.options = options
   }
 
   // ///////////////
@@ -126,7 +139,8 @@ class GoogleAPI {
 
   getGoogleSearch (query) {
     return this.customsearch.cse.listAsync({
-      q: query
+      q: query,
+      cx: this.options.cx
     })
   }
 
