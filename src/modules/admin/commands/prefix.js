@@ -50,12 +50,14 @@ class PrefixCommand extends Command {
           delete dbGuild.settings.prefix
           dbGuild.markModified('settings')
           return dbGuild.save()
+            .then(() => client.cache.guild.del(`${guildId}:prefix`))
             .then(() => responder.success('prefix removed!'))
         }
 
         dbGuild.settings.prefix = prefix
         dbGuild.markModified('settings')
         return dbGuild.save()
+          .then(() => client.cache.guild.set(`${guildId}:prefix`, prefix, 'EX', 3600))
           .then(() => responder.success('prefix changed!'))
       })
       .then(() => {
