@@ -1,5 +1,7 @@
 'use strict'
 
+const R = require('ramda')
+
 const { getGuildPrefix } = require('../util').GuildUtils
 
 module.exports = {
@@ -23,7 +25,7 @@ module.exports = {
     // if (!actOnMsg) {
     return getGuildPrefix(client, msg.channel.guild.id)
       .then(gPrefix => {
-        let prefixes = commands.prefixes.keys()
+        let prefixes = [...commands.prefixes.keys()]
         if (gPrefix && prefixes.indexOf(gPrefix) === -1) {
           prefixes.push(gPrefix)
         }

@@ -19,12 +19,12 @@ class GuildUtils {
 
               return model.findOne(dbProps)
                 .then(dbItem => {
-                  if (!dbItem || !dbItem.prefix) {
-                    return cache.set(flagKey, 1, 'EX', 1800)
+                  if (!dbItem || !dbItem.settings.prefix) {
+                    return cache.set(flagKey, 1, 'EX', 300)
                       .return(null)
                   }
 
-                  let prefix = dbItem.prefix
+                  let prefix = dbItem.settings.prefix
                   return cache.set(cacheKey, prefix, 'EX', 3600)
                     .return(prefix)
                 })
