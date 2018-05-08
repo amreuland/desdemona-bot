@@ -1,7 +1,5 @@
 'use strict'
 
-const R = require('ramda')
-
 const { getGuildPrefix } = require('../util').GuildUtils
 
 module.exports = {

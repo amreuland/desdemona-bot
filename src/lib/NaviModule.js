@@ -69,11 +69,17 @@ class NaviModule {
       case 'object': {
         if (Array.isArray(commands)) {
           for (const command of commands) {
+            if (!command) {
+              continue
+            }
             this.commands.push(command)
           }
           return this
         }
         for (let command in commands) {
+          if (!commands[command]) {
+            continue
+          }
           this.commands.push(commands[command])
         }
         return this
