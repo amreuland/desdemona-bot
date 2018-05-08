@@ -29,11 +29,14 @@ class NextCalendarEvent extends Command {
     let google = client.api.google
 
     return client.db.Guild.findOne({ guildId })
+      .populate('connections')
       .then(dbGuild => {
         let authClient = google.getAuthClient(dbGuild.tokens.google)
         google.ensureAuthCredentials(authClient)
 
-        return google.getCalendarUpcomingEvents(authClient, dbGuild.calendarId)
+        let connection = R.find(R.propEq('type', 'google#calendarId'), dbGuild.connections)
+
+        return google.getCalendarUpcomingEvents(authClient, connection.value)
       })
       .then(upcomingEvents => {
         let params = null

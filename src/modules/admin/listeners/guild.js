@@ -35,16 +35,8 @@ class GuildEventsListener extends Listener {
    */
   onGuildCreate (guild) {
     this.logger.debug(`Joined guild '${guild.name}' (${guild.id})`)
-    return this._client.db.Guild.findOne({
-      guildId: guild.id
-    }).then(obj => {
-      if (!obj) {
-        obj = new this._client.db.Guild({guildId: guild.id})
-        return obj.save()
-      }
-
-      return obj
-    })
+    let search = { guildId: guild.id }
+    return this._client.db.Guild.findOneOrCreate(search, search)
   }
 
   /**

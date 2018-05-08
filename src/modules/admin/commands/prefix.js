@@ -37,14 +37,7 @@ class PrefixCommand extends Command {
 
     let prefix = args.prefix
 
-    return client.db.Guild.findOne({ guildId })
-      .then(dbGuild => {
-        if (!dbGuild) {
-          return client.db.Guild.create({ guildId })
-        }
-
-        return dbGuild
-      })
+    return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
         if (!prefix) {
           delete dbGuild.settings.prefix

@@ -47,14 +47,7 @@ class BanCommand extends Command {
             }
           })
       })
-      .then(() => client.db.User.findOne({ userId }))
-      .then(dbUser => {
-        if (!dbUser) {
-          return client.db.User.create({ userId })
-        }
-
-        return dbUser
-      })
+      .then(() => client.db.User.findOneOrCreate({ userId }, { userId }))
       .then(dbUser => {
         return client.db.Warning.create({
           user: dbUser._id,
