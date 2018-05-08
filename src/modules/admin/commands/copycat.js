@@ -89,8 +89,7 @@ class CopycatCommand extends Command {
     }
 
     let search = {guildId, channelId: srcCh.id}
-    return client.db.Copycat.findOne(search)
-      .then(dbItem => (!dbItem ? (new client.db.Copycat(search)) : dbItem))
+    return client.db.Copycat.findOneOrCreate(search, search)
       .then(dbItem => {
         if (R.indexOf(destCh.id, dbItem.targets) !== -1) {
           let err = {

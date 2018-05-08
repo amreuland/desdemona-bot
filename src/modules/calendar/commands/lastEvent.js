@@ -57,4 +57,4 @@ class LastCalendarEvent extends Command {
   }
 }
 
-module.exports = LastCalendarEvent
+module.exports = false
