@@ -23,6 +23,12 @@ module.exports = {
       foreignField: 'user'
     },
 
+    gags: {
+      ref: 'Gag',
+      localField: '_id',
+      foreignField: 'user'
+    },
+
     warnings: {
       ref: 'Warning',
       localField: '_id',

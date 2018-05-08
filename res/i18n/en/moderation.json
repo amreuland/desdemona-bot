@@ -2,6 +2,21 @@
   "ban": {
     "SUCCESS": "{{member}} has been banned."
   },
+  "gag": {
+    "SUCCESS": "The user has been silenced!",
+    "SUCCESS_TIMEOUT": "The user has been silenced for {{time}} seconds!",
+    "errors": {
+      "IS_BOT": "Bots cannot be silenced!",
+      "ALREADY_GAGGED": "The user is already silenced!"
+    }
+  },
+  "ungag": {
+    "SUCCESS": "The user has been un-silenced!",
+    "errors": {
+      "IS_BOT": "Bots cannot be un-silenced!",
+      "NOT_GAGGED": "User is not silenced!"
+    }
+  },
   "kick": {
     "SUCCESS": "{{member}} has been kicked."
   },

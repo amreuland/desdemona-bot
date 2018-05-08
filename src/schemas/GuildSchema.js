@@ -10,10 +10,6 @@ module.exports = {
       index: true
     },
 
-    prefix: {
-      type: String
-    },
-
     settings: {
       type: Object,
       default: {}
@@ -33,6 +29,12 @@ module.exports = {
   virtuals: {
     connections: {
       ref: 'Connection',
+      localField: '_id',
+      foreignField: 'guild'
+    },
+
+    gags: {
+      ref: 'Gag',
       localField: '_id',
       foreignField: 'guild'
     }

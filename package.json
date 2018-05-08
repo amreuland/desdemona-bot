@@ -1,7 +1,7 @@
 {
   "name": "navi",
-  "version": "1.0.0",
-  "description": "Navi is a discord bot to annoy",
+  "version": "0.1.0",
+  "description": "Navi is a discord bot to help moderate",
   "main": "./index.js",
   "scripts": {
     "start": "node ./index.js",
@@ -14,8 +14,13 @@
   "keywords": [
     "discord",
     "bot",
-    "calendar",
-    "coordinate"
+    "navi",
+    "eris",
+    "annoying",
+    "fun",
+    "admin",
+    "discord-api",
+    "moderation"
   ],
   "author": "Ashley Reuland",
   "license": "MIT",
