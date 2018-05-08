@@ -5,6 +5,54 @@ const moment = require('moment')
 const warningFormat = ts => moment(ts).format('ddd, MMM DD YYYY, HH:mm')
 
 class ModerationUtils {
+  static createBanMsgEmbed (guild, reason) {
+    let fields = [
+      {
+        name: 'Reason',
+        value: reason
+      }
+    ]
+
+    return {
+      title: 'Ban Notice',
+      author: {
+        name: guild.name,
+        icon_url: guild.iconURL
+      },
+      description: ':warning:**You have been banned from the server**',
+      fields,
+      color: 0xe63a00,
+      footer: {
+        text: 'Ban Notice'
+      },
+      timestamp: new Date()
+    }
+  }
+
+  static createKickMsgEmbed (guild, reason) {
+    let fields = [
+      {
+        name: 'Reason',
+        value: reason
+      }
+    ]
+
+    return {
+      title: 'Kick Notice',
+      author: {
+        name: guild.name,
+        icon_url: guild.iconURL
+      },
+      description: ':warning:**You have been kicked from the server**',
+      fields,
+      color: 0xe63a00,
+      footer: {
+        text: 'Kick Notice'
+      },
+      timestamp: new Date()
+    }
+  }
+
   static createWarnlogEmbed (member, warnings, owc) {
     let fields = []
 

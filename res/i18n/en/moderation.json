@@ -1,4 +1,10 @@
 {
+  "ban": {
+    "SUCCESS": "{{member}} has been banned."
+  },
+  "kick": {
+    "SUCCESS": "{{member}} has been kicked."
+  },
   "warn": {
     "errors": {
       "IS_BOT": "bots cannot be warned!"
