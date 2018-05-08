@@ -107,6 +107,7 @@ const bot = new Navi({
   autoreconnect: true,
   mongo: config.mongo,
   botConfig: config,
+  admins: config.admins,
   processID,
   processShards,
   firstShardID,

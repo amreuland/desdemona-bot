@@ -41,14 +41,7 @@ class WarnCommand extends Command {
     }
 
     return msg.delete('Hide moderation commands')
-      .then(() => client.db.User.findOne({ userId }).populate('warnings'))
-      .then(dbUser => {
-        if (!dbUser) {
-          return client.db.User.create({ userId })
-        }
-
-        return dbUser
-      })
+      .then(() => client.db.User.findOneOrCreate({ userId }, { userId }).populate('warnings'))
       .then(dbUser => {
         return client.db.Warning.create({
           user: dbUser._id,

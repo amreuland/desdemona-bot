@@ -13,9 +13,7 @@ class GuildUtils {
         if (!data) {
           return cache.get(flagKey)
             .then(flag => {
-              if (flag) {
-                return null
-              }
+              if (flag) { return null }
 
               return model.findOne(dbProps)
                 .then(dbItem => {
