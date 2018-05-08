@@ -6,8 +6,7 @@ class UtilModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'util',
-      description: 'Utilitiy commands and components',
-      commands: true
+      description: 'Utilitiy commands and components'
     })
   }
 

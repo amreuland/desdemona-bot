@@ -44,9 +44,11 @@ class HelpCommand extends Command {
     ]
     let maxPad = 10
 
+    let isAdmin = client.admins.includes(msg.author.id)
+
     client.plugins.get('commands').unique().forEach(c => {
       let permissions = c.options.permissions
-      if (c.triggers[0] !== c.name || c.options.hidden || c.options.adminOnly ||
+      if (c.triggers[0] !== c.name || c.options.hidden || (c.options.adminOnly && !isAdmin) ||
         (permissions && permissions.length &&
           !this.hasPermissions(msg.channel, msg.author, permissions))) {
         return

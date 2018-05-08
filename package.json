@@ -25,7 +25,7 @@
   "homepage": "https://github.com/naviforest/navi#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
-    "bufferutil": "^3.0.4",
+    "bufferutil": "^3.0.5",
     "chalk": "^2.4.1",
     "erlpack": "github:abalabahaha/erlpack",
     "eventemitter3": "^3.1.0",
@@ -37,6 +37,7 @@
     "moment": "^2.22.1",
     "mongoose": "^5.0.17",
     "node-opus": "^0.2.7",
+    "nodegit": "^0.22.0",
     "ramda": "^0.25.0",
     "raven": "^2.6.0",
     "request": "^2.85.0",
