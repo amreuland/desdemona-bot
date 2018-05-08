@@ -1,9 +1,9 @@
 'use strict'
 
-const { ObjectId } = require('mongoose').Schema.Types
+const { ObjectId, Mixed } = require('mongoose').Schema.Types
 
 module.exports = {
-  name: 'GUSettings',
+  name: 'Gag',
 
   schema: {
     user: {
@@ -26,9 +26,8 @@ module.exports = {
       index: true
     },
 
-    settings: {
-      type: Object,
-      default: {}
+    timeout: {
+      type: Mixed
     }
   }
 }
