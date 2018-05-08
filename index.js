@@ -27,6 +27,23 @@ class Crystal2 extends Crystal {
       await delay(6000)
     }
   }
+
+  getCluster (pid) {
+    return this.clusters.find(s => s.worker.pid === pid)
+  }
+
+  async restart (message = {}) {
+    if (typeof message.d === 'number') {
+      const cluster = this.clusters.get(message.d)
+      if (!cluster) return
+      cluster.worker.kill()
+    } else {
+      for (let cluster of [...this.clusters.values()]) {
+        cluster.worker.kill()
+        await Promise.delay(6000)
+      }
+    }
+  }
 }
 
 const cluster = new Crystal2(
@@ -37,6 +54,10 @@ const cluster = new Crystal2(
 
 cluster.on('clusterCreate', id => {
   console.log(`${timestamp()} [MASTER]: CLUSTER ${chalk.cyan.bold(id)} ONLINE`)
+})
+
+cluster.on('clusterExit', (pid, id) => {
+  console.log(`${timestamp()} [MASTER]: CLUSTER ${chalk.cyan.bold(id)} SHUTDOWN`)
 })
 
 cluster.createClusters()
