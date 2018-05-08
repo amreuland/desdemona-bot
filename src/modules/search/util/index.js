@@ -3,5 +3,6 @@
 class SearchUtils {}
 
 module.exports = Object.assign(SearchUtils,
-  require('./embeds')
+  require('./embeds'),
+  require('./steam')
 )

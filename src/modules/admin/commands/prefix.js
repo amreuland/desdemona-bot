@@ -63,7 +63,6 @@ class PrefixCommand extends Command {
       .then(() => {
         return client.cache.guild.del(`flag:${guildId}:prefix`)
       })
-
   }
 }
 
