@@ -13,7 +13,7 @@ module.exports = {
 
     guild: {
       type: ObjectId,
-      ref: 'User'
+      ref: 'Guild'
     },
 
     userId: {

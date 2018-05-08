@@ -1,7 +1,7 @@
 {
   "name": "navi",
-  "version": "1.0.0",
-  "description": "Navi is a discord bot to annoy",
+  "version": "0.1.0",
+  "description": "Navi is a discord bot to help moderate",
   "main": "./index.js",
   "scripts": {
     "start": "node ./index.js",
@@ -14,8 +14,13 @@
   "keywords": [
     "discord",
     "bot",
-    "calendar",
-    "coordinate"
+    "navi",
+    "eris",
+    "annoying",
+    "fun",
+    "admin",
+    "discord-api",
+    "moderation"
   ],
   "author": "noriah",
   "license": "MIT",
@@ -25,7 +30,7 @@
   "homepage": "https://github.com/naviforest/navi#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
-    "bufferutil": "^3.0.4",
+    "bufferutil": "^3.0.5",
     "chalk": "^2.4.1",
     "erlpack": "github:abalabahaha/erlpack",
     "eventemitter3": "^3.1.0",
@@ -37,6 +42,7 @@
     "moment": "^2.22.1",
     "mongoose": "^5.0.17",
     "node-opus": "^0.2.7",
+    "nodegit": "^0.22.0",
     "ramda": "^0.25.0",
     "raven": "^2.6.0",
     "request": "^2.85.0",

@@ -78,6 +78,12 @@ class MongoosePlugin extends Collection {
       }
     }
 
+    schema.static('findOneOrCreate', async function findOneOrCreate (condition, doc) {
+      const one = await this.findOne(condition)
+
+      return one || this.create(doc)
+    })
+
     let model = Mongoose.model(name, schema)
 
     this.set(name, model)

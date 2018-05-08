@@ -79,14 +79,7 @@ class CalendarCommand extends Command {
 
     let google = client.api.google
 
-    return client.db.Guild.findOne({ guildId })
-      .then(dbGuild => {
-        if (!dbGuild) {
-          return client.db.Guild.create({ guildId })
-        }
-
-        return dbGuild
-      })
+    return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
         let authClient = google.getAuthClient()
         let authUrl = google.getAuthUrl(authClient)

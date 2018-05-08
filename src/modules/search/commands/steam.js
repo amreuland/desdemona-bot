@@ -72,4 +72,4 @@ class SteamLookupCommand extends Command {
   }
 }
 
-module.exports = SteamLookupCommand
+module.exports = false

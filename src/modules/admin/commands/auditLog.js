@@ -25,7 +25,7 @@ class AuditLogCommand extends Command {
   async handle ({ msg, client, args }, responder) {
     let guildId = msg.channel.guild.id
 
-    return client.db.Guild.findOne({ guildId })
+    return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
         dbGuild.channels.audit = args.channel[0].id
         dbGuild.markModified('channels')
