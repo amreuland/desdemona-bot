@@ -10,7 +10,11 @@ module.exports = {
 
     items.forEach(item => {
       offset++
-      defs.push(`**#${offset}** - ${item.definition}`)
+      let insert = `**#${offset}** - ${item.definition}`
+      if (insert.length > 512) {
+        insert = insert.slice(0, 512) + '...'
+      }
+      defs.push(insert)
     })
 
     return {
