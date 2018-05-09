@@ -11,5 +11,34 @@
       "CHANNELS_UNLINKED_BULK_GUILD": "All mirrors for **the guild** have been unlinked",
       "CHANNELS_UNLINKED_BULK_CHANNEL": "All mirrors for the channel **{{src}}** have been unlinked"
     }
+  },
+  "iam": {
+    "SUCCESS": "The **{{role}}** role has been applied to you!",
+    "errors": {
+      "ALREADY_APPLIED": "The **{{role}}** role is already in your role list!",
+      "NOT_IN_LIST": "The **{{role}}** role is not in the list of self-assignable roles!",
+      "ROLE_ABOVE_BOT": "The **{{role}}** role is above the bots highest role. Contact an admin!"
+    }
+  },
+  "iamnot": {
+    "SUCCESS": "The **{{role}}** role has been removed from your list!",
+    "errors": {
+      "ALREADY_APPLIED": "The **{{role}}** role is not in your role list!",
+      "NOT_IN_LIST": "The **{{role}}** role is not in the list of self-assignable roles!",
+      "ROLE_ABOVE_BOT": "The **{{role}}** role is above the bots highest role. Contact an admin!"
+    }
+  },
+  "iamadd": {
+    "SUCCESS": "The **{{role}}** role was added to the self-assignable role list!",
+    "ERROR": "The **{{role}}** role is already on the self-assignable role list!"
+  },
+  "iamrem": {
+    "SUCCESS": "The **{{role}}** role was removed from the self-assignable role list!",
+    "ERROR": "The **{{role}}** role is not on the self-assignable role list!"
+  },
+  "iamlist": {
+    "strings": {
+      "HEADER": "Self-Assignable Roles list page **{{page}}** of **{{pageOf}}**"
+    }
   }
 }

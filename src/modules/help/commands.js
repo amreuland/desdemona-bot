@@ -9,7 +9,10 @@ class HelpCommand extends Command {
       description: 'Help!',
       usage: [
         { name: 'command', type: 'command', optional: true }
-      ]
+      ],
+      options: {
+        guildOnly: true
+      }
     })
   }
 

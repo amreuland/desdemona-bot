@@ -20,6 +20,10 @@ module.exports = {
       default: {}
     },
 
+    selfroles: {
+      type: Array
+    },
+
     tokens: {
       type: Object,
       default: {}

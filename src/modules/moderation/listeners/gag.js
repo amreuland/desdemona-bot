@@ -4,7 +4,7 @@ const moment = require('moment')
 
 const { Listener } = require('sylphy')
 
-class CopycatListener extends Listener {
+class GagListener extends Listener {
   constructor (...args) {
     super(...args, {
       name: 'moderation:gag:logic',
@@ -68,4 +68,4 @@ class CopycatListener extends Listener {
   }
 }
 
-module.exports = CopycatListener
+module.exports = GagListener
