@@ -144,7 +144,7 @@ class CopycatCommand extends Command {
         return dbItem
       })
       .then(dbItem => {
-        let newTargets = R.difference([destCh.id], dbItem.targets)
+        let newTargets = R.difference(dbItem.targets, [destCh.id])
         dbItem.targets = newTargets
         return dbItem.save()
       })
