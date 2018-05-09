@@ -32,11 +32,11 @@ class IAmListCommand extends Command {
     return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
         let roles = R.map(roleId => guild.roles.get(roleId).name, dbGuild.selfroles)
-        roles = R.splitEvery(10, roles) || []
+        roles = R.splitEvery(rolesPerPage, roles) || []
         let index = 0
         let pageRoles = R.map(role => {
           index++
-          return `#${page * index}. ${role}`
+          return `#${(page - 1) * rolesPerPage + index}. ${role}`
         }, roles[page - 1] || [])
 
         return responder
