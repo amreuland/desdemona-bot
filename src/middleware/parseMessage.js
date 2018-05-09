@@ -21,7 +21,12 @@ module.exports = {
     // let p
 
     // if (!actOnMsg) {
-    return getGuildPrefix(client, msg.channel.guild.id)
+    let p = Promise.resolve(null)
+    if (msg.channel.guild) {
+      p =  getGuildPrefix(client, msg.channel.guild.id)
+    }
+
+    return p
       .then(gPrefix => {
         let prefixes = [...commands.prefixes.keys()]
         if (gPrefix && prefixes.indexOf(gPrefix) === -1) {
