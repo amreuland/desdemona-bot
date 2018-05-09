@@ -41,7 +41,7 @@ class IAmListCommand extends Command {
 
         return responder
           .format('emoji:scroll')
-          .send(`{{iamlist.strings.HEADER}}\`\`\`Roles\n${pageRoles.join('\n')}\`\`\``, {
+          .send(`{{iamlist.strings.HEADER}}\`\`\`\nRoles\n${pageRoles.join('\n')}\`\`\``, {
             page: page,
             pageOf: roles.length || 0
           })
