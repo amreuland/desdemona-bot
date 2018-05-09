@@ -1,8 +1,8 @@
 'use strict'
 
-const moment = require('moment')
-
 const { Command } = require('sylphy')
+
+const { SilenceService } = require('../services')
 
 class GagCommand extends Command {
   constructor (...args) {
@@ -16,7 +16,7 @@ class GagCommand extends Command {
       ],
       options: {
         guildOnly: true,
-        permissions: ['manageMessages']
+        permissions: ['manageMessages', 'MuteMembers']
       },
       examples: [
         {
@@ -32,40 +32,23 @@ class GagCommand extends Command {
   }
 
   async handle ({ msg, client, args }, responder) {
-    let guild = msg.channel.guild
-    let guildId = guild.id
     let member = args.member[0]
-    let userId = member.id
+    let time = args.timeout || 0
 
-    let timeout = args.timeout ? moment().add(args.timeout, 's').toDate() : 0
-
-    if (member.bot) {
-      return responder.error('{{gag.errors.IS_BOT}}')
-    }
-
-    return Promise.all([
-      client.db.User.findOneOrCreate({ userId }, { userId }),
-      client.db.Guild.findOneOrCreate({ guildId }, { guildId }),
-      client.db.Gag.findOne({ guildId, userId })
-    ])
-      .then(([dbUser, dbGuild, dbGag]) => {
-        if (!dbGag) {
-          return client.db.Gag.create({
-            user: dbUser._id,
-            guild: dbGuild._id,
-            userId,
-            guildId,
-            timeout
-          }).then(() => {
-            if (timeout) {
-              return responder.success('{{gag.SUCCESS_TIMEOUT}}', {
-                time: args.timeout
-              })
-            }
-            return responder.success('{{gag.SUCCESS}}')
+    return SilenceService.silence(client, member, time)
+      .then(() => {
+        if (time) {
+          return responder.success('{{gag.SUCCESS_TIMEOUT}}', {
+            time: time
           })
         }
 
+        return responder.success('{{gag.SUCCESS}}')
+      })
+      .catch(SilenceService.silenceResults.ERROR_IS_BOT, () => {
+        return responder.error('{{gag.errors.IS_BOT}}')
+      })
+      .catch(SilenceService.silenceResults.ERROR_ALREADY_SILENCED, () => {
         return responder.error('{{gag.errors.ALREADY_GAGGED}}')
       })
   }
