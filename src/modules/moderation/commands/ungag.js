@@ -2,6 +2,8 @@
 
 const { Command } = require('sylphy')
 
+const { SilenceService } = require('../services')
+
 class UnGagCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -25,24 +27,17 @@ class UnGagCommand extends Command {
   }
 
   async handle ({ msg, client, args }, responder) {
-    let guild = msg.channel.guild
-    let guildId = guild.id
     let member = args.member[0]
-    let userId = member.id
 
-    if (member.bot) {
-      return responder.error('{{ungag.errors.IS_BOT}}')
-    }
-
-    return client.cache.mod.del(`gags:${guildId}:${userId}`)
-      .then(() => client.db.Gag.findOne({ guildId, userId }))
-      .then(dbGag => {
-        if (!dbGag) {
-          return responder.error('{{ungag.errors.NOT_GAGGED}}')
-        }
-
-        return dbGag.remove()
-          .then(() => responder.success('{{ungag.SUCCESS}}'))
+    return SilenceService.unsilence(client, member)
+      .then(() => responder.success('{{ungag.SUCCESS}}', {
+        member: member.username
+      }))
+      .catch(SilenceService.unsilenceResults.ERROR_IS_BOT, () => {
+        return responder.error('{{ungag.errors.IS_BOT}}')
+      })
+      .catch(SilenceService.unsilenceResults.ERROR_NOT_SILENCED, () => {
+        return responder.error('{{ungag.errors.NOT_GAGGED}}')
       })
   }
 }

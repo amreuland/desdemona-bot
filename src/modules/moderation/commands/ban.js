@@ -1,12 +1,8 @@
 'use strict'
 
-const R = require('ramda')
-
 const { Command } = require('sylphy')
 
-const { ActionCanceledException } = require('../errors')
-
-const ModerationUtils = require('../util')
+const { PunishService } = require('../services')
 
 class BanCommand extends Command {
   constructor (...args) {
@@ -31,49 +27,23 @@ class BanCommand extends Command {
   }
 
   async handle ({ msg, client, args }, responder) {
-    let guild = msg.channel.guild
-    let guildId = guild.id
     let member = args.member[0]
-    let userId = member.id
     let reason = args.reason || 'No Reason Provided'
-
 
     return msg.delete('Hide moderation commands')
       .then(() => {
-        return responder.selection(['Yes', 'No'], `Are you sure you want to ban ${member.mention}`)
+        return responder.selection(['Yes', 'No'], `Are you sure you want to ban ${member.username}`)
           .then(response => {
             if (response[0] !== 'Yes') {
-              return Promise.reject(new ActionCanceledException())
+              return responder.success('Action canceled')
             }
+
+            return PunishService.ban(client, msg.member, member, reason)
+              .then(() => responder.success('{{ban.SUCCESS}}', {
+                deleteDelay: 5,
+                member: member.mention
+              }))
           })
-      })
-      .then(() => client.db.User.findOneOrCreate({ userId }, { userId }))
-      .then(dbUser => {
-        return client.db.Warning.create({
-          user: dbUser._id,
-          userId,
-          guildId,
-          reason: `**USER BANNED**\n${reason}`,
-          timestamp: new Date(),
-          moderatorId: msg.author.id
-        })
-      })
-      .then(() => member.user.getDMChannel())
-      .then(dmChannel => {
-        let embed = ModerationUtils.createBanMsgEmbed(guild, reason)
-        return dmChannel.createMessage({ embed })
-      })
-      .then(() => {
-        return member.ban(0, reason)
-      })
-      .then(() => {
-        return responder.success('{{ban.SUCCESS}}', {
-          deleteDelay: 5,
-          member: member.mention
-        })
-      })
-      .catch(ActionCanceledException, () => {
-        return responder.success('Action canceled')
       })
   }
 }

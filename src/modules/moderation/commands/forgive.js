@@ -1,13 +1,8 @@
 'use strict'
 
-const R = require('ramda')
-
 const { Command } = require('sylphy')
 
-const sortFunc = (warnings, guildId) => R.compose(
-  R.sortBy(R.prop('timestamp')),
-  R.filter(R.propEq('guildId', guildId))
-)(warnings)
+const { PunishService } = require('../services')
 
 class ForgiveCommand extends Command {
   constructor (...args) {
@@ -20,8 +15,7 @@ class ForgiveCommand extends Command {
       ],
       options: {
         guildOnly: true,
-        permissions: ['kickMembers'],
-        hidden: false
+        permissions: ['kickMembers']
       },
       examples: [
         { args: '@Apples 3', description: 'forgive Apples for their 3rd warning' }
@@ -30,40 +24,22 @@ class ForgiveCommand extends Command {
   }
 
   async handle ({ msg, client, args }, responder) {
-    let guild = msg.channel.guild
-    let guildId = guild.id
     let member = args.member[0]
-    let userId = member.id
-    let warnNumber = args.warnNumber - 1
+    let num = args.warnNumber
 
-    if (member.bot) {
-      return responder.error('{{forgive.errors.IS_BOT}}')
-    }
-
-    return client.db.User.findOne({ userId })
-      .populate('warnings')
-      .then(dbUser => {
-        if (!dbUser) {
-          return responder.error('{{forgive.errors.USER_NOT_FOUND}}')
-        }
-
-        let guildWarnings = sortFunc(dbUser.warnings, guildId)
-        let warning = guildWarnings[warnNumber]
-
-        if (!warning) {
-          return responder.error('{{forgive.errors.WARN_NOT_EXIST}}')
-        }
-
-        if (warning.forgiven) {
-          return responder.error('{{forgive.errors.ALREADY_FORGIVEN}}')
-        }
-
-        warning.forgiven = true
-        return warning.save()
-          .then(() => responder.success('{{forgive.SUCCESS}}', {
-            user: member.mention,
-            reason: warning.reason
-          }))
+    return PunishService.forgive(client, msg.member, member, num)
+      .then((code, { reason }) => responder.success('{{forgive.SUCCESS}}', {
+        user: member.mention,
+        reason
+      }))
+      .catch(PunishService.forgiveResults.ERROR_IS_BOT, () => {
+        return responder.error('{{forgive.errors.IS_BOT}}')
+      })
+      .catch(PunishService.forgiveResults.ERROR_WARN_NOT_EXIST, () => {
+        return responder.error('{{forgive.errors.WARN_NOT_EXIST}}')
+      })
+      .catch(PunishService.forgiveResults.ERROR_ALREADY_FORGIVEN, () => {
+        return responder.error('{{forgive.errors.ALREADY_FORGIVEN}}')
       })
   }
 }

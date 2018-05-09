@@ -1,10 +1,8 @@
 'use strict'
 
-const R = require('ramda')
-
 const { Command } = require('sylphy')
 
-const ModerationUtils = require('../util')
+const { PunishService } = require('../services')
 
 class WarnCommand extends Command {
   constructor (...args) {
@@ -17,8 +15,7 @@ class WarnCommand extends Command {
       ],
       options: {
         guildOnly: true,
-        permissions: ['kickMembers'],
-        hidden: false
+        permissions: ['kickMembers']
       },
       examples: [
         {
@@ -30,45 +27,17 @@ class WarnCommand extends Command {
   }
 
   async handle ({ msg, client, args }, responder) {
-    let guild = msg.channel.guild
-    let guildId = guild.id
     let member = args.member[0]
-    let userId = member.id
     let reason = args.reason
 
-    if (member.bot) {
-      return responder.error('{{warn.errors.IS_BOT}}')
-    }
-
-    return msg.delete('Hide moderation commands')
-      .then(() => client.db.User.findOneOrCreate({ userId }, { userId }).populate('warnings'))
-      .then(dbUser => {
-        return client.db.Warning.create({
-          user: dbUser._id,
-          userId,
-          guildId,
-          reason,
-          timestamp: new Date(),
-          moderatorId: msg.author.id
-        })
-          .then(() => member.user.getDMChannel())
-          .then(pmChannel => {
-            let guildWarnings = R.filter(
-              R.propEq('guildId', guildId), dbUser.warnings || [])
-
-            let unforgivenWarnings = R.filter(R.propEq('forgiven', false), guildWarnings)
-
-            let warnCount = guildWarnings.length + 1
-            let embed = ModerationUtils.createWarningEmbed(
-              guild, msg.member, unforgivenWarnings.length, reason)
-
-            return pmChannel.createMessage({ embed })
-              .then(() => responder.success('{{warn.SUCCESS}}', {
-                user: member.mention,
-                count: warnCount,
-                unforgiven: unforgivenWarnings.length
-              }))
-          })
+    return PunishService.warn(client, msg.member, member, reason)
+      .then(({ count, unforgiven }) => responder.success('{{warn.SUCCESS}}', {
+        user: member.mention,
+        count,
+        unforgiven
+      }))
+      .catch(PunishService.warnResults.ERROR_IS_BOT, () => {
+        return responder.error('{{warn.errors.IS_BOT}}')
       })
   }
 }
