@@ -32,18 +32,18 @@ class IAmListCommand extends Command {
     return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
         let roles = R.map(roleId => guild.roles.get(roleId).name, dbGuild.selfroles)
-        roles = R.splitEvery(10, roles)
+        roles = R.splitEvery(10, roles) || []
         let index = 0
         let pageRoles = R.map(role => {
           index++
           return `#${page * index}. ${role}`
-        }, R.slice(page - 1, page, roles))
+        }, roles[page - 1] || [])
 
         return responder
           .format('emoji:scroll')
-          .send(`{{iamlist.strings.HEADER}}\`\`\`${pageRoles.join('\n')}\`\`\``, {
+          .send(`{{iamlist.strings.HEADER}}\`\`\`Roles\n${pageRoles.join('\n')}\`\`\``, {
             page: page,
-            pageOf: roles.length
+            pageOf: roles.length || 0
           })
       })
   }

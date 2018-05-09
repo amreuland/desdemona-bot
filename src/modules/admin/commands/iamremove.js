@@ -1,5 +1,7 @@
 'use strict'
 
+const R = require('ramda')
+
 const { Command } = require('sylphy')
 
 class IAmAddCommand extends Command {
@@ -36,7 +38,7 @@ class IAmAddCommand extends Command {
           })
         }
 
-        let newSelfroles = R.difference([roleId], dbGuild.selfroles)
+        let newSelfroles = R.difference(dbGuild.selfroles, [roleId])
         dbGuild.selfroles = newSelfroles
         return dbGuild.save()
           .then(() => responder.success('{{iamrem.SUCCESS}}', {
