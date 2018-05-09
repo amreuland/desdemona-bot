@@ -6,6 +6,7 @@ const R = require('ramda')
 
 const npm = require('npm')
 
+Promise.promisifyAll(npm)
 Promise.promisifyAll(npm.commands)
 
 const { Command, utils } = require('sylphy')
@@ -52,7 +53,8 @@ class UpdateCommand extends Command {
           )
         )
         .then(() => sentMsg.edit(`${utils.emojis['updating']}  |  Updating dependencies...`))
-        .then(() => npm.commands.installAsync())
+        .then(() => npm.loadAsync())
+        .then(() => npm.commands.install())
         .then(() => sentMsg.edit(`${utils.emojis['success']}  |  Update complete! Restarting...`))
         .then(() => {
           process.send({op: 'restart'})
