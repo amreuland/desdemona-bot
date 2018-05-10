@@ -52,7 +52,7 @@ class PunishService {
             })
         }
       })
-      // .then(() => member.ban(0, reason))
+      .then(() => member.ban(0, reason))
       .return(this.banResults.SUCCESS)
   }
 
@@ -70,7 +70,7 @@ class PunishService {
             })
         }
       })
-      // .then(() => member.kick(reason))
+      .then(() => member.kick(reason))
       .return(this.kickResults.SUCCESS)
   }
 
@@ -82,8 +82,8 @@ class PunishService {
     let guildId = member.guild.id
     let userId = member.id
 
-    return client.db.User.findOneOrCreate({ userId }, { userId },
-      { populate: 'warnings' })
+    return client.db.User.findOneOrCreate({ userId }, { userId })
+      .populate('warnings')
       .then(dbUser => {
         return client.db.Warning.create({
           user: dbUser._id,
@@ -130,8 +130,8 @@ class PunishService {
     let guildId = member.guild.id
     let userId = member.id
 
-    return client.db.User.findOneOrCreate({ userId }, { userId },
-      { populate: 'warnings' })
+    return client.db.User.findOneOrCreate({ userId }, { userId })
+      .populate('warnings')
       .then(dbUser => {
         let guildWarnings = forgiveSortFunc(dbUser.warnings, guildId)
         let warning = guildWarnings[num]

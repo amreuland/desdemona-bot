@@ -6,7 +6,7 @@ const util = require('util')
 
 const Mongoose = require('mongoose')
 
-Mongoose.Promise = Promise
+Mongoose.Promise = require('bluebird')
 
 const { Collection, utils } = require('sylphy')
 
@@ -82,15 +82,12 @@ class MongoosePlugin extends Collection {
 
     // schema.plugin(findOrCreatePlugin)
 
-    schema.static('findOneOrCreate', async function findOneOrCreate (condition, doc, opts = {}) {
-      let one
-      if (opts.populate) {
-        one = await this.findOne(condition).populate(opts.populate)
-      } else {
-        one = await this.findOne(condition)
+    schema.static('findOneOrCreate', function findOneOrCreate (condition, doc) {
+      let opts = {
+        new: true,
+        upsert: true
       }
-
-      return one || this.create(doc)
+      return this.findOneAndUpdate(condition, doc, opts)
     })
 
     let model = Mongoose.model(name, schema)

@@ -2,18 +2,11 @@
 
 const DiscordRESTError = require('eris/lib/errors/DiscordRESTError')
 
-class Enum extends Error {
-  constructor (num) {
-    super()
-    this._num = num
-  }
-}
-
 const assignResults = Object.freeze({
-  SUCCESS: new Enum(0),
-  ERROR_NOT_ASSIGNABLE: new Enum(1),
-  ERROR_ALREADY_HAVE: new Enum(2),
-  ERROR_NO_PERMS: new Enum(3)
+  SUCCESS: {code: 'SUCCESS'},
+  ERROR_NOT_ASSIGNABLE: {code: 'ERROR_NOT_ASSIGNABLE'},
+  ERROR_ALREADY_HAVE: {code: 'ERROR_ALREADY_HAVE'},
+  ERROR_NO_PERMS: {code: 'ERROR_NO_PERMS'}
 })
 
 const removeResults = Object.freeze({
