@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 
-const dateTimeFormat = ts => moment(ts).format('ddd, MMM DD YYYY, HH:mm')
+const dateTimeFormat = ts => moment(ts).format('dddd, MMMM Do YYYY @ hh:mm:ss A')
 
 class UtilityUtils {
   static createUserInfoEmbed (member) {
@@ -52,7 +52,8 @@ class UtilityUtils {
         height: 80,
         width: 80
       },
-      fields
+      fields,
+      color: 0xff9966
     }
   }
 }

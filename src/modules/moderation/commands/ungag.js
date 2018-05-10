@@ -18,10 +18,7 @@ class UnGagCommand extends Command {
         permissions: ['manageMessages']
       },
       examples: [
-        {
-          args: '@Apples',
-          description: 'Un-Silence Apples'
-        }
+        { args: '@Apples', description: 'Un-Silence Apples' }
       ]
     })
   }
