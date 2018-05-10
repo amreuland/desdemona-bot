@@ -16,7 +16,7 @@ class GagCommand extends Command {
       ],
       options: {
         guildOnly: true,
-        permissions: ['manageMessages', 'MuteMembers']
+        permissions: ['manageMessages']
       },
       examples: [
         {

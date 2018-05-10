@@ -7,27 +7,14 @@ class PrefixCommand extends Command {
     super(...args, {
       name: 'prefix',
       description: 'Set the prefix for the bot on this server.',
-      usage: [{
-        name: 'prefix',
-        displayName: 'prefix',
-        type: 'string',
-        optional: true
-      }],
+      usage: [{ name: 'prefix', displayName: 'prefix', type: 'string', optional: true }],
       examples: [
-        {
-          args: '!.',
-          description: 'Set the bot prefix to \'!.\''
-        },
-        {
-          args: '',
-          description: 'Clear the bot prefix'
-        }
+        { args: '!.', description: 'Set the bot prefix to \'!.\'' },
+        { args: '', description: 'Clear the bot prefix' }
       ],
       options: {
         guildOnly: true,
-        permissions: [
-          'manageGuild'
-        ]
+        permissions: ['manageGuild']
       }
     })
   }
