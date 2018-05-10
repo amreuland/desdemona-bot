@@ -3,6 +3,8 @@
 module.exports = {
   env: 'development',
 
+  admins: [],
+
   cluster: {
     startId: 0,
     processCount: 1,
@@ -26,6 +28,12 @@ module.exports = {
       host: 'localhost',
       db: 3,
       keyPrefix: 'guild:'
+    },
+
+    mod: {
+      host: 'localhost',
+      db: 3,
+      keyPrefix: 'mod:'
     }
   },
 

@@ -67,6 +67,44 @@ class SilenceService {
           .then(() => this.unsilenceResults.SUCCESS)
       })
   }
+
+  static isMemberSilenced (client, member) {
+    let userId = member.id
+    let guildId = member.guild.id
+
+    let modCache = client.cache.mod
+    let gagDB = client.db.Gag
+
+    let cacheKey = `gags:${guildId}:${userId}`
+
+    return modCache.get(cacheKey)
+      .then(data => {
+        if (!data) {
+          return gagDB.findOne({ guildId, userId })
+            .then(dbItem => {
+              if (!dbItem) {
+                return false
+              }
+
+              if (!dbItem.timeout) {
+                return modCache.set(cacheKey, 1)
+                  .return(true)
+              }
+
+              let diff = moment().diff(dbItem.timeout, 'seconds')
+              if (diff >= 0) {
+                return dbItem.remove()
+                  .then(() => modCache.del(cacheKey))
+                  .return(false)
+              }
+
+              diff = Math.abs(diff)
+              return modCache.set(cacheKey, 1, 'EX', diff).return(true)
+            })
+        }
+        return data
+      })
+  }
 }
 
 module.exports = SilenceService
