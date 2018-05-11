@@ -282,9 +282,6 @@ class Responder {
             }
             default: { return }
           }
-          if (ret === emojis['stop_button']) {
-            return
-          }
         })
         .then(() => awaitReaction())
     }
