@@ -1,7 +1,9 @@
 'use strict'
 
+const { ObjectId } = require('mongoose').Schema.Types
+
 module.exports = {
-  name: 'Copycat',
+  name: 'SelfAssignedRole',
 
   schema: {
     guildId: {
@@ -9,25 +11,17 @@ module.exports = {
       index: true
     },
 
-    channelId: {
+    roleId: {
       type: String,
-      unique: true,
       index: true
     },
 
-    targets: [
-      { type: String }
-    ]
+    group: {
+      type: Number
+    }
   },
 
   virtuals: {
-    user: {
-      ref: 'User',
-      localField: 'userId',
-      foreignField: 'userId',
-      justOne: true
-    },
-
     guild: {
       ref: 'Guild',
       localField: 'guildId',

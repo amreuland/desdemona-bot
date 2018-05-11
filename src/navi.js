@@ -83,7 +83,7 @@ class Navi extends Eris {
       .createPlugin('tasks', Tasker, options)
 
     this
-      .register('i18n', path.join(process.cwd(), 'res/i18n'))
+      .register('i18n', path.join(process.cwd(), 'res', 'i18n'))
       .register('listeners', resolve('listeners'))
       .register('db', resolve('schemas'))
       .register('middleware', resolve('middleware'))

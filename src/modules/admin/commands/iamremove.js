@@ -1,10 +1,10 @@
 'use strict'
 
-const R = require('ramda')
-
 const { Command } = require.main.require('./sylphy')
 
-class IAmAddCommand extends Command {
+const { SelfAssignedRolesService: SARService } = require('../services')
+
+class IAmRemoveCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'iamrem',
@@ -25,27 +25,20 @@ class IAmAddCommand extends Command {
   }
 
   async handle ({ msg, client, args }, responder) {
-    let guild = msg.channel.guild
-    let guildId = guild.id
     let role = args.role[0]
-    let roleId = role.id
 
-    return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
-      .then(dbGuild => {
-        if (!dbGuild.selfroles.includes(roleId)) {
-          return responder.error('{{iamrem.ERROR}}', {
-            role: role.name
-          })
-        }
-
-        let newSelfroles = R.difference(dbGuild.selfroles, [roleId])
-        dbGuild.selfroles = newSelfroles
-        return dbGuild.save()
-          .then(() => responder.success('{{iamrem.SUCCESS}}', {
-            role: role.name
-          }))
+    return SARService.remove(client, role)
+      .then(() => {
+        return responder.success('{{iamrem.SUCCESS}}', {
+          role: role.name
+        })
+      })
+      .catch(SARService.removeResults.ERROR_NOT_EXIST, () => {
+        return responder.error('{{iamrem.ERROR}}', {
+          role: role.name
+        })
       })
   }
 }
 
-module.exports = IAmAddCommand
+module.exports = IAmRemoveCommand

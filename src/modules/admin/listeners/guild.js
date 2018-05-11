@@ -176,6 +176,8 @@ class GuildEventsListener extends Listener {
         let addedRole = guild.roles.get(addedRoles[0])
         let removedRole = guild.roles.get(removedRoles[0])
 
+        if (!addedRole && !removedRole) { return false }
+
         let nick = member.nick || member.username
 
         let embed = EventUtils.createRolesChangedEmbed(nick, addedRole, removedRole, member.avatarURL)

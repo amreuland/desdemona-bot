@@ -6,16 +6,6 @@ module.exports = {
   name: 'Gag',
 
   schema: {
-    user: {
-      type: ObjectId,
-      ref: 'User'
-    },
-
-    guild: {
-      type: ObjectId,
-      ref: 'Guild'
-    },
-
     channelId: {
       type: String,
       index: true
@@ -33,6 +23,22 @@ module.exports = {
 
     timeout: {
       type: Mixed
+    }
+  },
+
+  virtuals: {
+    user: {
+      ref: 'User',
+      localField: 'userId',
+      foreignField: 'userId',
+      justOne: true
+    },
+
+    guild: {
+      ref: 'Guild',
+      localField: 'guildId',
+      foreignField: 'guildId',
+      justOne: true
     }
   }
 }

@@ -1,5 +1,7 @@
 'use strict'
 
+// https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}&tl={1}&dt=t&q={2}
+
 const moment = require('moment')
 const R = require('ramda')
 

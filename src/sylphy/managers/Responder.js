@@ -5,7 +5,7 @@ try {
   Promise = global.Promise
 }
 
-const utils = require('../util')
+const { emojis } = require('../util').utils
 
 class Responder {
   constructor (command) {
@@ -16,8 +16,8 @@ class Responder {
     this.responseMethods = {
       send: (msg, res) => res,
       reply: (msg, res) => `**${msg.author.username}**, ${res}`,
-      success: (msg, res) => `${utils.emojis['white_check_mark']}  |  **${msg.author.username}**, ${res}`,
-      error: (msg, res) => `${utils.emojis['negative_squared_cross_mark']}  |  **${msg.author.username}**, ` + (res || '{{%ERROR}}')
+      success: (msg, res) => `${emojis['white_check_mark']}  |  **${msg.author.username}**, ${res}`,
+      error: (msg, res) => `${emojis['negative_squared_cross_mark']}  |  **${msg.author.username}**, ` + (res || '{{%ERROR}}')
     }
 
     /** Formatter methods */
@@ -28,7 +28,7 @@ class Responder {
       strikethrough: (res) => `~~${res}~~`,
       inlineCode: (res) => `\`${res}\``,
       code: (res, type = '') => `\`\`\`${type}\n${res}\n\`\`\``,
-      emoji: (res, type) => `${utils.emojis[type] || utils.emojis['information_source']}  |  ${res}`
+      emoji: (res, type) => `${emojis[type] || emojis['information_source']}  |  ${res}`
     }
   }
 
@@ -43,7 +43,7 @@ class Responder {
       formatMethods: this.formatMethods
     })
 
-    const copy = ['_send', 't', 'clean', 'typing', 'format', 'file', 'embed', 'dialog', 'selection']
+    const copy = ['_send', 't', 'clean', 'typing', 'format', 'file', 'embed', 'dialog', 'selection', 'paginate']
     copy.forEach(prop => { responder[prop] = this[prop].bind(responder) })
 
     for (let method in this.responseMethods) {
@@ -57,7 +57,7 @@ class Responder {
     const cmd = this.command
     const file = cmd.group ? cmd.group : (cmd.name ? cmd.name.split(':')[0] : (cmd.triggers ? cmd.triggers[0] : 'common'))
     const res = cmd.i18n.parse(content, cmd.localeKey || file, this.settings.lang || 'en', tags)
-    return res.replace(/:(\S+):/gi, (matched, name) => utils.emojis[name] || utils.emojis['information_source'])
+    return res.replace(/:(\S+):/gi, (matched, name) => emojis[name] || emojis['information_source'])
   }
 
   _send (method, response = '', options = {}) {
@@ -72,7 +72,7 @@ class Responder {
 
     for (let format of formats) {
       format = format.split(':')
-      response = this.formatMethods[format[0]](response, format[1])
+      response = this.w[format[0]](response, format[1])
     }
 
     const promise = (options.DM ? this.command._client.getDMChannel(message.author.id) : Promise.resolve(message.channel))
@@ -207,6 +207,96 @@ class Responder {
     } catch (err) {
       return []
     }
+  }
+
+  async paginate (paginates = {}, options = {}) {
+    const bridge = this.command._client.plugins.get('middleware')
+    if (!bridge) {
+      throw new Error('Bridge plugin not found')
+    }
+
+    let { currentPage, func, total, ipp } = paginates
+    const { time = 10 } = options
+
+    let lastPage = ~~((total - 1) / ipp) + 1
+
+    const getPage = async page => {
+      let pageHeader = `Page ${page + 1} of ${lastPage}`
+      let content = await func(page)
+      if (!typeof content === 'object') {
+        return Promise.reject(new Error('invalid page function'))
+      }
+
+      if (content.content) {
+        content.content = pageHeader + '\n' + content.content
+      } else {
+        content.content = pageHeader
+      }
+
+      return content
+    }
+
+    let content = await getPage(currentPage)
+
+    let msg = await this.send(content.content, content)
+
+    if (lastPage === 1) {
+      return
+    }
+
+    await msg.addReaction(emojis['arrow_left'])
+    await msg.addReaction(emojis['arrow_right'])
+    await msg.addReaction(emojis['stop_button'])
+
+    const { message } = this
+
+    const reactor = bridge.react({
+      channelId: message.channel.id,
+      userId: message.author.id,
+      messageId: msg.id,
+      time
+    })
+
+    const awaitReaction = () => {
+      return reactor.next()
+        .then(ret => {
+          switch (ret) {
+            case emojis['stop_button']: {
+              return Promise.reject({ reason: 'cancelled' })
+            }
+            case emojis['arrow_left']: {
+              if (currentPage === 0) {
+                return
+              }
+              return getPage(--currentPage)
+                .then(newContent => msg.edit(newContent))
+                .then(() => reactor.reset())
+            }
+            case emojis['arrow_right']: {
+              if (currentPage + 1 === lastPage) {
+                return
+              }
+              return getPage(++currentPage)
+                .then(newContent => msg.edit(newContent))
+                .then(() => reactor.reset())
+            }
+            default: { return }
+          }
+          if (ret === emojis['stop_button']) {
+            return
+          }
+        })
+        .then(() => awaitReaction())
+    }
+
+    return awaitReaction()
+      .catch({ reason: 'timeout' }, { reason: 'cancelled' }, () => null)
+      .then(() => msg.removeReactions())
+      .then(() => reactor.stop())
+      .catch(err => {
+        reactor.stop()
+        return Promise.reject(err)
+      })
   }
 }
 
