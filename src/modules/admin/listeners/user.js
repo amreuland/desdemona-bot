@@ -1,6 +1,6 @@
 'use strict'
 
-const { Listener } = require('sylphy')
+const { Listener } = require.main.require('./sylphy')
 
 const { EventUtils } = require('../util')
 

@@ -6,11 +6,6 @@ module.exports = {
   name: 'Warning',
 
   schema: {
-    user: {
-      type: ObjectId,
-      ref: 'User'
-    },
-
     userId: {
       type: String,
       index: true
@@ -36,6 +31,15 @@ module.exports = {
     forgiven: {
       type: Boolean,
       default: false
+    }
+  },
+
+  virtuals: {
+    user: {
+      ref: 'User',
+      localField: 'userId',
+      foreignField: 'userId',
+      justOne: true
     }
   }
 }

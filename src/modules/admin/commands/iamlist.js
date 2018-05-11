@@ -2,9 +2,9 @@
 
 const R = require('ramda')
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
-const rolesPerPage = 10
+const rolesPP = 3
 
 class IAmListCommand extends Command {
   constructor (...args) {
@@ -18,6 +18,7 @@ class IAmListCommand extends Command {
           description: 'view the second role list page'
         }
       ],
+      cooldown: 2,
       options: {
         guildOnly: true
       }
@@ -27,25 +28,61 @@ class IAmListCommand extends Command {
   async handle ({ msg, client, args }, responder) {
     let guild = msg.channel.guild
     let guildId = guild.id
-    let page = args.page || 1
+    let currentPage = args.page || 1
+    currentPage--
 
-    return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
-      .then(dbGuild => {
-        let roles = R.map(roleId => guild.roles.get(roleId).name, dbGuild.selfroles)
-        roles = R.splitEvery(rolesPerPage, roles) || []
-        let index = 0
-        let pageRoles = R.map(role => {
-          index++
-          return `#${(page - 1) * rolesPerPage + index}. ${role}`
-        }, roles[page - 1] || [])
+    return client.db.SelfAssignedRole.find({ guildId })
+      .count()
+      .then(count => {
+        return responder.paginate({
+          currentPage,
+          total: count,
+          ipp: rolesPP,
+          func: page => {
+            return client.db.SelfAssignedRole.find({ guildId })
+            .sort({ group: 'asc', '_id': 'asc' })
+            .skip(page * rolesPP)
+            .limit(rolesPP)
+            .then(dbSARs => {
+              let ret = [
+                '```glsl'
+              ]
+              let groups = R.groupBy(R.prop('group'), dbSARs)
 
-        return responder
-          .format('emoji:scroll')
-          .send(`{{iamlist.strings.HEADER}}\`\`\`\nRoles\n${pageRoles.join('\n')}\`\`\``, {
-            page: page,
-            pageOf: roles.length || 0
-          })
+              for (const g in groups) {
+                let group = groups[g]
+                ret.push(`#Group ${g}`)
+
+                for (const r of group) {
+                  let role = guild.roles.get(r.roleId)
+                  if (!role) { continue }
+                  ret.push(`\t${role.name}`)
+                }
+              }
+
+              ret.push('```')
+
+              return { content: ret.join('\n') }
+            })
+          }
+        })
       })
+
+      //   let roles = R.map(roleId => guild.roles.get(roleId).name, dbGuild.selfroles)
+      //   roles = R.splitEvery(rolesPP, roles) || []
+      //   let index = 0
+      //   let pageRoles = R.map(role => {
+      //     index++
+      //     return `#${(page - 1) * rolesPP + index}. ${role}`
+      //   }, roles[page - 1] || [])
+
+      //   return responder
+      //     .format('emoji:scroll')
+      //     .send(`{{iamlist.strings.HEADER}}\`\`\`\nRoles\n${pageRoles.join('\n')}\`\`\``, {
+      //       page: page,
+      //       pageOf: roles.length || 0
+      //     })
+      // })
   }
 }
 

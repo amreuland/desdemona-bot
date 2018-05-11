@@ -2,7 +2,7 @@
 
 const R = require('ramda')
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
 const { MissingTokenError } = require.main.require('./lib')
 
@@ -124,7 +124,6 @@ class CalendarCommand extends Command {
                 let connection = R.find(R.propEq('type', 'google#calendarId'), dbGuild.connections)
                 if (!connection) {
                   return client.db.Connection.create({
-                    guild: dbGuild._id,
                     guildId,
                     type: 'google#calendarId',
                     value: item.id

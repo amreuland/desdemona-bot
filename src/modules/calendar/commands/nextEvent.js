@@ -2,7 +2,7 @@
 
 const R = require('ramda')
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
 const CalendarUtils = require('../util')
 const { MissingTokenError } = require.main.require('./lib')

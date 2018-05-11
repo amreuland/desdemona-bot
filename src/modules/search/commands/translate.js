@@ -2,7 +2,7 @@
 
 const translate = require('google-translate-api')
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
 class TranslateCommand extends Command {
   constructor (...args) {
