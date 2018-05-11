@@ -2,12 +2,9 @@
 
 const Git = require('nodegit')
 
+const exec = require('child_process').exec
+
 const R = require('ramda')
-
-const npm = require('npm')
-
-Promise.promisifyAll(npm)
-Promise.promisifyAll(npm.commands)
 
 const { Command, utils } = require.main.require('./sylphy')
 
@@ -53,8 +50,28 @@ class UpdateCommand extends Command {
           )
         )
         .then(() => sentMsg.edit(`${utils.emojis['updating']}  |  Updating dependencies...`))
-        .then(() => npm.loadAsync())
-        .then(() => npm.commands.install())
+        .then(() => new Promise((resolve, reject) => {
+          let npm = exec('npm install', (err, stdout, stderr) => {
+            if (stderr !== null) {
+              client.logger.error(stderr.toString())
+            }
+
+            if (stdout !== null) {
+              client.logger.info(stdout.toString())
+            }
+
+            if (err !== null) {
+              client.logger.error(err.toString())
+            }
+          })
+          npm.on('close', code => {
+            if (code !== 0) {
+              return reject(new Error(`npm install failed with code '${code}'`))
+            }
+
+            return resolve()
+          })
+        }))
         .then(() => sentMsg.edit(`${utils.emojis['success']}  |  Update complete! Restarting...`))
         .then(() => {
           process.send({op: 'restart'})

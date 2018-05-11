@@ -3,7 +3,7 @@
 const path = require('path')
 const fs = require('fs')
 
-const { requireAll, isDir } = require('sylphy').utils
+const { requireAll, isDir } = require('../sylphy').utils
 
 class NaviModule {
   constructor (client, options) {

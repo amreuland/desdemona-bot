@@ -1,5 +1,5 @@
 # Navi
-A annoying bot for discord
+An annoying bot for discord
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/10c971494aa64b578c4d43bfed28b063)](https://www.codacy.com/app/NaviForest/navi)
 [![dependencies Status](https://david-dm.org/naviforest/navi/status.svg)](https://david-dm.org/naviforest/navi)
