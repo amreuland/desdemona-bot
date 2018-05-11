@@ -84,7 +84,6 @@ class Navi extends Eris {
 
     this
       .register('i18n', path.join(process.cwd(), 'res/i18n'))
-      .register('middleware', path.join(__dirname, 'middleware'))
       .register('listeners', resolve('listeners'))
       .register('db', resolve('schemas'))
       .register('middleware', resolve('middleware'))

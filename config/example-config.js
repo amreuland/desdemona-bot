@@ -3,7 +3,9 @@
 module.exports = {
   env: 'development',
 
-  admins: [],
+  admins: [
+    '144600822737534976'
+  ],
 
   cluster: {
     startId: 0,

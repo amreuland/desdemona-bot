@@ -1,6 +1,6 @@
 'use strict'
 
-const { Listener } = require('sylphy')
+const { Listener } = require('../sylphy')
 
 class CommanderListener extends Listener {
   constructor (...args) {
