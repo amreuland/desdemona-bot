@@ -1,7 +1,9 @@
 'use strict'
 
+const { ObjectId, Mixed } = require('mongoose').Schema.Types
+
 module.exports = {
-  name: 'Copycat',
+  name: 'ProviderToken',
 
   schema: {
     guildId: {
@@ -9,15 +11,18 @@ module.exports = {
       index: true
     },
 
-    channelId: {
+    userId: {
       type: String,
-      unique: true,
       index: true
     },
 
-    targets: [
-      { type: String }
-    ]
+    provider: {
+      type: String
+    },
+
+    token: {
+      type: Mixed
+    }
   },
 
   virtuals: {

@@ -6,16 +6,6 @@ module.exports = {
   name: 'GUSettings',
 
   schema: {
-    user: {
-      type: ObjectId,
-      ref: 'User'
-    },
-
-    guild: {
-      type: ObjectId,
-      ref: 'Guild'
-    },
-
     userId: {
       type: String,
       index: true
@@ -29,6 +19,22 @@ module.exports = {
     settings: {
       type: Object,
       default: {}
+    }
+  },
+
+  virtuals: {
+    user: {
+      ref: 'User',
+      localField: 'userId',
+      foreignField: 'userId',
+      justOne: true
+    },
+
+    guild: {
+      ref: 'Guild',
+      localField: 'guildId',
+      foreignField: 'guildId',
+      justOne: true
     }
   }
 }

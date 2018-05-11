@@ -21,5 +21,14 @@ module.exports = {
 
     sentAt: Date,
     endsAt: Date
+  },
+
+  virtuals: {
+    guild: {
+      ref: 'Guild',
+      localField: 'guildId',
+      foreignField: 'guildId',
+      justOne: true
+    }
   }
 }

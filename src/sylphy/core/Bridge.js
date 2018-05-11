@@ -23,6 +23,7 @@ class Bridge {
   constructor (client) {
     this.tasks = []
     this.collectors = []
+    this.reactors = []
     this._cached = []
     this._client = client
     this._commander = client.plugins.get('commands')
@@ -97,6 +98,72 @@ class Bridge {
       count: this.tasks.length
     })
     return this
+  }
+
+  react (options = {}) {
+    const { time = 10, messageId, channelId, userId, filter } = options
+
+    const reactor = {
+      _listening: false,
+      _ended: false,
+    }
+
+    const endFunc = () => {
+      reactor._ended = {
+        reason: 'timeout',
+        arg: time
+      }
+
+      if (reactor._reject) {
+        reactor._reject(reactor._ended)
+      }
+    }
+
+    reactor._timer = time ? setTimeout(endFunc, time * 1000) : null
+
+    reactor.stop = () => {
+      reactor._listening = false
+      if (this.reactors.includes(reactor)) {
+        this.reactors.splice(this.reactors.indexOf(reactor), 1)
+      }
+    }
+
+    reactor.reset = () => {
+      reactor._listening = false
+      if (time) {
+        clearTimeout(reactor._timer)
+        reactor._timer = setTimeout(endFunc, time * 1000)
+      }
+      reactor._ended = false
+    }
+
+    reactor.next = () => {
+      return new Promise((resolve, reject) => {
+        reactor._resolve = resolve
+        reactor._reject = reject
+        if (reactor._ended) {
+          reactor.stop()
+          reject(reactor._ended)
+        }
+        reactor._listening = true
+      })
+    }
+
+    reactor.passEvent = event => {
+      if (!reactor._listening) return false
+      if (userId && userId !== event.userId) return false
+      if (channelId && channelId !== event.msg.channel.id) return false
+      if (messageId && messageId !== event.msg.id) return false
+
+      let emoji = event.emoji.id ? `${event.emoji.name}:${event.emoji.id}` : event.emoji.name;
+
+      if (typeof filter === 'function' && !filter(emoji)) return false
+
+      reactor._resolve(emoji)
+      return true
+    }
+    this.reactors.push(reactor)
+    return reactor
   }
 
   /**
@@ -236,7 +303,7 @@ class Bridge {
         logger: this._client.logger,
         admins: this._client.admins,
         commands: this._commander,
-        modules: this._client.plugins.get('modules'),
+        listeners: this._client.plugins.get('listeners'),
         plugins: this._client.plugins,
         middleware: this
       }).catch(err => {
@@ -245,11 +312,31 @@ class Bridge {
         }
       })
     })
+
+    this._client.on('messageReactionAdd', this.onMessageReactionEvent.bind(this))
+    this._client.on('messageReactionRemove', this.onMessageReactionEvent.bind(this))
+  }
+
+  onMessageReactionEvent (msg, emoji, userId) {
+    this.handleReact({
+      msg,
+      client: this._client,
+      logger: this._client.logger,
+      emoji,
+      userId,
+      middleware: this
+    }).catch(err => {
+      if (err && this._client.logger) {
+        this._client.logger.error('Failed to handle reaction in Bridge -', err)
+      }
+    })
   }
 
   /** Stops running the bridge */
   stop () {
     this._client.removeAllListeners('messageCreate')
+    this._client.removeAllListeners('messageReactionAdd')
+    this._client.removeAllListeners('messageReactionRemove')
   }
 
   /**
@@ -280,6 +367,14 @@ class Bridge {
     if (!container.trigger) return Promise.reject()
     this._commander.execute(container.trigger, container)
     return container
+  }
+
+  async handleReact (event) {
+    for (let reactor of this.reactors) {
+      const reacted = reactor.passEvent(event)
+      if (reacted) return Promise.reject()
+    }
+    return event
   }
 }
 
