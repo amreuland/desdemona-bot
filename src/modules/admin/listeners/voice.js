@@ -1,6 +1,6 @@
 'use strict'
 
-const { Listener } = require('sylphy')
+const { Listener } = require.main.require('./sylphy')
 
 class VoiceEventsListener extends Listener {
   constructor (...args) {

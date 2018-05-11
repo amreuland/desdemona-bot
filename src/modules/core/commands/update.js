@@ -9,7 +9,7 @@ const npm = require('npm')
 Promise.promisifyAll(npm)
 Promise.promisifyAll(npm.commands)
 
-const { Command, utils } = require('sylphy')
+const { Command, utils } = require.main.require('./sylphy')
 
 class UpdateCommand extends Command {
   constructor (...args) {
