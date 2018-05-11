@@ -2,7 +2,7 @@
 
 const chalk = require('chalk')
 
-const { Listener } = require('sylphy')
+const { Listener } = require('../sylphy')
 
 class NaviEventsListener extends Listener {
   constructor (...args) {

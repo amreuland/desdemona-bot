@@ -1,6 +1,6 @@
 'use strict'
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
 class AuditLogCommand extends Command {
   constructor (...args) {
