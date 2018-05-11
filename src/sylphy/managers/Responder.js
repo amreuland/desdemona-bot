@@ -72,7 +72,7 @@ class Responder {
 
     for (let format of formats) {
       format = format.split(':')
-      response = this.w[format[0]](response, format[1])
+      response = this.formatMethods[format[0]](response, format[1])
     }
 
     const promise = (options.DM ? this.command._client.getDMChannel(message.author.id) : Promise.resolve(message.channel))
