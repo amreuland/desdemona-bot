@@ -53,10 +53,10 @@ class ModerationUtils {
     }
   }
 
-  static createWarnlogEmbed (member, warnings, owc) {
+  static createWarnlogEmbed (page, pp, member, warnings, wc, owc) {
     let fields = []
 
-    let idx = 0
+    let idx = pp * page
     warnings.forEach(warning => {
       idx++
       fields.push({
@@ -69,7 +69,7 @@ class ModerationUtils {
 
     let description = [
       `**${name}** joined on **${warningFormat(member.joinedAt)}**`,
-      `They have **${warnings.length}** ${warnings.length > 1 ? 'total warnings' : 'warning'} on this server.`
+      `They have **${wc}** ${wc > 1 ? 'total warnings' : 'warning'} on this server.`
     ]
 
     if (owc > 0) {
