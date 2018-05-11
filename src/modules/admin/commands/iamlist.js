@@ -4,7 +4,7 @@ const R = require('ramda')
 
 const { Command } = require.main.require('./sylphy')
 
-const rolesPP = 3
+const rolesPP = 10
 
 class IAmListCommand extends Command {
   constructor (...args) {
