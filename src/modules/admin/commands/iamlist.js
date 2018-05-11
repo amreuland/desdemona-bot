@@ -67,22 +67,6 @@ class IAmListCommand extends Command {
           }
         })
       })
-
-      //   let roles = R.map(roleId => guild.roles.get(roleId).name, dbGuild.selfroles)
-      //   roles = R.splitEvery(rolesPP, roles) || []
-      //   let index = 0
-      //   let pageRoles = R.map(role => {
-      //     index++
-      //     return `#${(page - 1) * rolesPP + index}. ${role}`
-      //   }, roles[page - 1] || [])
-
-      //   return responder
-      //     .format('emoji:scroll')
-      //     .send(`{{iamlist.strings.HEADER}}\`\`\`\nRoles\n${pageRoles.join('\n')}\`\`\``, {
-      //       page: page,
-      //       pageOf: roles.length || 0
-      //     })
-      // })
   }
 }
 
