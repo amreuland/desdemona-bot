@@ -6,6 +6,8 @@ const { Command } = require.main.require('./sylphy')
 
 const ModerationUtils = require('../util')
 
+const warnsPP = 5
+
 const sortFunc = (warnings, guildId) => R.compose(
   R.sortBy(R.prop('timestamp')),
   R.filter(R.propEq('guildId', guildId))
@@ -53,22 +55,35 @@ class WarnLogCommand extends Command {
       return responder.error('{{warnlog.errors.IS_BOT}}')
     }
 
-    return client.db.User.findOne({ userId })
-      .populate('warnings')
-      .then(dbUser => {
-        if (!dbUser || !dbUser.warnings.length) {
+    return client.db.Warning.find({ userId })
+      .then(dbWarns => {
+        let guildWarningsCount = sortFunc(dbWarns, guildId).length
+
+        if (!guildWarningsCount) {
           return responder.error('{{warnlog.errors.NO_HISTORY}}', {
             user: `${member.username}#${member.discriminator}`
           })
         }
 
-        let guildWarnings = sortFunc(dbUser.warnings, guildId)
+        let otherWarningsCount = sortFunc2(dbWarns, guildId).length
 
-        let otherWarningsCount = sortFunc2(dbUser.warnings, guildId).length
-
-        let embed = ModerationUtils.createWarnlogEmbed(member, guildWarnings, otherWarningsCount)
-
-        msg.channel.createMessage({ embed })
+        return responder.paginate({
+          currentPage: 0,
+          total: guildWarningsCount,
+          ipp: warnsPP,
+          func: page => {
+            return client.db.Warning.find({ userId, guildId })
+            .sort({ timestamp: 'asc' })
+            .skip(page * warnsPP)
+            .limit(warnsPP)
+            .then(dbWarns2 => {
+              let embed = ModerationUtils.createWarnlogEmbed(page, warnsPP,
+                member, dbWarns2,
+                guildWarningsCount, otherWarningsCount)
+              return { embed }
+            })
+          }
+        })
       })
   }
 }
