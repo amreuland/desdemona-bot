@@ -5,7 +5,7 @@ const SteamID = require('steamid')
 
 const { SteamUtils } = require('../../util')
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
 class SteamLookupCommand extends Command {
   constructor (...args) {

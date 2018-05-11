@@ -1,6 +1,6 @@
 {
   "name": "navi",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Navi is a discord bot to help moderate",
   "main": "./index.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "bluebird": "^3.5.1",
     "bufferutil": "^3.0.5",
     "chalk": "^2.4.1",
+    "eris": "github:abalabahaha/eris#dev",
     "erlpack": "github:abalabahaha/erlpack",
     "eventemitter3": "^3.1.0",
     "git-rev-sync": "^1.12.0",
@@ -51,7 +52,6 @@
     "sodium-native": "^2.1.6",
     "steamapi": "^2.0.2",
     "steamid": "^1.1.0",
-    "sylphy": "github:naviforest/sylphy",
     "uws": "^9.148.0",
     "winston": "^2.4.2",
     "xml2json": "^0.11.2",

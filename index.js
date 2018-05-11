@@ -5,7 +5,7 @@ global.Promise = require('bluebird')
 const chalk = require('chalk')
 const path = require('path')
 const moment = require('moment')
-const { Crystal, utils: { delay } } = require('sylphy')
+const { Crystal, utils: { delay } } = require('./src/sylphy')
 
 require('longjohn')
 
@@ -13,42 +13,9 @@ const config = require('./config/config')
 
 const timestamp = () => `[${chalk.grey(moment().format('HH:mm:ss'))}]`
 
-class Crystal2 extends Crystal {
-  constructor (startId, ...args) {
-    super(...args)
-
-    this._startId = startId
-  }
-
-  /** Spawns new clusters */
-  async createClusters () {
-    for (let i = 0; i < this._count; i++) {
-      this.createCluster(i + this._startId)
-      await delay(6000)
-    }
-  }
-
-  getCluster (pid) {
-    return this.clusters.find(s => s.worker.pid === pid)
-  }
-
-  async restart (message = {}) {
-    if (typeof message.d === 'number') {
-      const cluster = this.clusters.get(message.d)
-      if (!cluster) return
-      cluster.worker.kill()
-    } else {
-      for (let cluster of [...this.clusters.values()]) {
-        cluster.worker.kill()
-        await Promise.delay(6000)
-      }
-    }
-  }
-}
-
-const cluster = new Crystal2(
-  config.cluster.startId,
+const cluster = new Crystal(
   path.join('src', 'navi.js'),
+  config.cluster.startId,
   config.cluster.processCount
 )
 

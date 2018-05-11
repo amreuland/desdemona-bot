@@ -1,6 +1,6 @@
 'use strict'
 
-const { Listener } = require('sylphy')
+const { Listener } = require.main.require('./sylphy')
 
 class ChannelEventsListener extends Listener {
   constructor (...args) {

@@ -1,6 +1,6 @@
 'use strict'
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
 const playlistUrl = 'https://www.youtube.com/playlist?list='
 const videoUrl = 'https://www.youtube.com/watch?v='
