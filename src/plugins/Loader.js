@@ -22,8 +22,10 @@ class Loader extends Collection {
 
     let commands = module.commands
     let listeners = module.listeners
+    let middleware = module.middleware
     let tasks = module.tasks
 
+    this._client.register('middleware', middleware, {group: name})
     this._client.register('listeners', listeners, {group: name})
     this._client.register('commands', commands, {group: name})
     this._client.register('tasks', tasks, {group: name})

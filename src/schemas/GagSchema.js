@@ -16,6 +16,11 @@ module.exports = {
       ref: 'Guild'
     },
 
+    channelId: {
+      type: String,
+      index: true
+    },
+
     userId: {
       type: String,
       index: true

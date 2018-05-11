@@ -14,10 +14,24 @@ const unsilenceResults = Object.freeze({
   ERROR_NOT_SILENCED: {code: 'ERROR_NOT_SILENCED'}
 })
 
+const lockResults = Object.freeze({
+  SUCCESS: {code: 'SUCCESS'},
+  ERROR_ALREADY_LOCKED: {code: 'ERROR_ALREADY_LOCKED'}
+})
+
+const unlockResults = Object.freeze({
+  SUCCESS: {code: 'SUCCESS'},
+  ERROR_NOT_LOCKED: {code: 'ERROR_NOT_LOCKED'}
+})
+
 class SilenceService {
   static get silenceResults () { return silenceResults }
 
   static get unsilenceResults () { return unsilenceResults }
+
+  static get lockResults () { return lockResults }
+
+  static get unlockResults () { return unlockResults }
 
   static silence (client, member, time) {
     if (member.bot) {
@@ -56,7 +70,7 @@ class SilenceService {
     let guildId = member.guild.id
     let userId = member.id
 
-    return client.cache.mod.del(`gags:${guildId}:${userId}`)
+    return client.cache.mod.del(`silence:${guildId}:member:${userId}`)
       .then(() => client.db.Gag.findOne({ guildId, userId }))
       .then(dbGag => {
         if (!dbGag) {
@@ -68,19 +82,14 @@ class SilenceService {
       })
   }
 
-  static isMemberSilenced (client, member) {
-    let userId = member.id
-    let guildId = member.guild.id
-
+  static _isItemSilenced (client, cacheKey, search) {
     let modCache = client.cache.mod
     let gagDB = client.db.Gag
-
-    let cacheKey = `gags:${guildId}:${userId}`
 
     return modCache.get(cacheKey)
       .then(data => {
         if (!data) {
-          return gagDB.findOne({ guildId, userId })
+          return gagDB.findOne(search)
             .then(dbItem => {
               if (!dbItem) {
                 return false
@@ -104,6 +113,65 @@ class SilenceService {
         }
         return data
       })
+  }
+
+  static lockChannel (client, channel, time) {
+    let guildId = channel.guild.id
+    let channelId = channel.id
+    let timeout = time ? moment().add(time, 's').toDate() : 0
+
+    return Promise.all([
+      client.db.Guild.findOneOrCreate({ guildId }, { guildId }),
+      client.db.Gag.findOne({ guildId, channelId })
+    ])
+      .then(([dbGuild, dbGag]) => {
+        if (!dbGag) {
+          return client.db.Gag.create({
+            guild: dbGuild._id,
+            channelId,
+            guildId,
+            timeout
+          }).then(() => this.lockResults.SUCCESS)
+        }
+
+        return Promise.reject(this.lockResults.ERROR_ALREADY_LOCKED)
+      })
+  }
+
+  static unlockChannel (client, channel) {
+    let guildId = channel.guild.id
+    let channelId = channel.id
+
+    return client.cache.mod.del(`silence:${guildId}:channel:${channelId}`)
+      .then(() => client.db.Gag.findOne({ guildId, channelId }))
+      .then(dbGag => {
+        if (!dbGag) {
+          return Promise.reject(this.unlockResults.ERROR_NOT_LOCKED)
+        }
+
+        return dbGag.remove()
+          .then(() => this.unlockResults.SUCCESS)
+      })
+  }
+
+  static isMemberSilenced (client, member) {
+    let userId = member.id
+    let guildId = member.guild.id
+
+    let cacheKey = `silence:${guildId}:member:${userId}`
+    let search = { guildId, userId }
+
+    return this._isItemSilenced(client, cacheKey, search)
+  }
+
+  static isChannelInLockdown (client, channel) {
+    let channelId = channel.id
+    let guildId = channel.guild.id
+
+    let cacheKey = `silence:${guildId}:channel:${channelId}`
+    let search = { guildId, channelId }
+
+    return this._isItemSilenced(client, cacheKey, search)
   }
 }
 
