@@ -17,6 +17,14 @@
       "NOT_GAGGED": "User is not silenced!"
     }
   },
+  "lockdown": {
+    "SUCCESS": "This channel is now in lockdown!",
+    "SUCCESS_TIMEOUT": "This channel is now in lockdown for {{time}}s!"
+  },
+  "unlockdown": {
+    "SUCCESS": "This channel has been unlocked!",
+    "ERROR": "An error occured. Please check sentry"
+  },
   "kick": {
     "SUCCESS": "{{member}} has been kicked."
   },

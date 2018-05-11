@@ -25,6 +25,7 @@ class NaviModule {
       name,
       description,
       commands = false,
+      middleware = false,
       listeners = false,
       tasks = false,
       options = {}
@@ -40,10 +41,12 @@ class NaviModule {
     this.options = options
 
     this.commands = []
+    this.middleware = []
     this.listeners = []
     this.tasks = []
 
     this._resolveCommands(commands)
+    this._resolveMiddleware(middleware)
     this._resolveListeners(listeners)
     this._resolveTasks(tasks)
   }
@@ -81,6 +84,42 @@ class NaviModule {
             continue
           }
           this.commands.push(commands[command])
+        }
+        return this
+      }
+      default: {
+        throw new Error('Path supplied is not an object or string')
+      }
+    }
+  }
+
+  _resolveMiddleware (middleware) {
+    if (!middleware) {
+      return this
+    }
+
+    if (middleware === true) {
+      middleware = 'middleware'
+    }
+
+    switch (typeof middleware) {
+      case 'string': {
+        const filepath = path.join(this.getModulePath(), middleware)
+        if (!fs.existsSync(filepath)) {
+          throw new Error(`Folder path ${filepath} does not exist`)
+        }
+        const lstnrs = isDir(filepath) ? requireAll(filepath) : require(filepath)
+        return this._resolveMiddleware(lstnrs)
+      }
+      case 'object': {
+        if (Array.isArray(middleware)) {
+          for (const middle of middleware) {
+            this.middleware.push(middle)
+          }
+          return this
+        }
+        for (let middle in middleware) {
+          this.middleware.push(middleware[middle])
         }
         return this
       }

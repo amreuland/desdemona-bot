@@ -23,7 +23,7 @@ module.exports = {
     // if (!actOnMsg) {
     let p = Promise.resolve(null)
     if (msg.channel.guild) {
-      p =  getGuildPrefix(client, msg.channel.guild.id)
+      p = getGuildPrefix(client, msg.channel.guild.id)
     }
 
     return p

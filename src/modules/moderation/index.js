@@ -8,7 +8,7 @@ class ModerationModule extends NaviModule {
       name: 'moderation',
       description: 'Moderation commands and components',
       commands: true,
-      listeners: true
+      middleware: true
     })
   }
 
