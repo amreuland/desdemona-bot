@@ -36,7 +36,7 @@ class BanCommand extends Command {
               return responder.success('Action canceled')
             }
 
-            return client.services.Punish.ban(client, msg.member, member, reason)
+            return client.services.Punish.ban(msg.member, member, reason)
               .then(() => responder.success('{{ban.SUCCESS}}', {
                 deleteDelay: 5,
                 member: member.mention

@@ -150,7 +150,7 @@ class SilenceService extends NaviService {
     let cacheKey = `silence:${guildId}:member:${userId}`
     let search = { guildId, userId }
 
-    return this._isItemSilenced(this.client, cacheKey, search)
+    return this._isItemSilenced(cacheKey, search)
   }
 
   isChannelInLockdown (channel) {

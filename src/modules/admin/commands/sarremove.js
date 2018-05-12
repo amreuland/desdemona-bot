@@ -27,7 +27,7 @@ class IAmRemoveCommand extends Command {
 
     let SARService = client.services.SelfAssignedRoles
 
-    return SARService.remove(client, role)
+    return SARService.remove(role)
       .then(() => {
         return responder.success('{{iamrem.SUCCESS}}', {
           role: role.name

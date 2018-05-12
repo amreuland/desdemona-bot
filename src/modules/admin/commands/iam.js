@@ -27,7 +27,7 @@ class IAmCommand extends Command {
 
     let SARService = client.services.SelfAssignedRoles
 
-    return SARService.assign(client, member, role)
+    return SARService.assign(member, role)
       .then(() => {
         return responder.success('{{iam.SUCCESS}}', {
           role: role.name

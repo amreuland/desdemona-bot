@@ -30,7 +30,7 @@ class WarnCommand extends Command {
 
     let PunishService = client.services.Punish
 
-    return PunishService.warn(client, msg.member, member, reason)
+    return PunishService.warn(msg.member, member, reason)
       .then(({ count, unforgiven }) => responder.success('{{warn.SUCCESS}}', {
         user: member.mention,
         count,

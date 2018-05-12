@@ -36,7 +36,7 @@ class KickCommand extends Command {
               return responder.success('Action canceled')
             }
 
-            return client.services.Punish.kick(client, msg.member, member, reason)
+            return client.services.Punish.kick(msg.member, member, reason)
               .then(() => responder.success('{{kick.SUCCESS}}', {
                 deleteDelay: 5,
                 member: member.mention

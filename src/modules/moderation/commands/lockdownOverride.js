@@ -30,7 +30,7 @@ class LockdownOverrideCommand extends Command {
 
     let SilenceService = client.services.Silence
 
-    return SilenceService.silence(client, member, time)
+    return SilenceService.silence(member, time)
       .then(() => {
         if (time) {
           return responder.success('{{gag.SUCCESS_TIMEOUT}}', {

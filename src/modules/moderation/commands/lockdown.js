@@ -34,7 +34,7 @@ class LockdownCommand extends Command {
 
     let SilenceService = client.services.Silence
 
-    return SilenceService.lockChannel(client, channel, time)
+    return SilenceService.lockChannel(channel, time)
       .then(() => {
         if (time) {
           return responder.success('{{lockdown.SUCCESS_TIMEOUT}}', { time: time })
@@ -42,7 +42,7 @@ class LockdownCommand extends Command {
         return responder.success('{{lockdown.SUCCESS}}')
       })
       .catch(SilenceService.lockResults.ERROR_ALREADY_LOCKED, () => {
-        return SilenceService.unlockChannel(client, channel)
+        return SilenceService.unlockChannel(channel)
           .then(() => responder.success('{{unlockdown.SUCCESS}}'))
           .catch(SilenceService.unlockResults.ERROR_NOT_LOCKED, () => {
             return responder.error('{{unlockdown.ERROR}}')

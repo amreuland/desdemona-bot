@@ -290,35 +290,37 @@ class Bridge {
 
   /** Starts running the bridge */
   run () {
-    this._client.on('messageCreate', msg => {
-      if (this._client.selfbot) {
-        if (msg.author.id !== this._client.user.id) return
-      } else {
-        if (msg.author.id === this._client.user.id || msg.author.bot) return
-      }
-
-      this.handle({
-        msg: msg,
-        client: this._client,
-        logger: this._client.logger,
-        admins: this._client.admins,
-        commands: this._commander,
-        listeners: this._client.plugins.get('listeners'),
-        plugins: this._client.plugins,
-        middleware: this
-      }).catch(err => {
-        if (err && this._client.logger) {
-          this._client.logger.error('Failed to handle message in Bridge -', err)
-        }
-      })
-    })
-
+    this._client.on('messageCreate', this.onMessageCreateEvent.bind(this))
     this._client.on('messageReactionAdd', this.onMessageReactionEvent.bind(this))
     this._client.on('messageReactionRemove', this.onMessageReactionEvent.bind(this))
   }
 
+  onMessageCreateEvent (msg) {
+    if (this._client.selfbot) {
+      if (msg.author.id !== this._client.user.id) return
+    } else {
+      if (msg.author.id === this._client.user.id || msg.author.bot) return
+    }
+
+    this.handleMessage({
+      msg: msg,
+      client: this._client,
+      logger: this._client.logger,
+      admins: this._client.admins,
+      commands: this._commander,
+      listeners: this._client.plugins.get('listeners'),
+      plugins: this._client.plugins,
+      middleware: this
+    }).catch(err => {
+      if (err && this._client.logger) {
+        this._client.thowOrEmit('bridge:error', err)
+        // this._client.logger.error('Failed to handle message in Bridge -', err)
+      }
+    })
+  }
+
   onMessageReactionEvent (msg, emoji, userId) {
-    this.handleReact({
+    this.handleReaction({
       msg,
       client: this._client,
       logger: this._client.logger,
@@ -327,7 +329,8 @@ class Bridge {
       middleware: this
     }).catch(err => {
       if (err && this._client.logger) {
-        this._client.logger.error('Failed to handle reaction in Bridge -', err)
+        this._client.thowOrEmit('bridge:error', err)
+        // this._client.logger.error('Failed to handle reaction in Bridge -', err)
       }
     })
   }
@@ -353,7 +356,7 @@ class Bridge {
    * @arg {Container} container The message container
    * @returns {Promise<Container>}
    */
-  async handle (container) {
+  async handleMessage (container) {
     const { msg } = container
     for (let collector of this.collectors) {
       const collected = collector.passMessage(msg)
@@ -369,7 +372,7 @@ class Bridge {
     return container
   }
 
-  async handleReact (event) {
+  async handleReaction (event) {
     for (let reactor of this.reactors) {
       const reacted = reactor.passEvent(event)
       if (reacted) return Promise.reject()

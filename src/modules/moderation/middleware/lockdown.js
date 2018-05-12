@@ -19,7 +19,7 @@ module.exports = {
 
     let channel = msg.channel
 
-    return client.servie.Silence.isChannelInLockdown(client, channel)
+    return client.services.Silence.isChannelInLockdown(channel)
       .then(result => {
         if (!result) {
           return container

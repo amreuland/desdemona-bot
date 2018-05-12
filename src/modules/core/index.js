@@ -9,7 +9,7 @@ class CoreModule extends NaviModule {
       description: 'Core commands and components',
       services: true,
       commands: true,
-      middleware: true,
+      middleware: false,
       tasks: true
     })
   }
