@@ -16,6 +16,10 @@ module.exports = {
       index: true
     },
 
+    reason: {
+      type: String
+    },
+
     timeout: {
       type: Mixed
     }
