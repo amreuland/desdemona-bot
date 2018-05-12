@@ -1,32 +1,26 @@
 'use strict'
 
+const Enum = require('enum')
+
 const DiscordRESTError = require('eris/lib/errors/DiscordRESTError')
 
 const { NaviService } = require.main.require('./lib')
 
-const addResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_ALREADY_EXIST: {code: 'ERROR_ALREADY_EXIST'}
-})
+const addResults = new Enum(['SUCCESS', 'ERROR_ALREADY_EXIST'])
+const removeResults = new Enum(['SUCCESS', 'ERROR_NOT_EXIST'])
+const assignResults = new Enum([
+  'SUCCESS',
+  'ERROR_NOT_ASSIGNABLE',
+  'ERROR_ALREADY_HAVE',
+  'ERROR_NO_PERMS'
+])
 
-const removeResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_NOT_EXIST: {code: 'ERROR_NOT_EXIST'}
-})
-
-const assignResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_NOT_ASSIGNABLE: {code: 'ERROR_NOT_ASSIGNABLE'},
-  ERROR_ALREADY_HAVE: {code: 'ERROR_ALREADY_HAVE'},
-  ERROR_NO_PERMS: {code: 'ERROR_NO_PERMS'}
-})
-
-const unassignResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_NOT_ASSIGNABLE: {code: 'ERROR_NOT_ASSIGNABLE'},
-  ERROR_NOT_HAVE: {code: 'ERROR_NOT_HAVE'},
-  ERROR_NO_PERMS: {code: 'ERROR_NO_PERMS'}
-})
+const unassignResults = new Enum([
+  'SUCCESS',
+  'ERROR_NOT_ASSIGNABLE',
+  'ERROR_NOT_HAVE',
+  'ERROR_NO_PERMS'
+])
 
 class SelfAssignedRolesService extends NaviService {
   constructor (...args) {

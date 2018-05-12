@@ -1,6 +1,6 @@
 'use strict'
 
-const { ObjectId, Mixed } = require('mongoose').Schema.Types
+const { Mixed } = require('mongoose').Schema.Types
 
 module.exports = {
   name: 'Gag',

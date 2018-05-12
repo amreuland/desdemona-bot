@@ -6,7 +6,8 @@ class CurrencyModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'currency',
-      description: 'Currency commands and components'
+      description: 'Currency commands and components',
+      services: true
     })
   }
 

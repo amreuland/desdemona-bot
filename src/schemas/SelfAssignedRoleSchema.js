@@ -1,7 +1,5 @@
 'use strict'
 
-const { ObjectId } = require('mongoose').Schema.Types
-
 module.exports = {
   name: 'SelfAssignedRole',
 

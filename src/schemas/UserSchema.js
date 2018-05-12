@@ -10,8 +10,9 @@ module.exports = {
       unique: true
     },
 
-    currency: {
-      type: Number
+    money: {
+      type: Number,
+      default: 0
     },
 
     settings: {
