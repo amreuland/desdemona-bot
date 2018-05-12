@@ -4,6 +4,7 @@ module.exports = {
   AdminModule: require('./admin'),
   CalendarModule: require('./calendar'),
   CoreModule: require('./core'),
+  CurrencyModule: require('./currency'),
   FunModule: require('./fun'),
   GamesModule: require('./games'),
   HelpModule: require('./help'),
@@ -13,5 +14,6 @@ module.exports = {
   PermissionsModule: require('./permissions'),
   PokemonModule: require('./pokemon'),
   SearchModule: require('./search'),
-  UtilModule: require('./util')
+  UtilModule: require('./util'),
+  XPModule: require('./xp')
 }
