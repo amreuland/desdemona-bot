@@ -16,8 +16,7 @@ class InfoCommand extends Command {
         { args: '@someone', description: 'Show info about @someone' }
       ],
       options: {
-        guildOnly: true,
-        permissions: ['manageGuild']
+        guildOnly: true
       }
     })
   }
