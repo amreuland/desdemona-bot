@@ -19,7 +19,7 @@ class APIPlugin extends Collection {
     this.set(name, api)
 
     Object.defineProperty(this, name, {
-      get: function () { return this.get(name) }
+      get: () => this.get(name)
     })
 
     /**

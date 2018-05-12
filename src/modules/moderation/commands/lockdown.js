@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { SilenceService } = require('../services')
-
 class LockdownCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -33,6 +31,8 @@ class LockdownCommand extends Command {
   async handle ({ msg, client, args }, responder) {
     let channel = msg.channel
     let time = args.timeout || 0
+
+    let SilenceService = client.services.Silence
 
     return SilenceService.lockChannel(client, channel, time)
       .then(() => {

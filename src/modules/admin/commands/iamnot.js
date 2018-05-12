@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { SelfAssignedRolesService: SARService } = require('../services')
-
 class IAmNotCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -25,6 +23,8 @@ class IAmNotCommand extends Command {
   async handle ({ msg, client, args }, responder) {
     let role = args.role[0]
     let member = msg.member
+
+    let SARService = client.services.SelfAssignedRoles
 
     return SARService.unassign(client, member, role)
       .then(() => {

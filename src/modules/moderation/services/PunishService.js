@@ -4,6 +4,8 @@ const R = require('ramda')
 
 const ModerationUtils = require('../util')
 
+const { NaviService } = require.main.require('./lib')
+
 const banResults = Object.freeze({
   SUCCESS: {code: 'SUCCESS'}
 })
@@ -24,25 +26,26 @@ const forgiveResults = Object.freeze({
   ERROR_ALREADY_FORGIVEN: {code: 'ERROR_ALREADY_FORGIVEN'}
 })
 
-const forgiveSortFunc = (warnings, guildId) => R.compose(
-  R.sortBy(R.prop('timestamp')),
-  R.filter(R.propEq('guildId', guildId))
-)(warnings)
+class PunishService extends NaviService {
+  constructor (...args) {
+    super(...args, {
+      name: 'Punish'
+    })
+  }
 
-class PunishService {
-  static get banResults () { return banResults }
+  get banResults () { return banResults }
 
-  static get kickResults () { return kickResults }
+  get kickResults () { return kickResults }
 
-  static get warnResults () { return warnResults }
+  get warnResults () { return warnResults }
 
-  static get forgiveResults () { return forgiveResults }
+  get forgiveResults () { return forgiveResults }
 
-  static ban (client, mod, member, reason, sendDM = true, isCommand = true) {
+  ban (mod, member, reason, sendDM = true, isCommand = true) {
     let warnReason = `**USER BANNED**\n${reason}`
     let guild = member.guild
 
-    return this.warn(client, mod, member, warnReason, false, false)
+    return this.warn(this.client, mod, member, warnReason, false, false)
       .then(() => {
         if (sendDM) {
           return member.user.getDMChannel()
@@ -56,11 +59,11 @@ class PunishService {
       .return(this.banResults.SUCCESS)
   }
 
-  static kick (client, mod, member, reason, sendDM = true, isCommand = true) {
+  kick (mod, member, reason, sendDM = true, isCommand = true) {
     let warnReason = `**USER KICKED**\n${reason}`
     let guild = member.guild
 
-    return this.warn(client, mod, member, warnReason, false, false)
+    return this.warn(this.client, mod, member, warnReason, false, false)
       .then(() => {
         if (sendDM) {
           return member.user.getDMChannel()
@@ -74,7 +77,7 @@ class PunishService {
       .return(this.kickResults.SUCCESS)
   }
 
-  static async warn (client, mod, member, reason, sendDM = true, isCommand = true) {
+  async warn (mod, member, reason, sendDM = true, isCommand = true) {
     if (member.bot) {
       return Promise.reject(this.warnResults.ERROR_IS_BOT)
     }
@@ -82,14 +85,14 @@ class PunishService {
     let guildId = member.guild.id
     let userId = member.id
 
-    return client.db.Warning.create({
+    return this.client.db.Warning.create({
       userId,
       guildId,
       reason,
       timestamp: new Date(),
       moderatorId: mod.id
     })
-      .then(() => client.db.Warning.find({ userId, guildId }))
+      .then(() => this.client.db.Warning.find({ userId, guildId }))
       .then(dbWarnings => {
         let unforgivenWarnings = R.filter(R.propEq('forgiven', false), dbWarnings)
 
@@ -113,7 +116,7 @@ class PunishService {
       })
   }
 
-  static forgive (client, mod, member, num) {
+  forgive (mod, member, num) {
     if (member.bot) {
       return Promise.reject(this.forgiveResults.ERROR_IS_BOT)
     }
@@ -121,7 +124,7 @@ class PunishService {
     let guildId = member.guild.id
     let userId = member.id
 
-    return client.db.Warning.find({ userId, guildId })
+    return this.client.db.Warning.find({ userId, guildId })
       .sort({ timestamp: 'asc' })
       .skip(num)
       .limit(1)
