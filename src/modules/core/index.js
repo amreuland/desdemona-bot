@@ -7,7 +7,9 @@ class CoreModule extends NaviModule {
     super(...args, {
       name: 'core',
       description: 'Core commands and components',
+      services: true,
       commands: true,
+      middleware: false,
       tasks: true
     })
   }

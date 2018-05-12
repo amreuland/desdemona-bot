@@ -5,7 +5,7 @@ try {
   Promise = global.Promise
 }
 
-const { emojis } = require('../util').utils
+const { emojis, padEnd } = require('../util').utils
 
 class Responder {
   constructor (command) {
@@ -76,7 +76,7 @@ class Responder {
     }
 
     const promise = (options.DM ? this.command._client.getDMChannel(message.author.id) : Promise.resolve(message.channel))
-    .then(channel => this.command.send(channel, response, options))
+      .then(channel => this.command.send(channel, response, options))
 
     delete this._formats
     this._options = {}
@@ -194,7 +194,7 @@ class Responder {
         prompt: [
           '```markdown',
           `### ${title} ###\n`,
-          choices.map((c, i) => `${utils.padEnd(`[${i + 1}]:`, 4)} ${c}`).join('\n'),
+          choices.map((c, i) => `${padEnd(`[${i + 1}]:`, 4)} ${c}`).join('\n'),
           selections.length > 10 ? '{{%menus.MORE_RESULTS}}\n' : '',
           Array.isArray(footer) ? footer.join('\n') : '> ' + footer,
           '```'
@@ -223,7 +223,7 @@ class Responder {
     const getPage = async page => {
       let pageHeader = `Page ${page + 1} of ${lastPage}`
       let content = await func(page)
-      if (!typeof content === 'object') {
+      if (typeof content !== 'object') {
         return Promise.reject(new Error('invalid page function'))
       }
 
@@ -280,7 +280,7 @@ class Responder {
                 .then(newContent => msg.edit(newContent))
                 .then(() => reactor.reset())
             }
-            default: { return }
+            default: {}
           }
         })
         .then(() => awaitReaction())

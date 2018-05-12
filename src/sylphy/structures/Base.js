@@ -32,11 +32,11 @@ class Base {
    * @returns {Boolean}
    */
   hasPermissions (channel, user, ...perms) {
-    const member = channel.guild.members.get(user.id);
+    const member = channel.guild.members.get(user.id)
     for (const perm of perms) {
-      if (!member.permission.has(perm)) return false;
+      if (!member.permission.has(perm)) return false
     }
-    return true;
+    return true
   }
 
   /**
@@ -103,7 +103,7 @@ class Base {
       let msg
       for (const c of content) {
         const firstMsg = await channel.createMessage(!msg ? { embed, content: c } : c, !msg ? file : null)
-        .then(msg => deleteDelay ? promDelay(deleteDelay).then(() => msg.delete()) : msg)
+          .then(msg => deleteDelay ? promDelay(deleteDelay).then(() => msg.delete()) : msg)
         msg = firstMsg
       }
 

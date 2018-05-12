@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { PunishService } = require('../services')
-
 class BanCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -38,7 +36,7 @@ class BanCommand extends Command {
               return responder.success('Action canceled')
             }
 
-            return PunishService.ban(client, msg.member, member, reason)
+            return client.services.Punish.ban(msg.member, member, reason)
               .then(() => responder.success('{{ban.SUCCESS}}', {
                 deleteDelay: 5,
                 member: member.mention

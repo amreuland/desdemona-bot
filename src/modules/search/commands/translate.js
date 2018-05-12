@@ -8,7 +8,7 @@ class TranslateCommand extends Command {
   constructor (...args) {
     super(...args, {
       name: 'translate',
-      description: 'Search youtube and return the first result',
+      description: 'Translate phrases',
       aliases: ['tl'],
       cooldown: 30,
       usage: [

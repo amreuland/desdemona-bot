@@ -2,6 +2,8 @@
 
 const DiscordRESTError = require('eris/lib/errors/DiscordRESTError')
 
+const { NaviService } = require.main.require('./lib')
+
 const addResults = Object.freeze({
   SUCCESS: {code: 'SUCCESS'},
   ERROR_ALREADY_EXIST: {code: 'ERROR_ALREADY_EXIST'}
@@ -26,33 +28,39 @@ const unassignResults = Object.freeze({
   ERROR_NO_PERMS: {code: 'ERROR_NO_PERMS'}
 })
 
-class SelfAssignedRolesService {
-  static get addResults () { return addResults }
+class SelfAssignedRolesService extends NaviService {
+  constructor (...args) {
+    super(...args, {
+      name: 'SelfAssignedRoles'
+    })
+  }
 
-  static get removeResults () { return removeResults }
+  get addResults () { return addResults }
 
-  static get assignResults () { return assignResults }
+  get removeResults () { return removeResults }
 
-  static get unassignResults () { return unassignResults }
+  get assignResults () { return assignResults }
 
-  static add (client, role, group = 0) {
+  get unassignResults () { return unassignResults }
+
+  add (role, group = 0) {
     let guildId = role.guild.id
     let roleId = role.id
-    return client.db.SelfAssignedRole.findOne({ guildId, roleId })
+    return this.client.db.SelfAssignedRole.findOne({ guildId, roleId })
       .then(dbSAR => {
         if (dbSAR) {
           return Promise.reject(this.addResults.ERROR_ALREADY_EXIST)
         }
-        return client.db.SelfAssignedRole.create({ guildId, roleId, group })
+        return this.client.db.SelfAssignedRole.create({ guildId, roleId, group })
       })
       .then(() => this.addResults.SUCCESS)
   }
 
-  static remove (client, role) {
+  remove (role) {
     let guildId = role.guild.id
     let roleId = role.id
 
-    return client.db.SelfAssignedRole.findOne({ guildId, roleId })
+    return this.client.db.SelfAssignedRole.findOne({ guildId, roleId })
       .then(dbSAR => {
         if (!dbSAR) {
           return Promise.reject(this.removeResults.ERROR_NOT_EXIST)
@@ -62,7 +70,7 @@ class SelfAssignedRolesService {
       .then(() => this.removeResults.SUCCESS)
   }
 
-  static assign (client, member, role) {
+  assign (member, role) {
     if (member.roles.includes(role.id)) {
       return Promise.reject(this.assignResults.ERROR_ALREADY_HAVE)
     }
@@ -70,7 +78,7 @@ class SelfAssignedRolesService {
     let guildId = member.guild.id
     let roleId = role.id
 
-    return client.db.SelfAssignedRole.findOne({ guildId, roleId })
+    return this.client.db.SelfAssignedRole.findOne({ guildId, roleId })
       .then(dbRole => {
         if (!dbRole) {
           return Promise.reject(this.assignResults.ERROR_NOT_ASSIGNABLE)
@@ -81,7 +89,7 @@ class SelfAssignedRolesService {
       .catch(DiscordRESTError, () => Promise.reject(this.assignResults.ERROR_NO_PERMS))
   }
 
-  static unassign (client, member, role) {
+  unassign (member, role) {
     if (!member.roles.includes(role.id)) {
       return Promise.reject(this.unassignResults.ERROR_NOT_HAVE)
     }
@@ -89,7 +97,7 @@ class SelfAssignedRolesService {
     let guildId = member.guild.id
     let roleId = role.id
 
-    return client.db.SelfAssignedRole.findOne({ guildId, roleId })
+    return this.client.db.SelfAssignedRole.findOne({ guildId, roleId })
       .then(dbRole => {
         if (!dbRole) {
           return Promise.reject(this.unassignResults.ERROR_NOT_ASSIGNABLE)

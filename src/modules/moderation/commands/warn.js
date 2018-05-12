@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { PunishService } = require('../services')
-
 class WarnCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -30,7 +28,9 @@ class WarnCommand extends Command {
     let member = args.member[0]
     let reason = args.reason
 
-    return PunishService.warn(client, msg.member, member, reason)
+    let PunishService = client.services.Punish
+
+    return PunishService.warn(msg.member, member, reason)
       .then(({ count, unforgiven }) => responder.success('{{warn.SUCCESS}}', {
         user: member.mention,
         count,
