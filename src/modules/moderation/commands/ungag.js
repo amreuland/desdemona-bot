@@ -26,7 +26,7 @@ class UnGagCommand extends Command {
 
     let SilenceService = client.services.Silence
 
-    return SilenceService.unsilence(client, member)
+    return SilenceService.unsilence(member)
       .then(() => responder.success('{{ungag.SUCCESS}}', {
         member: member.username
       }))

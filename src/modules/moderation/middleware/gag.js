@@ -12,7 +12,7 @@ module.exports = {
 
     let member = msg.member
 
-    return client.servie.Silence.isMemberSilenced(client, member)
+    return client.services.Silence.isMemberSilenced(member)
       .then(result => {
         if (!result) {
           return container

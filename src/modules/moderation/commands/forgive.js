@@ -27,7 +27,7 @@ class ForgiveCommand extends Command {
 
     let PunishService = client.services.Punish
 
-    return PunishService.forgive(client, msg.member, member, num)
+    return PunishService.forgive(msg.member, member, num)
       .then((code, { reason }) => responder.success('{{forgive.SUCCESS}}', {
         user: member.mention,
         reason

@@ -26,7 +26,7 @@ class IAmNotCommand extends Command {
 
     let SARService = client.services.SelfAssignedRoles
 
-    return SARService.unassign(client, member, role)
+    return SARService.unassign(member, role)
       .then(() => {
         return responder.success('{{iamnot.SUCCESS}}', {
           role: role.name
