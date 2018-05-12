@@ -1,30 +1,21 @@
 'use strict'
 
+const Enum = require('enum')
 const R = require('ramda')
 
 const ModerationUtils = require('../util')
 
 const { NaviService } = require.main.require('./lib')
 
-const banResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'}
-})
-
-const kickResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'}
-})
-
-const warnResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_IS_BOT: {code: 'ERROR_IS_BOT'}
-})
-
-const forgiveResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_IS_BOT: {code: 'ERROR_IS_BOT'},
-  ERROR_WARN_NOT_EXIST: {code: 'ERROR_WARN_NOT_EXIST'},
-  ERROR_ALREADY_FORGIVEN: {code: 'ERROR_ALREADY_FORGIVEN'}
-})
+const banResults = new Enum(['SUCCESS'])
+const kickResults = new Enum(['SUCCESS'])
+const warnResults = new Enum(['SUCCESS', 'ERROR_IS_BOT'])
+const forgiveResults = new Enum([
+  'SUCCESS',
+  'ERROR_IS_BOT',
+  'ERROR_WARN_NOT_EXIST',
+  'ERROR_ALREADY_FORGIVEN'
+])
 
 class PunishService extends NaviService {
   constructor (...args) {

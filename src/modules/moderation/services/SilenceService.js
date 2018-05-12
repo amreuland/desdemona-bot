@@ -1,30 +1,23 @@
 'use strict'
 
+const Enum = require('enum')
 const moment = require('moment')
 
 const { NaviService } = require.main.require('./lib')
 
-const silenceResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_IS_BOT: {code: 'ERROR_IS_BOT'},
-  ERROR_ALREADY_SILENCED: {code: 'ERROR_ALREADY_SILENCED'}
-})
+const lockResults = new Enum(['SUCCESS', 'ERROR_ALREADY_LOCKED'])
+const unlockResults = new Enum(['SUCCESS', 'ERROR_NOT_LOCKED'])
+const silenceResults = new Enum([
+  'SUCCESS',
+  'ERROR_IS_BOT',
+  'ERROR_ALREADY_SILENCED'
+])
 
-const unsilenceResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_IS_BOT: {code: 'ERROR_IS_BOT'},
-  ERROR_NOT_SILENCED: {code: 'ERROR_NOT_SILENCED'}
-})
-
-const lockResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_ALREADY_LOCKED: {code: 'ERROR_ALREADY_LOCKED'}
-})
-
-const unlockResults = Object.freeze({
-  SUCCESS: {code: 'SUCCESS'},
-  ERROR_NOT_LOCKED: {code: 'ERROR_NOT_LOCKED'}
-})
+const unsilenceResults = new Enum([
+  'SUCCESS',
+  'ERROR_IS_BOT',
+  'ERROR_NOT_SILENCED'
+])
 
 class SilenceService extends NaviService {
   constructor (...args) {

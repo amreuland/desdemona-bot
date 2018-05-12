@@ -5,7 +5,7 @@ global.Promise = require('bluebird')
 const chalk = require('chalk')
 const path = require('path')
 const moment = require('moment')
-const { Crystal, utils: { delay } } = require('./src/sylphy')
+const { Crystal } = require('./src/sylphy')
 
 require('longjohn')
 

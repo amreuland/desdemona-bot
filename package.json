@@ -32,6 +32,7 @@
     "bluebird": "^3.5.1",
     "bufferutil": "^3.0.5",
     "chalk": "^2.4.1",
+    "enum": "^2.5.0",
     "eris": "github:abalabahaha/eris#dev",
     "erlpack": "github:abalabahaha/erlpack",
     "eventemitter3": "^3.1.0",

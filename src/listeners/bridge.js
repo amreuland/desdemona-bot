@@ -7,8 +7,8 @@ class BridgeListener extends Listener {
     super(...args, {
       name: 'bridge:logger',
       events: {
-        'router:registered': 'onMiddlewareRegistered',
-        'router:error': 'onError'
+        'bridge:registered': 'onMiddlewareRegistered',
+        'bridge:error': 'onError'
       }
     })
   }
