@@ -24,6 +24,7 @@ class NaviModule {
     const {
       name,
       description,
+      services = false,
       commands = false,
       middleware = false,
       listeners = false,
@@ -40,158 +41,52 @@ class NaviModule {
     this.description = description
     this.options = options
 
+    this.services = []
     this.commands = []
     this.middleware = []
     this.listeners = []
     this.tasks = []
 
-    this._resolveCommands(commands)
-    this._resolveMiddleware(middleware)
-    this._resolveListeners(listeners)
-    this._resolveTasks(tasks)
+    this._resolveComponent('services', services)
+    this._resolveComponent('commands', commands)
+    this._resolveComponent('middleware', middleware)
+    this._resolveComponent('listeners', listeners)
+    this._resolveComponent('tasks', tasks)
   }
 
-  _resolveCommands (commands) {
-    if (!commands) {
+  _resolveComponent (component, items) {
+    if (!items) {
       return this
     }
 
-    if (commands === true) {
-      commands = 'commands'
+    if (items === true) {
+      items = component
     }
 
-    switch (typeof commands) {
+    switch (typeof items) {
       case 'string': {
-        const filepath = path.join(this.getModulePath(), commands)
+        const filepath = path.join(this.getModulePath(), items)
         if (!fs.existsSync(filepath)) {
           throw new Error(`Folder path ${filepath} does not exist`)
         }
-        const cmds = isDir(filepath) ? requireAll(filepath) : require(filepath)
-        return this._resolveCommands(cmds)
+        const itms = isDir(filepath) ? requireAll(filepath) : require(filepath)
+        return this._resolveComponent(component, itms)
       }
       case 'object': {
-        if (Array.isArray(commands)) {
-          for (const command of commands) {
-            if (!command) {
+        if (Array.isArray(items)) {
+          for (const item of items) {
+            if (!item) {
               continue
             }
-            this.commands.push(command)
+            this[component].push(item)
           }
           return this
         }
-        for (let command in commands) {
-          if (!commands[command]) {
+        for (let item in items) {
+          if (!items[item]) {
             continue
           }
-          this.commands.push(commands[command])
-        }
-        return this
-      }
-      default: {
-        throw new Error('Path supplied is not an object or string')
-      }
-    }
-  }
-
-  _resolveMiddleware (middleware) {
-    if (!middleware) {
-      return this
-    }
-
-    if (middleware === true) {
-      middleware = 'middleware'
-    }
-
-    switch (typeof middleware) {
-      case 'string': {
-        const filepath = path.join(this.getModulePath(), middleware)
-        if (!fs.existsSync(filepath)) {
-          throw new Error(`Folder path ${filepath} does not exist`)
-        }
-        const lstnrs = isDir(filepath) ? requireAll(filepath) : require(filepath)
-        return this._resolveMiddleware(lstnrs)
-      }
-      case 'object': {
-        if (Array.isArray(middleware)) {
-          for (const middle of middleware) {
-            this.middleware.push(middle)
-          }
-          return this
-        }
-        for (let middle in middleware) {
-          this.middleware.push(middleware[middle])
-        }
-        return this
-      }
-      default: {
-        throw new Error('Path supplied is not an object or string')
-      }
-    }
-  }
-
-  _resolveListeners (listeners) {
-    if (!listeners) {
-      return this
-    }
-
-    if (listeners === true) {
-      listeners = 'listeners'
-    }
-
-    switch (typeof listeners) {
-      case 'string': {
-        const filepath = path.join(this.getModulePath(), listeners)
-        if (!fs.existsSync(filepath)) {
-          throw new Error(`Folder path ${filepath} does not exist`)
-        }
-        const lstnrs = isDir(filepath) ? requireAll(filepath) : require(filepath)
-        return this._resolveListeners(lstnrs)
-      }
-      case 'object': {
-        if (Array.isArray(listeners)) {
-          for (const listener of listeners) {
-            this.listeners.push(listener)
-          }
-          return this
-        }
-        for (let listener in listeners) {
-          this.listeners.push(listeners[listener])
-        }
-        return this
-      }
-      default: {
-        throw new Error('Path supplied is not an object or string')
-      }
-    }
-  }
-
-  _resolveTasks (tasks) {
-    if (!tasks) {
-      return this
-    }
-
-    if (tasks === true) {
-      tasks = 'tasks'
-    }
-
-    switch (typeof tasks) {
-      case 'string': {
-        const filepath = path.join(this.getModulePath(), tasks)
-        if (!fs.existsSync(filepath)) {
-          throw new Error(`Folder path ${filepath} does not exist`)
-        }
-        const lstnrs = isDir(filepath) ? requireAll(filepath) : require(filepath)
-        return this._resolveTasks(lstnrs)
-      }
-      case 'object': {
-        if (Array.isArray(tasks)) {
-          for (const task of tasks) {
-            this.tasks.push(task)
-          }
-          return this
-        }
-        for (let task in tasks) {
-          this.tasks.push(tasks[task])
+          this[component].push(items[item])
         }
         return this
       }

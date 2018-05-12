@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { SilenceService } = require('../services')
-
 class UnGagCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -25,6 +23,8 @@ class UnGagCommand extends Command {
 
   async handle ({ msg, client, args }, responder) {
     let member = args.member[0]
+
+    let SilenceService = client.services.Silence
 
     return SilenceService.unsilence(client, member)
       .then(() => responder.success('{{ungag.SUCCESS}}', {

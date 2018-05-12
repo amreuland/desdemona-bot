@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { PunishService } = require('../services')
-
 class ForgiveCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -26,6 +24,8 @@ class ForgiveCommand extends Command {
   async handle ({ msg, client, args }, responder) {
     let member = args.member[0]
     let num = args.warnNumber
+
+    let PunishService = client.services.Punish
 
     return PunishService.forgive(client, msg.member, member, num)
       .then((code, { reason }) => responder.success('{{forgive.SUCCESS}}', {
