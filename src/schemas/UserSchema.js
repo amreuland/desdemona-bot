@@ -10,6 +10,10 @@ module.exports = {
       unique: true
     },
 
+    currency: {
+      type: Number
+    },
+
     settings: {
       type: Object,
       default: {}
