@@ -13,7 +13,7 @@ const packageJson = require(path.join(process.cwd(), 'package'))
 
 const { Sentry } = require('./lib')
 
-const { APIPlugin, MongoosePlugin, RedisPlugin, Loader, Tasker } = require('./plugins')
+const { APIPlugin, MongoosePlugin, RedisPlugin, Loader, Servicer, Tasker } = require('./plugins')
 
 const modules = require('./modules')
 
@@ -72,6 +72,7 @@ class Navi extends Eris {
     this.raven = new Sentry(this, options)
 
     this
+      .createPlugin('services', Servicer, options)
       .createPlugin('commands', Commander, options)
       .createPlugin('listeners', Router, options)
       .createPlugin('middleware', Bridge, options)
@@ -103,6 +104,10 @@ class Navi extends Eris {
 
   get logger () {
     return this.plugins.get('logger')
+  }
+
+  get services () {
+    return this.plugins.get('services')
   }
 
   /**

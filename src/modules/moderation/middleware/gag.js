@@ -1,7 +1,5 @@
 'use strict'
 
-const { SilenceService } = require('../services')
-
 module.exports = {
   name: 'silencedUsers',
   priority: 6,
@@ -14,7 +12,7 @@ module.exports = {
 
     let member = msg.member
 
-    return SilenceService.isMemberSilenced(client, member)
+    return client.services.Silence.isMemberSilenced(member)
       .then(result => {
         if (!result) {
           return container

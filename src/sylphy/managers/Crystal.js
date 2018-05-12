@@ -86,8 +86,8 @@ class Crystal extends EventEmitter {
     }
 
     Promise.all(promises)
-    .then(results => worker.send({ op: 'resp', d: results, code: message.code }))
-    .catch(err => worker.send({ op: 'error', d: err, code: message.code }))
+      .then(results => worker.send({ op: 'resp', d: results, code: message.code }))
+      .catch(err => worker.send({ op: 'error', d: err, code: message.code }))
   }
 
   /**

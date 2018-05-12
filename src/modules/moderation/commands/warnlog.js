@@ -73,15 +73,15 @@ class WarnLogCommand extends Command {
           ipp: warnsPP,
           func: page => {
             return client.db.Warning.find({ userId, guildId })
-            .sort({ timestamp: 'asc' })
-            .skip(page * warnsPP)
-            .limit(warnsPP)
-            .then(dbWarns2 => {
-              let embed = ModerationUtils.createWarnlogEmbed(page, warnsPP,
-                member, dbWarns2,
-                guildWarningsCount, otherWarningsCount)
-              return { embed }
-            })
+              .sort({ timestamp: 'asc' })
+              .skip(page * warnsPP)
+              .limit(warnsPP)
+              .then(dbWarns2 => {
+                let embed = ModerationUtils.createWarnlogEmbed(page, warnsPP,
+                  member, dbWarns2,
+                  guildWarningsCount, otherWarningsCount)
+                return { embed }
+              })
           }
         })
       })

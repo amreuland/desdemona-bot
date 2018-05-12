@@ -1,0 +1,5 @@
+{
+  "ping": {
+    "SUCCESS": "PONG! Latency: {{latency}}ms"
+  }
+}

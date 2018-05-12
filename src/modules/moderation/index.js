@@ -7,6 +7,7 @@ class ModerationModule extends NaviModule {
     super(...args, {
       name: 'moderation',
       description: 'Moderation commands and components',
+      services: true,
       commands: true,
       middleware: true
     })

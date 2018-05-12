@@ -2,13 +2,11 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { SelfAssignedRolesService: SARService } = require('../services')
-
 class IAmRemoveCommand extends Command {
   constructor (...args) {
     super(...args, {
-      name: 'iamrem',
-      aliases: ['iamremove'],
+      name: 'sarrem',
+      aliases: ['remsar', 'delsar', 'removesar', 'sarremove', 'sardel'],
       description: 'Remove a Self-Assignable role',
       usage: [{ name: 'role', displayName: 'role', type: 'role' }],
       examples: [
@@ -27,7 +25,9 @@ class IAmRemoveCommand extends Command {
   async handle ({ msg, client, args }, responder) {
     let role = args.role[0]
 
-    return SARService.remove(client, role)
+    let SARService = client.services.SelfAssignedRoles
+
+    return SARService.remove(role)
       .then(() => {
         return responder.success('{{iamrem.SUCCESS}}', {
           role: role.name

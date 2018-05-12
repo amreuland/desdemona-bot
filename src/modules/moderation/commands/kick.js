@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { PunishService } = require('../services')
-
 class KickCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -38,7 +36,7 @@ class KickCommand extends Command {
               return responder.success('Action canceled')
             }
 
-            return PunishService.kick(client, msg.member, member, reason)
+            return client.services.Punish.kick(msg.member, member, reason)
               .then(() => responder.success('{{kick.SUCCESS}}', {
                 deleteDelay: 5,
                 member: member.mention

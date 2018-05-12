@@ -2,8 +2,6 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { SilenceService } = require('../services')
-
 class LockdownOverrideCommand extends Command {
   constructor (...args) {
     super(...args, {
@@ -30,7 +28,9 @@ class LockdownOverrideCommand extends Command {
     let member = args.member[0]
     let time = args.timeout || 0
 
-    return SilenceService.silence(client, member, time)
+    let SilenceService = client.services.Silence
+
+    return SilenceService.silence(member, time)
       .then(() => {
         if (time) {
           return responder.success('{{gag.SUCCESS_TIMEOUT}}', {

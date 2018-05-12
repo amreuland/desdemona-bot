@@ -2,12 +2,11 @@
 
 const { Command } = require.main.require('./sylphy')
 
-const { SelfAssignedRolesService: SARService } = require('../services')
-
 class IAmAddCommand extends Command {
   constructor (...args) {
     super(...args, {
-      name: 'iamadd',
+      name: 'saradd',
+      aliases: ['addsar'],
       description: 'Add a Self-Assignable role',
       usage: [
         { name: 'role', displayName: 'role', type: 'role' },
@@ -30,7 +29,9 @@ class IAmAddCommand extends Command {
     let role = args.role[0]
     let group = args.group || 0
 
-    return SARService.add(client, role, group)
+    let SARService = client.services.SelfAssignedRoles
+
+    return SARService.add(role, group)
       .then(() => {
         return responder.success('{{iamadd.SUCCESS}}', {
           role: role.name
