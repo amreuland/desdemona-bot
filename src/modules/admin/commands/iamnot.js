@@ -1,8 +1,8 @@
 'use strict'
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
-const { SelfAssignableRolesService: SARService } = require('../services')
+const { SelfAssignedRolesService: SARService } = require('../services')
 
 class IAmNotCommand extends Command {
   constructor (...args) {
@@ -26,23 +26,23 @@ class IAmNotCommand extends Command {
     let role = args.role[0]
     let member = msg.member
 
-    return SARService.remove(client, member, role)
+    return SARService.unassign(client, member, role)
       .then(() => {
         return responder.success('{{iamnot.SUCCESS}}', {
           role: role.name
         })
       })
-      .catch(SARService.removeResults.ERROR_NOT_ASSIGNABLE, () => {
+      .catch(SARService.unassignResults.ERROR_NOT_ASSIGNABLE, () => {
         return responder.error('{{iamnot.errors.NOT_IN_LIST}}', {
           role: role.name
         })
       })
-      .catch(SARService.removeResults.ERROR_NOT_HAVE, () => {
+      .catch(SARService.unassignResults.ERROR_NOT_HAVE, () => {
         return responder.error('{{iamnot.errors.NOT_APPLIED}}', {
           role: role.name
         })
       })
-      .catch(SARService.removeResults.ERROR_NO_PERMS, () => {
+      .catch(SARService.unassignResults.ERROR_NO_PERMS, () => {
         return responder.error('{{iamnot.errors.ROLE_ABOVE_BOT}}', {
           role: role.name
         })

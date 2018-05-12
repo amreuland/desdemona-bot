@@ -8,7 +8,7 @@ const Mongoose = require('mongoose')
 
 Mongoose.Promise = require('bluebird')
 
-const { Collection, utils } = require('sylphy')
+const { Collection, utils } = require('../sylphy')
 
 class MongoosePlugin extends Collection {
   constructor (client, options = {mongo: {}}) {

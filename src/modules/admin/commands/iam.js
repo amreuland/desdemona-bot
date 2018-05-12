@@ -1,8 +1,8 @@
 'use strict'
 
-const { Command } = require('sylphy')
+const { Command } = require.main.require('./sylphy')
 
-const { SelfAssignableRolesService: SARService } = require('../services')
+const { SelfAssignedRolesService: SARService } = require('../services')
 
 class IAmCommand extends Command {
   constructor (...args) {

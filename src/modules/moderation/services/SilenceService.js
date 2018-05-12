@@ -42,24 +42,14 @@ class SilenceService {
     let userId = member.id
     let timeout = time ? moment().add(time, 's').toDate() : 0
 
-    return Promise.all([
-      client.db.User.findOneOrCreate({ userId }, { userId }),
-      client.db.Guild.findOneOrCreate({ guildId }, { guildId }),
-      client.db.Gag.findOne({ guildId, userId })
-    ])
-      .then(([dbUser, dbGuild, dbGag]) => {
-        if (!dbGag) {
-          return client.db.Gag.create({
-            user: dbUser._id,
-            guild: dbGuild._id,
-            userId,
-            guildId,
-            timeout
-          }).then(() => this.silenceResults.SUCCESS)
+    return client.db.Gag.findOne({ guildId, userId })
+      .then(dbGag => {
+        if (dbGag) {
+          return Promise.reject(this.silenceResults.ERROR_ALREADY_SILENCED)
         }
-
-        return Promise.reject(this.silenceResults.ERROR_ALREADY_SILENCED)
+        return client.db.Gag.create({ userId, guildId, timeout })
       })
+      .then(() => this.silenceResults.SUCCESS)
   }
 
   static unsilence (client, member) {
@@ -76,10 +66,9 @@ class SilenceService {
         if (!dbGag) {
           return Promise.reject(this.unsilenceResults.ERROR_NOT_SILENCED)
         }
-
         return dbGag.remove()
-          .then(() => this.unsilenceResults.SUCCESS)
       })
+      .then(() => this.unsilenceResults.SUCCESS)
   }
 
   static _isItemSilenced (client, cacheKey, search) {
@@ -120,22 +109,14 @@ class SilenceService {
     let channelId = channel.id
     let timeout = time ? moment().add(time, 's').toDate() : 0
 
-    return Promise.all([
-      client.db.Guild.findOneOrCreate({ guildId }, { guildId }),
-      client.db.Gag.findOne({ guildId, channelId })
-    ])
-      .then(([dbGuild, dbGag]) => {
-        if (!dbGag) {
-          return client.db.Gag.create({
-            guild: dbGuild._id,
-            channelId,
-            guildId,
-            timeout
-          }).then(() => this.lockResults.SUCCESS)
+    return client.db.Gag.findOne({ guildId, channelId })
+      .then(dbGag => {
+        if (dbGag) {
+          return Promise.reject(this.lockResults.ERROR_ALREADY_LOCKED)
         }
-
-        return Promise.reject(this.lockResults.ERROR_ALREADY_LOCKED)
+        return client.db.Gag.create({ channelId, guildId, timeout })
       })
+      .then(() => this.lockResults.SUCCESS)
   }
 
   static unlockChannel (client, channel) {
@@ -150,8 +131,8 @@ class SilenceService {
         }
 
         return dbGag.remove()
-          .then(() => this.unlockResults.SUCCESS)
       })
+      .then(() => this.unlockResults.SUCCESS)
   }
 
   static isMemberSilenced (client, member) {

@@ -1,6 +1,6 @@
 'use strict'
 
-const { Collection } = require('sylphy')
+const { Collection } = require('../sylphy')
 
 class Loader extends Collection {
   constructor (client, options = {}) {

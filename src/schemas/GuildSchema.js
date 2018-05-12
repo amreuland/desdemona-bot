@@ -20,10 +20,6 @@ module.exports = {
       default: {}
     },
 
-    selfroles: {
-      type: Array
-    },
-
     tokens: {
       type: Object,
       default: {}
@@ -33,14 +29,20 @@ module.exports = {
   virtuals: {
     connections: {
       ref: 'Connection',
-      localField: '_id',
-      foreignField: 'guild'
+      localField: 'guildId',
+      foreignField: 'guildId'
     },
 
     gags: {
       ref: 'Gag',
-      localField: '_id',
-      foreignField: 'guild'
+      localField: 'guildId',
+      foreignField: 'guildId'
+    },
+
+    selfAssignedRoles: {
+      ref: 'SelfAssignedRole',
+      localField: 'guildId',
+      foreignField: 'guildId'
     }
   }
 }

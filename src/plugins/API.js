@@ -1,6 +1,6 @@
 'use strict'
 
-const { Collection } = require('sylphy')
+const { Collection } = require('../sylphy')
 
 class APIPlugin extends Collection {
   constructor (client, options = {}) {

@@ -1,6 +1,6 @@
 'use strict'
 
-const { Listener } = require('sylphy')
+const { Listener } = require('../sylphy')
 
 class RedisListener extends Listener {
   constructor (...args) {
