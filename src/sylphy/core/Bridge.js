@@ -105,7 +105,7 @@ class Bridge {
 
     const reactor = {
       _listening: false,
-      _ended: false,
+      _ended: false
     }
 
     const endFunc = () => {
@@ -155,7 +155,7 @@ class Bridge {
       if (channelId && channelId !== event.msg.channel.id) return false
       if (messageId && messageId !== event.msg.id) return false
 
-      let emoji = event.emoji.id ? `${event.emoji.name}:${event.emoji.id}` : event.emoji.name;
+      let emoji = event.emoji.id ? `${event.emoji.name}:${event.emoji.id}` : event.emoji.name
 
       if (typeof filter === 'function' && !filter(emoji)) return false
 

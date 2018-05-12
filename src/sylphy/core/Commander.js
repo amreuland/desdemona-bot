@@ -171,7 +171,7 @@ class Commander extends Collection {
   ejectGroup (group = '*', trig) {
     let count = 0
     for (const [trigger, command] of this.entries()) {
-      if (command.group === group || group === '*' && trig === trigger) {
+      if ((command.group === group || group === '*') && trig === trigger) {
         this.delete(trigger)
         count++
       }
@@ -224,7 +224,7 @@ class Commander extends Collection {
    * @type {Error}
    */
 
-   /**
+  /**
    * Fires when an error occurs in a command
    *
    * @event Client#commander:commandError

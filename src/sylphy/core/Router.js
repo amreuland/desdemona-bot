@@ -36,10 +36,10 @@ class Router extends Collection {
    * }
    */
 
-   /**
-    * Registers listeners
-    * @arg {String|Object|Array} listeners An object, array or relative path to a folder or file to load listeners from
-    */
+  /**
+   * Registers listeners
+   * @arg {String|Object|Array} listeners An object, array or relative path to a folder or file to load listeners from
+   */
   register (listeners) {
     switch (typeof listeners) {
       case 'string': {

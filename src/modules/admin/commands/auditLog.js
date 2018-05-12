@@ -10,7 +10,8 @@ class AuditLogCommand extends Command {
       usage: [{
         name: 'channel',
         displayName: 'channel',
-        type: 'channel'
+        type: 'channel',
+        optional: true
       }],
       options: {
         guildOnly: true,
@@ -24,10 +25,11 @@ class AuditLogCommand extends Command {
 
   async handle ({ msg, client, args }, responder) {
     let guildId = msg.channel.guild.id
+    let channel = args.channel[0] || null
 
     return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
-        dbGuild.channels.audit = args.channel[0].id
+        dbGuild.channels.audit = channel
         dbGuild.markModified('channels')
         return dbGuild.save()
       })

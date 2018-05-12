@@ -5,7 +5,8 @@ const { Command } = require.main.require('./sylphy')
 class IAmAddCommand extends Command {
   constructor (...args) {
     super(...args, {
-      name: 'iamadd',
+      name: 'saradd',
+      aliases: ['addsar'],
       description: 'Add a Self-Assignable role',
       usage: [
         { name: 'role', displayName: 'role', type: 'role' },
