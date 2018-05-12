@@ -5,8 +5,8 @@ const { Command } = require.main.require('./sylphy')
 class IAmRemoveCommand extends Command {
   constructor (...args) {
     super(...args, {
-      name: 'iamrem',
-      aliases: ['iamremove'],
+      name: 'sarrem',
+      aliases: ['remsar', 'delsar', 'removesar', 'sarremove', 'sardel'],
       description: 'Remove a Self-Assignable role',
       usage: [{ name: 'role', displayName: 'role', type: 'role' }],
       examples: [

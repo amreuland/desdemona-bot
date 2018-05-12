@@ -9,7 +9,8 @@ const rolesPP = 10
 class IAmListCommand extends Command {
   constructor (...args) {
     super(...args, {
-      name: 'iamlist',
+      name: 'sarlist',
+      aliases: ['listsar'],
       description: 'List self assignable roles',
       usage: [{ name: 'page', displayName: 'page#', type: 'int', min: 1, optional: true }],
       examples: [
@@ -40,30 +41,30 @@ class IAmListCommand extends Command {
           ipp: rolesPP,
           func: page => {
             return client.db.SelfAssignedRole.find({ guildId })
-            .sort({ group: 'asc', '_id': 'asc' })
-            .skip(page * rolesPP)
-            .limit(rolesPP)
-            .then(dbSARs => {
-              let ret = [
-                '```glsl'
-              ]
-              let groups = R.groupBy(R.prop('group'), dbSARs)
+              .sort({ group: 'asc', '_id': 'asc' })
+              .skip(page * rolesPP)
+              .limit(rolesPP)
+              .then(dbSARs => {
+                let ret = [
+                  '```glsl'
+                ]
+                let groups = R.groupBy(R.prop('group'), dbSARs)
 
-              for (const g in groups) {
-                let group = groups[g]
-                ret.push(`#Group ${g}`)
+                for (const g in groups) {
+                  let group = groups[g]
+                  ret.push(`#Group ${g}`)
 
-                for (const r of group) {
-                  let role = guild.roles.get(r.roleId)
-                  if (!role) { continue }
-                  ret.push(`\t${role.name}`)
+                  for (const r of group) {
+                    let role = guild.roles.get(r.roleId)
+                    if (!role) { continue }
+                    ret.push(`\t${role.name}`)
+                  }
                 }
-              }
 
-              ret.push('```')
+                ret.push('```')
 
-              return { content: ret.join('\n') }
-            })
+                return { content: ret.join('\n') }
+              })
           }
         })
       })
