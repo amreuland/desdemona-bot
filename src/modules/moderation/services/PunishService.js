@@ -82,43 +82,34 @@ class PunishService {
     let guildId = member.guild.id
     let userId = member.id
 
-    return client.db.User.findOneOrCreate({ userId }, { userId })
-      .populate('warnings')
-      .then(dbUser => {
-        return client.db.Warning.create({
-          user: dbUser._id,
-          userId,
-          guildId,
-          reason,
-          timestamp: new Date(),
-          moderatorId: mod.id
+    return client.db.Warning.create({
+      userId,
+      guildId,
+      reason,
+      timestamp: new Date(),
+      moderatorId: mod.id
+    })
+      .then(() => client.db.Warning.find({ userId, guildId }))
+      .then(dbWarnings => {
+        let unforgivenWarnings = R.filter(R.propEq('forgiven', false), dbWarnings)
+
+        let p = Promise.resolve({
+          code: this.warnResults.SUCCESS.code,
+          count: dbWarnings.length,
+          unforgiven: unforgivenWarnings.length
         })
-          .then(() => {
-            let guildWarnings = R.filter(
-              R.propEq('guildId', guildId), dbUser.warnings || [])
 
-            let unforgivenWarnings = R.filter(R.propEq('forgiven', false), guildWarnings)
-
-            let warnCount = guildWarnings.length + 1
-
-            let p = Promise.resolve({
-              code: this.warnResults.SUCCESS.errCode,
-              count: warnCount,
-              unforgiven: unforgivenWarnings.length + 1
+        if (sendDM) {
+          return member.user.getDMChannel()
+            .then(pmChannel => {
+              let embed = ModerationUtils.createWarningEmbed(
+                member.guild, member, unforgivenWarnings.length, reason)
+              return pmChannel.createMessage({ embed })
             })
+            .then(() => p)
+        }
 
-            if (sendDM) {
-              return member.user.getDMChannel()
-                .then(pmChannel => {
-                  let embed = ModerationUtils.createWarningEmbed(
-                    member.guild, member, unforgivenWarnings.length + 1, reason)
-                  return pmChannel.createMessage({ embed })
-                })
-                .then(() => p)
-            }
-
-            return p
-          })
+        return p
       })
   }
 
@@ -130,25 +121,24 @@ class PunishService {
     let guildId = member.guild.id
     let userId = member.id
 
-    return client.db.User.findOneOrCreate({ userId }, { userId })
-      .populate('warnings')
-      .then(dbUser => {
-        let guildWarnings = forgiveSortFunc(dbUser.warnings, guildId)
-        let warning = guildWarnings[num]
-
-        if (!warning) {
+    return client.db.Warning.find({ userId, guildId })
+      .sort({ timestamp: 'asc' })
+      .skip(num)
+      .limit(1)
+      .then(dbWarning => {
+        if (!dbWarning) {
           return Promise.reject(this.forgiveResults.ERROR_WARN_NOT_EXIST)
         }
 
-        if (warning.forgiven) {
+        if (dbWarning.forgiven) {
           return Promise.reject(this.forgiveResults.ERROR_ALREADY_FORGIVEN)
         }
 
-        warning.forgiven = true
-        return warning.save()
+        dbWarning.forgiven = true
+        return dbWarning.save()
           .then(() => Promise.resolve({
-            code: this.forgiveResults.SUCCESS.errCode,
-            reason: warning.reason
+            code: this.forgiveResults.SUCCESS.code,
+            reason: dbWarning.reason
           }))
       })
   }

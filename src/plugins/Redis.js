@@ -2,7 +2,7 @@
 
 const Redis = require('ioredis')
 
-const { Collection } = require('sylphy')
+const { Collection } = require('../sylphy')
 
 class RedisPlugin extends Collection {
   constructor (client, options = {}) {

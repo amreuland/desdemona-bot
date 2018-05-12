@@ -19,20 +19,20 @@ module.exports = {
   virtuals: {
     connections: {
       ref: 'Connection',
-      localField: '_id',
-      foreignField: 'user'
+      localField: 'userId',
+      foreignField: 'userId'
     },
 
     gags: {
       ref: 'Gag',
-      localField: '_id',
-      foreignField: 'user'
+      localField: 'userId',
+      foreignField: 'userId'
     },
 
     warnings: {
       ref: 'Warning',
-      localField: '_id',
-      foreignField: 'user'
+      localField: 'userId',
+      foreignField: 'userId'
     }
   }
 }

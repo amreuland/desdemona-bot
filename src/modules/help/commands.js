@@ -1,6 +1,6 @@
 'use strict'
 
-const { Command, utils: { padEnd } } = require('sylphy')
+const { Command, utils: { padEnd } } = require.main.require('./sylphy')
 
 class HelpCommand extends Command {
   constructor (...args) {
