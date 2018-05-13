@@ -216,7 +216,7 @@ class Responder {
     }
 
     let { currentPage, func, total, ipp } = paginates
-    const { time = 10 } = options
+    const { time = 20 } = options
 
     let lastPage = ~~((total - 1) / ipp) + 1
 

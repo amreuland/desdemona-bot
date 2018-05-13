@@ -20,7 +20,7 @@ class IAmAddCommand extends Command {
       ],
       options: {
         guildOnly: true,
-        premissions: ['manageRoles']
+        permissions: ['manageRoles']
       }
     })
   }

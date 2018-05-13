@@ -4,23 +4,10 @@ const { getGuildPrefix } = require('../util').GuildUtils
 
 module.exports = {
   name: 'parseMessage',
-  priority: 10,
+  priority: 50,
   process: container => {
     const { msg, client, commands } = container
 
-    // let foundPrefix
-    // let actOnMsg = false
-
-    // const mentionPrefix = msg.content.match(new RegExp(`^<@!*${client.user.id}>`))
-
-    // if (msg.content.startsWith(mentionPrefix)) {
-    //   foundPrefix = mentionPrefix + ' '
-    //   actOnMsg = true
-    // }
-
-    // let p
-
-    // if (!actOnMsg) {
     let p = Promise.resolve(null)
     if (msg.channel.guild) {
       p = getGuildPrefix(client, msg.channel.guild.id)
@@ -54,14 +41,5 @@ module.exports = {
         container.rawArgs = rawArgs.slice(1).filter(v => v)
         return Promise.resolve(container)
       })
-    // } else {
-    //   p = Promise.resolve(foundPrefix)
-    // }
-
-    // if (!actOnMsg) {
-    //   return Promise.resolve()
-    // }
-
-    // return p
   }
 }

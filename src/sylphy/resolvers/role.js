@@ -10,6 +10,10 @@ module.exports = {
         return name === content || name.includes(content)
       })
       if (roles.length) {
+        let exactRole = roles.find(r => r.name.toLowerCase() === content)
+        if (exactRole) {
+          return Promise.resolve([exactRole])
+        }
         return Promise.resolve(roles)
       } else {
         return Promise.reject('role.NOT_FOUND')

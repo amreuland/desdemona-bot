@@ -15,6 +15,16 @@ module.exports = {
       default: 0
     },
 
+    globalXp: {
+      type: Number,
+      default: 0
+    },
+
+    reputation: {
+      type: Number,
+      default: 0
+    },
+
     settings: {
       type: Object,
       default: {}
@@ -36,6 +46,12 @@ module.exports = {
 
     warnings: {
       ref: 'Warning',
+      localField: 'userId',
+      foreignField: 'userId'
+    },
+
+    guildStats: {
+      ref: 'UserStats',
       localField: 'userId',
       foreignField: 'userId'
     }
