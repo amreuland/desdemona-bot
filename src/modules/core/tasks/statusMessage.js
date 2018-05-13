@@ -11,9 +11,10 @@ class StatusMessageTask extends NaviTask {
 
     this.statuses = [
       'https://navi.social',
-      '%s guilds',
+      'in %s guilds',
       'Use %ahelp',
-      '%d users'
+      'with %d users',
+      'Navi V%v'
     ]
 
     this.index = 0
@@ -23,6 +24,7 @@ class StatusMessageTask extends NaviTask {
     this.index = (this.index + 1) % this.statuses.length
     client.editStatus('online', {
       name: this.statuses[this.index]
+        .replace('%v', client.version)
         .replace('%s', client.guilds.size)
         .replace('%d', client.users.size)
         .replace('%a', client.prefix),
