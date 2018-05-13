@@ -43,6 +43,12 @@ module.exports = {
       ref: 'SelfAssignedRole',
       localField: 'guildId',
       foreignField: 'guildId'
+    },
+
+    userStats: {
+      ref: 'UserStats',
+      localField: 'guildId',
+      foreignField: 'guildId'
     }
   }
 }
