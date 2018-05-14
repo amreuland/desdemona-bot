@@ -33,21 +33,21 @@ class UserEventsListener extends Listener {
 
     let embed = EventUtils.createUsernameChangedEmbed(oldUser, user)
 
-    return Promise.map(this._client.guilds.values(), guild => {
-      if (!guild.members.has(user.id)) {
-        return false
+    return this._client.db.Guild.find({
+      guildId: {
+        $in: [...this._client.guilds.values()].map(g => g.id)
       }
-
-      return this._client.db.Guild.findOne({ guildId: guild.id })
-        .then(dbGuild => {
-          let auditChannelId = dbGuild.channels.audit
-          if (!auditChannelId) {
-            return false
-          }
-
-          return this._client.createMessage(auditChannelId, { embed })
-        })
     })
+      .then(dbGuilds => {
+        return dbGuilds.filter(g => {
+          let guild = this._client.guilds.get(g.guildId)
+          return guild.members.has(user.id) &&
+            g.channels &&
+            g.channels.audit &&
+            guild.channels.has(g.channels.audit)
+        }).map(g => g.channels.audit)
+      })
+      .map(channelId => this._client.createMessage(channelId, { embed }))
   }
 }
 

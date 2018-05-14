@@ -35,8 +35,6 @@ class GuildEventsListener extends Listener {
    */
   onGuildCreate (guild) {
     this.logger.debug(`Joined guild '${guild.name}' (${guild.id})`)
-    let search = { guildId: guild.id }
-    return this._client.db.Guild.findOneOrCreate(search, search)
   }
 
   /**
@@ -97,7 +95,7 @@ class GuildEventsListener extends Listener {
    * @param {Member} member The member
    */
   onGuildMemberAdd (guild, member) {
-    return this._client.db.Guild.findOne({guildId: guild.id})
+    return this._client.db.Guild.findOne({ guildId: guild.id })
       .then(dbGuild => {
         if (!dbGuild) {
           return false
@@ -119,7 +117,7 @@ class GuildEventsListener extends Listener {
    * @param  {Member | Object} member The member. If the member is not cached, this will be an object with `id` and `user` key
    */
   onGuildMemberRemove (guild, member) {
-    return this._client.db.Guild.findOne({guildId: guild.id})
+    return this._client.db.Guild.findOne({ guildId: guild.id })
       .then(dbGuild => {
         if (!dbGuild) {
           return false
@@ -144,7 +142,7 @@ class GuildEventsListener extends Listener {
    * @param {String?} oldMember.nick The server nickname of the member
    */
   onGuildMemberUpdate (guild, member, oldMember) {
-    return this._client.db.Guild.findOne({guildId: guild.id})
+    return this._client.db.Guild.findOne({ guildId: guild.id })
       .then(dbGuild => {
         if (!dbGuild) {
           return false

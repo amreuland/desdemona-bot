@@ -6,7 +6,9 @@ class XPModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'xp',
-      description: 'XP (experience) commands and components'
+      description: 'XP (experience) commands and components',
+      services: true,
+      commands: true
     })
   }
 

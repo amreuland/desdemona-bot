@@ -231,10 +231,12 @@ const bot = new Navi({
   maxShards
 })
 
-bot.register('api', 'google', apis.GoogleAPI, config.apis.google)
-bot.register('api', 'cats', apis.TheCatAPI, config.apis.thecatapi)
-bot.register('api', 'dogs', apis.TheDogAPI)
-bot.register('api', 'urbandict', apis.UrbanDictionaryAPI)
+bot
+  .register('api', 'google', apis.GoogleAPI, config.apis.google)
+  .register('api', 'cats', apis.TheCatAPI, config.apis.thecatapi)
+  .register('api', 'tatsumaki', apis.TatsumakiAPI, config.apis.tatsumaki)
+  .register('api', 'dogs', apis.TheDogAPI)
+  .register('api', 'urbandict', apis.UrbanDictionaryAPI)
 
 for (const name in config.cache) {
   bot.register('cache', name, config.cache[name])

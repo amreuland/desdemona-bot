@@ -31,7 +31,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "bufferutil": "^3.0.5",
-    "canvas": "^1.6.10",
+    "canvas": "^2.0.0-alpha.12",
     "chalk": "^2.4.1",
     "enum": "^2.5.0",
     "eris": "github:abalabahaha/eris#dev",
@@ -52,6 +52,7 @@
     "sodium-native": "^2.1.6",
     "steamapi": "^2.0.2",
     "steamid": "^1.1.0",
+    "tatsumaki.js": "0.0.1",
     "uws": "^9.148.0",
     "winston": "^2.4.2",
     "xml2json": "^0.11.2",

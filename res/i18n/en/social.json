@@ -1,0 +1,10 @@
+{
+  "syncstats": {
+    "warnings": {
+      "TATS": "Are you sure you want to sync stats from Tatsumaki? ###\n### This will overwrite any progress you have made with Navi"
+    },
+    "success": {
+      "TATS": "Your stats from Tatsumaki have been synced to Navi.\n:100:  |  XP: {{xp}}\n:dollar:  |  Money: {{money}}\n:heart:  |  Rep: {{rep}}"
+    }
+  }
+}

@@ -8,7 +8,7 @@ class IAmRemoveCommand extends Command {
       name: 'sarrem',
       aliases: ['remsar', 'delsar', 'removesar', 'sarremove', 'sardel'],
       description: 'Remove a Self-Assignable role',
-      usage: [{ name: 'role', displayName: 'role', type: 'role' }],
+      usage: [{ name: 'role', displayName: 'role', type: 'role', last: true }],
       examples: [
         {
           args: 'Radioactive',

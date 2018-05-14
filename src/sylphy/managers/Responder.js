@@ -280,15 +280,17 @@ class Responder {
                 .then(newContent => msg.edit(newContent))
                 .then(() => reactor.reset())
             }
-            default: {}
+            default: {
+              return null
+            }
           }
         })
         .then(() => awaitReaction())
     }
 
     return awaitReaction()
-      .catch({ reason: 'timeout' }, { reason: 'cancelled' }, () => null)
-      .then(() => msg.removeReactions())
+      .catch({ reason: 'timeout' }, () => msg.removeReactions())
+      .catch({ reason: 'cancelled' }, () => msg.delete('User closed menu'))
       .then(() => reactor.stop())
       .catch(err => {
         reactor.stop()

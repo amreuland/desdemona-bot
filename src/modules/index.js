@@ -14,6 +14,7 @@ module.exports = {
   PermissionsModule: require('./permissions'),
   PokemonModule: require('./pokemon'),
   SearchModule: require('./search'),
+  SocialModule: require('./social'),
   UtilModule: require('./util'),
   XPModule: require('./xp')
 }

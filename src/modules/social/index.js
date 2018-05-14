@@ -6,7 +6,9 @@ class SocialModule extends NaviModule {
   constructor (...args) {
     super(...args, {
       name: 'social',
-      description: 'Social stuff'
+      description: 'Social stuff',
+      commands: true,
+      services: false
     })
   }
 

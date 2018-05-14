@@ -25,9 +25,12 @@ module.exports = {
       default: 0
     },
 
-    settings: {
-      type: Object,
-      default: {}
+    title: {
+      type: String
+    },
+
+    info: {
+      type: String
     }
   },
 
