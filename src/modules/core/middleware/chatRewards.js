@@ -1,10 +1,10 @@
 'use strict'
 
-const RANDOM_MONEY_MAX = 10
-const RANDOM_MONEY_MIN = 5
+const RANDOM_MONEY_MAX = 5
+const RANDOM_MONEY_MIN = 1
 
-const RANDOM_POINTS_MAX =10
-const RANDOM_POINTS_MIN = 5
+const RANDOM_POINTS_MAX = 5
+const RANDOM_POINTS_MIN = 1
 
 const RANDOM_XP_MAX = 20
 const RANDOM_XP_MIN = 10

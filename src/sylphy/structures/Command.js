@@ -150,7 +150,7 @@ class Command extends Base {
 
     example = `${prefix}${trigger} ${example}`
 
-    let command = `${prefix}help ${trigger.replace(' ', '.')}`
+    let command = `${prefix}help ${trigger}`
 
     ret = this.t(ret, lang, {
       usage,

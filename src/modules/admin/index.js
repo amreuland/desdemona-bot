@@ -9,6 +9,7 @@ class AdminModule extends NaviModule {
       description: 'Admin commands and components',
       services: true,
       commands: true,
+      middleware: true,
       listeners: true
     })
   }

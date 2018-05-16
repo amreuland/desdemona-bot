@@ -38,6 +38,20 @@ module.exports = {
       localField: 'userId',
       foreignField: 'userId',
       justOne: true
+    },
+
+    guild: {
+      ref: 'Guild',
+      localField: 'guildId',
+      foreignField: 'guildId',
+      justOne: true
+    },
+
+    moderator: {
+      ref: 'User',
+      localField: 'moderatorId',
+      foreignField: 'guildId',
+      justOne: true
     }
   }
 }

@@ -20,7 +20,6 @@ const modules = require('./modules')
 const { Commander, Router, Bridge, Interpreter, Logger, Collection, utils } = require('./sylphy')
 
 const resolve = (str) => path.join('src', str)
-const resolveConfig = (str) => path.join(process.cwd(), 'config', str)
 
 const apis = utils.requireAll(path.join(process.cwd(), resolve('api')))
 
@@ -208,7 +207,7 @@ class Navi extends Eris {
   }
 }
 
-const config = require(resolveConfig('config'))
+const config = require(path.join(process.cwd(), 'config', 'config'))
 
 let processID = parseInt(process.env['PROCESS_ID'], 10)
 let processShards = config.cluster.shardsPerProcess

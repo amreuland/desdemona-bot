@@ -10,6 +10,10 @@ module.exports = {
       index: true
     },
 
+    prefix: {
+      type: String
+    },
+
     settings: {
       type: Object,
       default: {}
@@ -47,6 +51,12 @@ module.exports = {
 
     userStats: {
       ref: 'UserStats',
+      localField: 'guildId',
+      foreignField: 'guildId'
+    },
+
+    warnings: {
+      ref: 'Warning',
       localField: 'guildId',
       foreignField: 'guildId'
     }

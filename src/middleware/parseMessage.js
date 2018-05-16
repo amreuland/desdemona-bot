@@ -1,24 +1,18 @@
 'use strict'
 
-const { getGuildPrefix } = require('../util').GuildUtils
-
 module.exports = {
   name: 'parseMessage',
   priority: 50,
   process: container => {
-    const { msg, client, commands } = container
+    const { msg, commands } = container
 
-    let p = Promise.resolve(null)
-    if (msg.channel.guild) {
-      p = getGuildPrefix(client, msg.channel.guild.id)
-    }
-
-    return p
-      .then(gPrefix => {
+    return Promise.resolve()
+      .then(() => {
         let prefixes = [...commands.prefixes.keys()]
-        if (gPrefix && prefixes.indexOf(gPrefix) === -1) {
-          prefixes.push(gPrefix)
+        if (container.guildPrefix && prefixes.indexOf(container.guildPrefix) === -1) {
+          prefixes.push(container.guildPrefix)
         }
+
         for (const prefix of prefixes) {
           if (!msg.content.startsWith(prefix)) {
             continue
@@ -41,9 +35,9 @@ module.exports = {
             } else if (!p.quote && c === ' ') {
               p.a.push('')
             } else {
-                p.a[p.a.length-1] += c.replace(/\\(.)/,"$1")
+              p.a[p.a.length - 1] += c.replace(/\\(.)/, '$1')
             }
-            return  p
+            return p
           }, {a: ['']}).a
         container.settings.prefix = prefix
         container.trigger = rawArgs[0].toLowerCase()

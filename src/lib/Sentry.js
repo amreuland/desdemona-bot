@@ -44,7 +44,7 @@ class Sentry extends raven.Client {
     }
 
     this.on('logged', () => {
-      this.bot.logger.debug('Event logged to sentry')
+      this.bot.logger.info('Event logged to sentry')
     })
 
     this.on('error', err => {
@@ -52,18 +52,8 @@ class Sentry extends raven.Client {
       this.bot.logger.warn(err)
     })
 
-    this.hasClient = hasClient
-    this.isEnabled = hasClient
     this.bot = bot
     this.config = config
-  }
-
-  getEnabled () {
-    return (this.hasClient && this.isEnabled)
-  }
-
-  setEnabled (enabled) {
-    this.isEnabled = (enabled && this.hasClient)
   }
 }
 
