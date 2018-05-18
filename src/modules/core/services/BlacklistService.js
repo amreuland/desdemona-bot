@@ -1,14 +1,10 @@
 'use strict'
 
-// const { User, Member, Guild } = require('eris')
-
 const { NaviService } = require.main.require('./lib')
 
 class BlacklistService extends NaviService {
   constructor (...args) {
-    super(...args, {
-      name: 'Blacklist'
-    })
+    super(...args, { name: 'Blacklist' })
   }
 
   blacklist (entity, reason, time) {
@@ -29,6 +25,14 @@ class BlacklistService extends NaviService {
 
   isBlacklisted (entity) {
 
+  }
+
+  isUserBlacklisted (userId) {
+    return Promise.resolve(false)
+  }
+
+  isGuildBlacklisted (guildId) {
+    return Promise.resolve(false)
   }
 }
 

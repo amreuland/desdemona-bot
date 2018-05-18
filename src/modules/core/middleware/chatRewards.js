@@ -17,7 +17,7 @@ const REWARD_TIMEOUT = 120
 
 module.exports = {
   name: 'chatRewards',
-  priority: 20,
+  priority: 40,
   process: container => {
     const { msg, client, isPrivate } = container
 
