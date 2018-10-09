@@ -29,7 +29,7 @@ class AuditLogCommand extends Command {
 
     return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
-        dbGuild.channels.audit = channel
+        dbGuild.channels.audit = channel.id
         dbGuild.markModified('channels')
         return dbGuild.save()
       })

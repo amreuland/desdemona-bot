@@ -313,7 +313,7 @@ class Bridge {
       middleware: this
     }).catch(err => {
       if (err && this._client.logger) {
-        this._client.thowOrEmit('bridge:error', err)
+        this._client.throwOrEmit('bridge:error', err)
         // this._client.logger.error('Failed to handle message in Bridge -', err)
       }
     })
@@ -329,7 +329,7 @@ class Bridge {
       middleware: this
     }).catch(err => {
       if (err && this._client.logger) {
-        this._client.thowOrEmit('bridge:error', err)
+        this._client.throwOrEmit('bridge:error', err)
         // this._client.logger.error('Failed to handle reaction in Bridge -', err)
       }
     })

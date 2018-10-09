@@ -233,7 +233,7 @@ const bot = new Navi({
 
 bot.register('api', 'google', apis.GoogleAPI, config.apis.google)
 bot.register('api', 'cats', apis.TheCatAPI, config.apis.thecatapi)
-bot.register('api', 'dogs', apis.TheDogAPI)
+bot.register('api', 'dogs', apis.TheDogAPI, config.apis.thedogapi)
 bot.register('api', 'urbandict', apis.UrbanDictionaryAPI)
 
 for (const name in config.cache) {

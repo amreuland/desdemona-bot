@@ -7,7 +7,7 @@ class IAmCommand extends Command {
     super(...args, {
       name: 'iam',
       description: 'Add a self assignable role to yourself',
-      usage: [{ name: 'role', displayName: 'role', type: 'role' }],
+      usage: [{ name: 'role', displayName: 'role', type: 'role', last: true }],
       examples: [
         {
           args: 'Radioactive',

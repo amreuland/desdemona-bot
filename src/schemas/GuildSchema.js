@@ -10,6 +10,10 @@ module.exports = {
       index: true
     },
 
+    prefix: {
+      type: String
+    },
+
     settings: {
       type: Object,
       default: {}

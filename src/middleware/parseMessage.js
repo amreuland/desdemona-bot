@@ -34,7 +34,17 @@ module.exports = {
           return Promise.resolve()
         }
 
-        const rawArgs = msg.content.substring(prefix.length).trim().split(' ')
+        const rawArgs = msg.content.substring(prefix.length).trim()
+          .match(/\\?.|^$/g).reduce((p, c) => {
+            if (c === '"') {
+              p.quote ^= 1
+            } else if (!p.quote && c === ' ') {
+              p.a.push('')
+            } else {
+                p.a[p.a.length-1] += c.replace(/\\(.)/,"$1")
+            }
+            return  p
+          }, {a: ['']}).a
         container.settings.prefix = prefix
         container.trigger = rawArgs[0].toLowerCase()
         container.isCommand = commands.has(container.trigger)

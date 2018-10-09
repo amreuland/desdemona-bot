@@ -30,7 +30,9 @@ class BanCommand extends Command {
 
     return msg.delete('Hide moderation commands')
       .then(() => {
-        return responder.selection(['Yes', 'No'], `Are you sure you want to ban ${member.username}`)
+        return responder.selection(['Yes', 'No'], {
+          title: `Are you sure you want to ban ${member.username}`
+        })
           .then(response => {
             if (response[0] !== 'Yes') {
               return responder.success('Action canceled')

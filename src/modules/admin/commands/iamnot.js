@@ -7,7 +7,7 @@ class IAmNotCommand extends Command {
     super(...args, {
       name: 'iamnot',
       description: 'Remove a self assignable role from yourself',
-      usage: [{ name: 'role', displayName: 'role', type: 'role' }],
+      usage: [{ name: 'role', displayName: 'role', type: 'role', last: true }],
       examples: [
         {
           args: 'Radioactive',

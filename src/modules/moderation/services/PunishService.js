@@ -36,7 +36,7 @@ class PunishService extends NaviService {
     let warnReason = `**USER BANNED**\n${reason}`
     let guild = member.guild
 
-    return this.warn(this.client, mod, member, warnReason, false, false)
+    return this.warn(mod, member, warnReason, false, false)
       .then(() => {
         if (sendDM) {
           return member.user.getDMChannel()
@@ -54,7 +54,7 @@ class PunishService extends NaviService {
     let warnReason = `**USER KICKED**\n${reason}`
     let guild = member.guild
 
-    return this.warn(this.client, mod, member, warnReason, false, false)
+    return this.warn(mod, member, warnReason, false, false)
       .then(() => {
         if (sendDM) {
           return member.user.getDMChannel()
@@ -68,7 +68,7 @@ class PunishService extends NaviService {
       .return(this.kickResults.SUCCESS)
   }
 
-  async warn (mod, member, reason, sendDM = true, isCommand = true) {
+  warn (mod, member, reason, sendDM = true, isCommand = true) {
     if (member.bot) {
       return Promise.reject(this.warnResults.ERROR_IS_BOT)
     }
@@ -107,7 +107,7 @@ class PunishService extends NaviService {
       })
   }
 
-  forgive (mod, member, num) {
+  forgive (member, num) {
     if (member.bot) {
       return Promise.reject(this.forgiveResults.ERROR_IS_BOT)
     }
