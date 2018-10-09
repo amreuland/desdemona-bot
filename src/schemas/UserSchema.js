@@ -23,11 +23,6 @@ module.exports = {
     reputation: {
       type: Number,
       default: 0
-    },
-
-    settings: {
-      type: Object,
-      default: {}
     }
   },
 

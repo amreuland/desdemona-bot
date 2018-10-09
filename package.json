@@ -1,6 +1,6 @@
 {
   "name": "navi",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Navi is a discord bot to help moderate",
   "main": "./index.js",
   "scripts": {

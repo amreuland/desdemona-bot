@@ -27,15 +27,13 @@ class PrefixCommand extends Command {
     return client.db.Guild.findOneOrCreate({ guildId }, { guildId })
       .then(dbGuild => {
         if (!prefix) {
-          delete dbGuild.settings.prefix
-          dbGuild.markModified('settings')
+          delete dbGuild.prefix
           return dbGuild.save()
             .then(() => client.cache.guild.del(`${guildId}:prefix`))
             .then(() => responder.success('prefix removed!'))
         }
 
-        dbGuild.settings.prefix = prefix
-        dbGuild.markModified('settings')
+        dbGuild.prefix = prefix
         return dbGuild.save()
           .then(() => client.cache.guild.set(`${guildId}:prefix`, prefix, 'EX', 3600))
           .then(() => responder.success('prefix changed!'))

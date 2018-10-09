@@ -14,7 +14,7 @@ class DogCommand extends Command {
   async handle ({ msg, client }, responder) {
     return client.api.dogs.getDogs()
       .then(data => {
-        return responder.send(data.data[0].url)
+        return responder.send(data[0].url)
       })
   }
 }
