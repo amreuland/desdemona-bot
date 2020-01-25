@@ -32,7 +32,7 @@ class NaviEventsListener extends Listener {
 
   onError (err, id = -1) {
     this.logger.error(`Shard ${id} - `, err)
-    this._client.raven.captureException(err)
+//    this._client.raven.captureException(err)
   }
 
   onWarn (msg, id = -1) {

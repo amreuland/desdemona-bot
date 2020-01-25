@@ -48,6 +48,10 @@ class TranslateCommand extends Command {
 
         return responder.send(results.text)
       })
+      .catch(err => {
+        client.logger.error(err, err.code)
+        return responder.send(err)
+      })
   }
 }
 
